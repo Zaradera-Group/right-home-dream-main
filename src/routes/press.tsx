@@ -1,0 +1,38 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { PageShell, PageHeader } from "@/components/PageShell";
+
+export const Route = createFileRoute("/press")({
+  head: () => ({
+    meta: [
+      { title: "Press — RIGHTHOME" },
+      { name: "description", content: "Media and press information for RIGHTHOME." },
+      { property: "og:title", content: "RIGHTHOME Press" },
+      { property: "og:description", content: "Find the latest RIGHTHOME news and media contacts." },
+    ],
+  }),
+  component: Press,
+});
+
+function Press() {
+  return (
+    <PageShell>
+      <PageHeader
+        eyebrow="PRESS"
+        title="RIGHTHOME in the news"
+        subtitle="Get the latest announcements, media resources, and press contacts for our proptech platform." 
+      />
+      <section className="px-4 pb-20">
+        <div className="max-w-4xl mx-auto space-y-8 text-sm text-muted-foreground">
+          <div className="glass-strong rounded-3xl p-8">
+            <h2 className="text-xl font-semibold text-foreground">Media resources</h2>
+            <p className="mt-4 leading-relaxed">Our team is available for interviews, company updates, and stories about property innovation in Africa.</p>
+          </div>
+          <div className="glass-strong rounded-3xl p-8">
+            <h2 className="text-xl font-semibold text-foreground">Contact press</h2>
+            <p className="mt-4 leading-relaxed">For media enquiries, please use the contact page and mention "Press" so we can respond faster.</p>
+          </div>
+        </div>
+      </section>
+    </PageShell>
+  );
+}

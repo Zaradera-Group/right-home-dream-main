@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">RIGHTHOME logo</title>
+  <desc id="logoDesc">A stylized house roof and wallet icon in navy and orange representing property and secure ownership.</desc>
+  <defs>
+    <linearGradient id="logoGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff5f26" />
+      <stop offset="100%" stop-color="#ff9228" />
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="28" fill="#041a42" />
+  <path d="M20 52 L60 24 L100 52 V92 H20 Z" fill="#ff5f26" opacity="0.12" />
+  <path d="M26 56 L60 30 L94 56 V92 H26 Z" fill="#071c4c" />
+  <path d="M60 30 L60 24 L100 52" fill="#ff5f26" />
+  <path d="M26 56 H94 V82 H26 Z" fill="#142d69" />
+  <path d="M78 64 H88 V76 H78 Z" fill="#ff5f26" />
+  <path d="M42 64 H52 V76 H42 Z" fill="#ff5f26" />
+  <path d="M50 70 H70 V78 H50 Z" fill="#08225e" />
+  <path d="M70 64 H80 V76 H70 Z" fill="#ff9228" opacity="0.4" />
+  <path d="M34 42 H86 L60 18 Z" fill="#ff5f26" />
+  <path d="M30 60 H90 L90 90 H30 Z" fill="#08225e" />
+</svg>
