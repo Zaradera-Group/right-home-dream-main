@@ -5,7 +5,12 @@ const textResponseContentType = /^(text\/|application\/(json|javascript|xml|xhtm
 
 function buildUrl(event) {
   const host = event.headers?.host || "localhost";
-  const rawUrl = event.rawUrl ?? `${event.path}${event.rawQueryString ? `?${event.rawQueryString}` : ""}`;
+  const originalPath =
+    event.headers?.["x-nf-request-path"] ||
+    event.headers?.["x-nf-original-path"] ||
+    event.rawUrl ||
+    event.path;
+  const rawUrl = `${originalPath}${event.rawQueryString ? `?${event.rawQueryString}` : ""}`;
 
   if (/^https?:\/\//.test(rawUrl)) {
     return rawUrl;
