@@ -8,9 +8,9 @@ const footerLinks = [
     heading: "Product",
     items: [
       { label: "Listings", to: "/properties" },
-      { label: "Virtual Tours", to: "/services" },
-      { label: "Analytics", to: "/insights" },
-      { label: "Management", to: "/services" },
+      { label: "Virtual Tours", to: "/virtual-tours" },
+      { label: "Analytics", to: "/analytics" },
+      { label: "Management", to: "/management" },
       { label: "RightAI Chat", to: "/chat" },
     ],
   },

@@ -9,22 +9,36 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VirtualToursRouteImport } from './routes/virtual-tours'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as TeamRouteImport } from './routes/team'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as PropertiesRouteImport } from './routes/properties'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PressRouteImport } from './routes/press'
+import { Route as ManagementRouteImport } from './routes/management'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as CareersRouteImport } from './routes/careers'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VirtualToursRoute = VirtualToursRouteImport.update({
+  id: '/virtual-tours',
+  path: '/virtual-tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesRoute = ServicesRouteImport.update({
@@ -52,6 +66,11 @@ const PressRoute = PressRouteImport.update({
   path: '/press',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ManagementRoute = ManagementRouteImport.update({
+  id: '/management',
+  path: '/management',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InsightsRoute = InsightsRouteImport.update({
   id: '/insights',
   path: '/insights',
@@ -72,6 +91,11 @@ const CareersRoute = CareersRouteImport.update({
   path: '/careers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -86,113 +110,155 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/analytics': typeof AnalyticsRoute
   '/careers': typeof CareersRoute
   '/chat': typeof ChatRoute
   '/contact': typeof ContactRoute
   '/insights': typeof InsightsRoute
+  '/management': typeof ManagementRoute
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
   '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
+  '/team': typeof TeamRoute
   '/terms': typeof TermsRoute
+  '/virtual-tours': typeof VirtualToursRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/analytics': typeof AnalyticsRoute
   '/careers': typeof CareersRoute
   '/chat': typeof ChatRoute
   '/contact': typeof ContactRoute
   '/insights': typeof InsightsRoute
+  '/management': typeof ManagementRoute
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
   '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
+  '/team': typeof TeamRoute
   '/terms': typeof TermsRoute
+  '/virtual-tours': typeof VirtualToursRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/analytics': typeof AnalyticsRoute
   '/careers': typeof CareersRoute
   '/chat': typeof ChatRoute
   '/contact': typeof ContactRoute
   '/insights': typeof InsightsRoute
+  '/management': typeof ManagementRoute
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
   '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
+  '/team': typeof TeamRoute
   '/terms': typeof TermsRoute
+  '/virtual-tours': typeof VirtualToursRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/analytics'
     | '/careers'
     | '/chat'
     | '/contact'
     | '/insights'
+    | '/management'
     | '/press'
     | '/privacy'
     | '/properties'
     | '/security'
     | '/services'
+    | '/team'
     | '/terms'
+    | '/virtual-tours'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/analytics'
     | '/careers'
     | '/chat'
     | '/contact'
     | '/insights'
+    | '/management'
     | '/press'
     | '/privacy'
     | '/properties'
     | '/security'
     | '/services'
+    | '/team'
     | '/terms'
+    | '/virtual-tours'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/analytics'
     | '/careers'
     | '/chat'
     | '/contact'
     | '/insights'
+    | '/management'
     | '/press'
     | '/privacy'
     | '/properties'
     | '/security'
     | '/services'
+    | '/team'
     | '/terms'
+    | '/virtual-tours'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   CareersRoute: typeof CareersRoute
   ChatRoute: typeof ChatRoute
   ContactRoute: typeof ContactRoute
   InsightsRoute: typeof InsightsRoute
+  ManagementRoute: typeof ManagementRoute
   PressRoute: typeof PressRoute
   PrivacyRoute: typeof PrivacyRoute
   PropertiesRoute: typeof PropertiesRoute
   SecurityRoute: typeof SecurityRoute
   ServicesRoute: typeof ServicesRoute
+  TeamRoute: typeof TeamRoute
   TermsRoute: typeof TermsRoute
+  VirtualToursRoute: typeof VirtualToursRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/virtual-tours': {
+      id: '/virtual-tours'
+      path: '/virtual-tours'
+      fullPath: '/virtual-tours'
+      preLoaderRoute: typeof VirtualToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services': {
@@ -230,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PressRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/management': {
+      id: '/management'
+      path: '/management'
+      fullPath: '/management'
+      preLoaderRoute: typeof ManagementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/insights': {
       id: '/insights'
       path: '/insights'
@@ -258,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CareersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -278,16 +358,20 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AnalyticsRoute: AnalyticsRoute,
   CareersRoute: CareersRoute,
   ChatRoute: ChatRoute,
   ContactRoute: ContactRoute,
   InsightsRoute: InsightsRoute,
+  ManagementRoute: ManagementRoute,
   PressRoute: PressRoute,
   PrivacyRoute: PrivacyRoute,
   PropertiesRoute: PropertiesRoute,
   SecurityRoute: SecurityRoute,
   ServicesRoute: ServicesRoute,
+  TeamRoute: TeamRoute,
   TermsRoute: TermsRoute,
+  VirtualToursRoute: VirtualToursRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
