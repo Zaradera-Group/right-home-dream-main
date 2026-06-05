@@ -1,7 +1,8 @@
 import server from "../../dist/server/index.js";
 import { Buffer } from "node:buffer";
 
-const textResponseContentType = /^(text\/|application\/(json|javascript|xml|xhtml|svg\+xml|webmanifest|wasm)|image\/svg\+xml)/i;
+const textResponseContentType =
+  /^(text\/|application\/(json|javascript|xml|xhtml|svg\+xml|webmanifest|wasm)|image\/svg\+xml)/i;
 
 function buildUrl(event) {
   const host = event.headers?.host || "localhost";
@@ -10,12 +11,12 @@ function buildUrl(event) {
     event.headers?.["x-nf-original-path"] ||
     event.rawUrl ||
     event.path;
-  const rawUrl = `${originalPath}${event.rawQueryString ? `?${event.rawQueryString}` : ""}`;
-
+  const rawUrl = `${originalPath}${
+    event.rawQueryString ? `?${event.rawQueryString}` : ""
+  }`;
   if (/^https?:\/\//.test(rawUrl)) {
     return rawUrl;
   }
-
   return new URL(`https://${host}${rawUrl}`).toString();
 }
 
@@ -41,26 +42,26 @@ export const handler = async (event) => {
         : event.body
       : undefined,
   });
-
   const response = await server.fetch(request, process.env, {
     waitUntil: (promise) => {
       promise.catch(() => undefined);
     },
   });
-
   const responseHeaders = {};
   response.headers.forEach((value, key) => {
     responseHeaders[key] = value;
   });
-
   const bodyBuffer = Buffer.from(await response.arrayBuffer());
   const contentType = response.headers.get("content-type") || "";
-  const isText = textResponseContentType.test(contentType) || contentType.includes("charset=utf-8");
-
+  const isText =
+    textResponseContentType.test(contentType) ||
+    contentType.includes("charset=utf-8");
   return {
     statusCode: response.status,
     headers: responseHeaders,
-    body: isText ? bodyBuffer.toString("utf8") : bodyBuffer.toString("base64"),
+    body: isText
+      ? bodyBuffer.toString("utf8")
+      : bodyBuffer.toString("base64"),
     isBase64Encoded: !isText,
   };
 };

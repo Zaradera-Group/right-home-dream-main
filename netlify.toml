@@ -1,14 +1,16 @@
 [build]
   command = "npm run build"
-  publish = "dist/server"
+  publish = "dist/client"
   functions = "netlify/functions"
 
+# Proxy all API calls to Render backend
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/server"
+  to = "https://right-home-dream-main.onrender.com/api/:splat"
   status = 200
-  force = false
+  force = true
 
+# All other requests go through the SSR function
 [[redirects]]
   from = "/*"
   to = "/.netlify/functions/server"
