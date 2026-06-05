@@ -9,6 +9,9 @@ import {
   Search, Sparkles, ShieldCheck, Boxes, Eye, TrendingUp, Link2,
   ArrowUpRight, MapPin, Activity, BarChart3, Play,
 } from "lucide-react";
+import { AnimatedNumber } from "@/components/ui/animated-number";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 export function BentoHero() {
   return (
@@ -118,9 +121,9 @@ export function BentoHero() {
             </div>
             {/* KPIs */}
             <div className="md:col-span-2 grid grid-cols-2 md:grid-cols-1 gap-3">
-              <Kpi label="Active Listings" value="3,284" delta="+8%" />
-              <Kpi label="Verified Owners" value="1,156" delta="+22%" />
-              <Kpi label="Avg. ROI / yr" value="18.3%" delta="+1.2pp" />
+                <Kpi label="Active Listings" value="3,284" delta="+8%" />
+                <Kpi label="Verified Owners" value="1,156" delta="+22%" />
+                <Kpi label="Avg. ROI / yr" value="18.3%" delta="+1.2pp" />
             </div>
           </div>
         </div>
@@ -141,7 +144,7 @@ export function BentoHero() {
               { img: prop3, price: "₦240K/mo", loc: "GRA Phase II", roi: "Lease" },
               { img: prop4, price: "₦42M", loc: "Omagwa Plots", roi: "Land" },
             ].map((p, i) => (
-              <div key={i} className="group relative rounded-2xl overflow-hidden glass hover:scale-[1.03] transition-all duration-300 cursor-pointer">
+              <Link key={i} to="/properties" className="group relative rounded-2xl overflow-hidden glass hover:scale-[1.03] transition-all duration-300 cursor-pointer">
                 <div className="aspect-[4/3] overflow-hidden">
                   <img src={p.img} alt={p.loc} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
                 </div>
@@ -157,7 +160,7 @@ export function BentoHero() {
                     <MapPin className="w-3 h-3" /> {p.loc}
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -167,35 +170,39 @@ export function BentoHero() {
 }
 
 function Kpi({ label, value, delta }: { label: string; value: string; delta: string }) {
+  const numericMatch = String(value).replace(/,/g, "").match(/-?\d+\.?\d*/);
+  const numeric = numericMatch ? Number(numericMatch[0]) : null;
+  const suffix = String(value).trim().endsWith("%") ? "%" : undefined;
+
   return (
     <div className="glass rounded-2xl p-4">
       <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="text-2xl font-display font-semibold mt-1">{value}</div>
+      <div className="text-2xl font-display font-semibold mt-1">
+        {numeric !== null ? (
+          <AnimatedNumber value={numeric} suffix={suffix} />
+        ) : (
+          value
+        )}
+      </div>
       <div className="text-[11px] text-success mt-0.5 flex items-center gap-1"><BarChart3 className="w-3 h-3" /> {delta}</div>
     </div>
   );
 }
 
 function MiniChart() {
-  // SVG line + area chart
   const pts = [20, 35, 28, 50, 45, 62, 58, 78, 70, 92, 88, 105];
-  const max = 120, w = 100, h = 100;
-  const step = w / (pts.length - 1);
-  const path = pts.map((v, i) => `${i === 0 ? "M" : "L"} ${(i * step).toFixed(2)} ${(h - (v / max) * h).toFixed(2)}`).join(" ");
-  const area = `${path} L ${w} ${h} L 0 ${h} Z`;
+  const data = pts.map((v, i) => ({ label: `${i + 1}`, value: v }));
+  const config = { value: { label: "Value", color: "#F24C21" } };
+
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="w-full h-[180px]">
-      <defs>
-        <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#F24C21" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#F24C21" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={area} fill="url(#g1)" />
-      <path d={path} fill="none" stroke="#F24C21" strokeWidth="1.2" />
-      {pts.map((v, i) => (
-        <circle key={i} cx={i * step} cy={h - (v / max) * h} r="0.8" fill="#fff" />
-      ))}
-    </svg>
+    <ChartContainer config={config} className="h-[180px] w-full">
+      <AreaChart data={data} margin={{ top: 4, right: 8, left: 8, bottom: 4 }}>
+        <CartesianGrid vertical={false} strokeDasharray="3 3" />
+        <XAxis dataKey="label" tickLine={false} axisLine={false} />
+        <YAxis tickLine={false} axisLine={false} width={40} />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <Area type="monotone" dataKey="value" stroke="var(--color-value)" fill="var(--color-value)" fillOpacity={0.22} strokeWidth={3} isAnimationActive={true} animationDuration={1200} />
+      </AreaChart>
+    </ChartContainer>
   );
 }
