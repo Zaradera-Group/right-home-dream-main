@@ -649,6 +649,8 @@ const server = createServer(async (request, response) => {
 });
 
 const port = Number(process.env.PORT || 8787);
-server.listen(port, "127.0.0.1", () => {
-  console.log(`Node backend listening on http://127.0.0.1:${port}`);
+const host = process.env.HOST || "0.0.0.0";
+server.listen(port, host, () => {
+  const hostForLog = host === "0.0.0.0" ? "localhost" : host;
+  console.log(`Node backend listening on http://${hostForLog}:${port}`);
 });
