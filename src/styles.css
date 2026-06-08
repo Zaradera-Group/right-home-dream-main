@@ -1,13 +1,13 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: 'Poppins', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -44,12 +44,13 @@
   --shadow-card: 0 20px 60px -20px color-mix(in oklab, #000 60%, transparent);
   --shadow-soft: 0 8px 32px -8px color-mix(in oklab, #000 40%, transparent);
 
-  --gradient-primary: linear-gradient(135deg, #F24C21 0%, #FF7B4F 100%);
-  --gradient-dark: linear-gradient(135deg, #060243 0%, #0D0875 100%);
-  --gradient-hero: linear-gradient(135deg, #060243 0%, #1a0a6e 50%, #F24C21 200%);
-  --gradient-mesh: radial-gradient(at 20% 30%, color-mix(in oklab, #F24C21 25%, transparent) 0px, transparent 50%),
-                   radial-gradient(at 80% 20%, color-mix(in oklab, #4f3eff 30%, transparent) 0px, transparent 50%),
-                   radial-gradient(at 50% 80%, color-mix(in oklab, #F24C21 15%, transparent) 0px, transparent 50%);
+  --gradient-primary: linear-gradient(135deg, #f24c21 0%, #ff7b4f 100%);
+  --gradient-dark: linear-gradient(135deg, #060243 0%, #0d0875 100%);
+  --gradient-hero: linear-gradient(135deg, #060243 0%, #1a0a6e 50%, #f24c21 200%);
+  --gradient-mesh:
+    radial-gradient(at 20% 30%, color-mix(in oklab, #f24c21 25%, transparent) 0px, transparent 50%),
+    radial-gradient(at 80% 20%, color-mix(in oklab, #4f3eff 30%, transparent) 0px, transparent 50%),
+    radial-gradient(at 50% 80%, color-mix(in oklab, #f24c21 15%, transparent) 0px, transparent 50%);
 
   --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -60,20 +61,42 @@
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
 }
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 30px -5px color-mix(in oklab, #F24C21 50%, transparent); }
-  50% { box-shadow: 0 0 60px 0px color-mix(in oklab, #F24C21 70%, transparent); }
+  0%,
+  100% {
+    box-shadow: 0 0 30px -5px color-mix(in oklab, #f24c21 50%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 60px 0px color-mix(in oklab, #f24c21 70%, transparent);
+  }
 }
 
 :root {
@@ -90,9 +113,9 @@
   --popover: #110a6e;
   --popover-foreground: #ffffff;
 
-  --primary: #F24C21;
+  --primary: #f24c21;
   --primary-foreground: #ffffff;
-  --primary-glow: #FF7B4F;
+  --primary-glow: #ff7b4f;
 
   --secondary: rgba(255, 255, 255, 0.08);
   --secondary-foreground: #ffffff;
@@ -100,7 +123,7 @@
   --muted: rgba(255, 255, 255, 0.06);
   --muted-foreground: rgba(255, 255, 255, 0.65);
 
-  --accent: #F24C21;
+  --accent: #f24c21;
   --accent-foreground: #ffffff;
 
   --destructive: oklch(0.577 0.245 27.325);
@@ -108,14 +131,18 @@
 
   --success: #10b981;
 
-  --border: rgba(255, 255, 255, 0.10);
+  --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.08);
-  --ring: #F24C21;
+  --ring: #f24c21;
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html { scroll-behavior: smooth; }
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -124,7 +151,20 @@
     background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  @media (max-width: 768px) {
+    body {
+      background-attachment: scroll;
+    }
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
 }
 
 @utility glass {
@@ -142,7 +182,7 @@
 }
 
 @utility text-gradient {
-  background: linear-gradient(135deg, #ffffff 0%, #F24C21 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f24c21 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

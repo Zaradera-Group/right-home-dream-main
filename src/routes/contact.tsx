@@ -46,6 +46,7 @@ function Contact() {
   const [form, setForm] = useState<FormState>(initialFormState);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [notice, setNotice] = useState("");
+  const [turnstileRequested, setTurnstileRequested] = useState(false);
   const turnstileRef = useRef<HTMLDivElement | null>(null);
   const turnstileWidgetId = useRef<string | null>(null);
   const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
@@ -59,7 +60,7 @@ function Contact() {
   };
 
   useEffect(() => {
-    if (!turnstileSiteKey || !turnstileRef.current) {
+    if (!turnstileSiteKey || !turnstileRequested || !turnstileRef.current) {
       return undefined;
     }
 
@@ -104,7 +105,7 @@ function Contact() {
         turnstileWidgetId.current = null;
       }
     };
-  }, [turnstileSiteKey]);
+  }, [turnstileRequested, turnstileSiteKey]);
 
   const updateField = (key: keyof FormState, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -113,6 +114,7 @@ function Contact() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (turnstileSiteKey && !form.turnstileToken) {
+      setTurnstileRequested(true);
       setStatus("error");
       setNotice("Please complete the anti-bot check before sending.");
       return;
@@ -140,6 +142,7 @@ function Contact() {
       );
       setForm(initialFormState);
       resetTurnstile();
+      setTurnstileRequested(false);
     } catch (error) {
       console.error(error);
       setStatus("error");
@@ -282,8 +285,19 @@ function Contact() {
                   This protects your inbox from automated spam. Complete the check below before
                   sending.
                 </p>
-                <div ref={turnstileRef} className="relative z-10 mt-4 min-h-[65px]" />
-                {turnstileSiteKey ? null : (
+                {turnstileSiteKey ? (
+                  turnstileRequested ? (
+                    <div ref={turnstileRef} className="relative z-10 mt-4 min-h-[65px]" />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setTurnstileRequested(true)}
+                      className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-semibold text-foreground transition hover:bg-white/10"
+                    >
+                      Load verification
+                    </button>
+                  )
+                ) : (
                   <p className="mt-3 text-xs text-amber-200/90">
                     Turnstile is not configured yet. Add `VITE_TURNSTILE_SITE_KEY` for the widget
                     and `TURNSTILE_SECRET_KEY` on the server.
@@ -317,7 +331,7 @@ function Contact() {
               />
               <button
                 type="submit"
-                disabled={status === "sending" || (turnstileSiteKey ? !form.turnstileToken : false)}
+                disabled={status === "sending"}
                 className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-7 py-3.5 text-sm font-semibold shadow-[var(--shadow-glow)] transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {status === "sending" ? "Sending..." : "Send message"}
