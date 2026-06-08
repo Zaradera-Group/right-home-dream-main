@@ -16,8 +16,8 @@ const links = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
-      <nav className="glass-strong mx-auto max-w-7xl rounded-2xl px-6 py-3 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 px-3 pt-3 md:px-4 md:pt-4">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/15 bg-background/95 px-4 py-3 shadow-[var(--shadow-card)] backdrop-blur-xl md:glass-strong md:px-6">
         <Link to="/" className="flex items-center gap-3 font-display font-bold text-lg">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
             <img src={logoUrl} alt="RIGHTHOME logo" className="h-8 w-8 object-contain" />
@@ -43,20 +43,20 @@ export function Navbar() {
           <button
             onClick={() => setOpen(!open)}
             aria-label="Toggle navigation menu"
-            className="md:hidden p-2"
+            className="rounded-xl border border-white/10 bg-white/10 p-2 text-foreground shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-md transition hover:bg-white/15 md:hidden"
           >
             <Menu className="w-5 h-5" />
           </button>
         </div>
       </nav>
       {open && (
-        <div className="md:hidden glass-strong mt-2 mx-auto max-w-7xl rounded-2xl p-4 flex flex-col gap-3 text-sm">
+        <div className="mx-auto mt-2 flex max-w-7xl flex-col gap-3 rounded-2xl border border-white/15 bg-background/95 p-4 text-sm shadow-[var(--shadow-card)] backdrop-blur-xl md:hidden">
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
               onClick={() => setOpen(false)}
-              className="text-muted-foreground hover:text-foreground"
+              className="rounded-xl px-3 py-2 text-muted-foreground transition hover:bg-white/10 hover:text-foreground"
             >
               {l.label}
             </Link>
