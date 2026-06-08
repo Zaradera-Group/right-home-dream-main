@@ -291,6 +291,7 @@ function Contact() {
           <form
             ref={formRef}
             onSubmit={handleSubmit}
+            noValidate
             className="glass-strong relative isolate overflow-hidden rounded-3xl p-7 md:p-9 lg:col-span-3"
           >
             <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_right,rgba(242,76,33,0.18),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.08),transparent_28%)]" />
@@ -336,8 +337,7 @@ function Contact() {
                     id="contact-phone"
                     name="phone"
                     type="tel"
-                    inputMode="numeric"
-                    pattern="\\d*"
+                    inputMode="tel"
                     defaultValue=""
                     placeholder="+234..."
                     autoComplete="tel"
