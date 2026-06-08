@@ -4,11 +4,8 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev.mjs",
-    "dev:web": "vite dev",
-    "backend": "node backend/node-backend.mjs",
+    "dev": "vite",
     "build": "vite build",
-    "build:netlify": "npm run build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
