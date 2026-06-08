@@ -208,10 +208,10 @@ function Contact() {
 
           <form
             onSubmit={handleSubmit}
-            className="glass-strong relative overflow-hidden rounded-3xl p-7 md:p-9 lg:col-span-3"
+            className="glass-strong relative isolate overflow-hidden rounded-3xl p-7 md:p-9 lg:col-span-3"
           >
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(242,76,33,0.18),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.08),transparent_28%)]" />
-            <div className="relative">
+            <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_right,rgba(242,76,33,0.18),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.08),transparent_28%)]" />
+            <div className="relative z-10">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-[11px] uppercase tracking-[0.2em] text-primary">
                 <ShieldCheck className="h-4 w-4" /> Secure submission
               </div>
@@ -263,7 +263,7 @@ function Contact() {
                     id="contact-interest"
                     value={form.interest}
                     onChange={(event) => updateField("interest", event.target.value)}
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+                    className="relative z-10 mt-1.5 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
                   >
                     <option className="bg-[#060243]">Buying property</option>
                     <option className="bg-[#060243]">Renting</option>
@@ -282,7 +282,7 @@ function Contact() {
                   This protects your inbox from automated spam. Complete the check below before
                   sending.
                 </p>
-                <div ref={turnstileRef} className="mt-4 min-h-[65px]" />
+                <div ref={turnstileRef} className="relative z-10 mt-4 min-h-[65px]" />
                 {turnstileSiteKey ? null : (
                   <p className="mt-3 text-xs text-amber-200/90">
                     Turnstile is not configured yet. Add `VITE_TURNSTILE_SITE_KEY` for the widget
@@ -302,7 +302,7 @@ function Contact() {
                   onChange={(event) => updateField("message", event.target.value)}
                   placeholder="Tell us a bit more..."
                   required
-                  className="mt-1.5 w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+                  className="relative z-10 mt-1.5 w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
@@ -348,7 +348,7 @@ function Field({
         {...props}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+        className="relative z-10 mt-1.5 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
       />
     </div>
   );
