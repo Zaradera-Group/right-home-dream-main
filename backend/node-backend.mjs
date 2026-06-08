@@ -385,6 +385,16 @@ async function sendContactEmail(payload, request) {
   }
 }
 
+function describeContactError(error) {
+  const message = error instanceof Error ? error.message : "";
+
+  if (message.includes("RESEND_API_KEY is not configured") || message.includes("Resend error")) {
+    return message;
+  }
+
+  return null;
+}
+
 async function streamSse(response, write) {
   response.writeHead(200, {
     "Content-Type": "text/event-stream; charset=utf-8",
@@ -606,6 +616,10 @@ async function handleContactRequest(request, response) {
     });
   } catch (error) {
     console.error("Contact submission failed", error);
+    const contactError = describeContactError(error);
+    if (contactError) {
+      return sendJson(response, 502, { error: contactError });
+    }
     return sendJson(response, 503, {
       error: `We could not send your message right now. Please email ${supportEmail} directly.`,
     });

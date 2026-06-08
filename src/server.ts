@@ -322,6 +322,19 @@ async function sendContactEmail(
   }
 }
 
+function describeContactError(error: unknown): string | null {
+  const message = error instanceof Error ? error.message : "";
+
+  if (
+    message.includes("RESEND_API_KEY is missing") ||
+    message.includes("Contact email delivery failed")
+  ) {
+    return message;
+  }
+
+  return null;
+}
+
 async function handleContactRequest(request: Request, env: unknown): Promise<Response> {
   if (request.method !== "POST") {
     return jsonSecureResponse({ error: "Method not allowed" }, 405);
@@ -374,6 +387,10 @@ async function handleContactRequest(request: Request, env: unknown): Promise<Res
     });
   } catch (error) {
     console.error("Contact submission failed", error);
+    const contactError = describeContactError(error);
+    if (contactError) {
+      return jsonSecureResponse({ error: contactError }, 502);
+    }
     return jsonSecureResponse(
       {
         error:

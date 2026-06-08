@@ -416,6 +416,19 @@ async function sendContactEmail(env, payload, request) {
   }
 }
 
+function describeContactError(error) {
+  const message = error instanceof Error ? error.message : "";
+
+  if (
+    message.includes("RESEND_API_KEY is missing") ||
+    message.includes("Contact email delivery failed")
+  ) {
+    return message;
+  }
+
+  return null;
+}
+
 function parseContactPayload(body) {
   const payload = body || {};
   return {
@@ -486,6 +499,10 @@ async function handleContactRequest(request, env) {
     });
   } catch (error) {
     console.error("Contact submission failed", error);
+    const contactError = describeContactError(error);
+    if (contactError) {
+      return jsonResponse({ error: contactError }, 502);
+    }
     return jsonResponse(
       {
         error:
