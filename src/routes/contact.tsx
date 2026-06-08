@@ -22,31 +22,14 @@ export const Route = createFileRoute("/contact")({
   component: Contact,
 });
 
-type FormState = {
-  name: string;
-  email: string;
-  phone: string;
-  interest: string;
-  message: string;
-  website: string;
-  turnstileToken: string;
-};
-
-const initialFormState: FormState = {
-  name: "",
-  email: "",
-  phone: "",
-  interest: "Buying property",
-  message: "",
-  website: "",
-  turnstileToken: "",
-};
+const initialInterest = "Buying property";
 
 function Contact() {
-  const [form, setForm] = useState<FormState>(initialFormState);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [notice, setNotice] = useState("");
   const [turnstileRequested, setTurnstileRequested] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const formRef = useRef<HTMLFormElement | null>(null);
   const turnstileRef = useRef<HTMLDivElement | null>(null);
   const turnstileWidgetId = useRef<string | null>(null);
   const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
@@ -56,7 +39,7 @@ function Contact() {
       window.turnstile.reset(turnstileWidgetId.current);
     }
 
-    setForm((prev) => ({ ...prev, turnstileToken: "" }));
+    setTurnstileToken("");
   };
 
   useEffect(() => {
@@ -76,13 +59,13 @@ function Contact() {
         sitekey: turnstileSiteKey,
         theme: "dark",
         callback: (token: string) => {
-          setForm((prev) => ({ ...prev, turnstileToken: token }));
+          setTurnstileToken(token);
         },
         "expired-callback": () => {
-          setForm((prev) => ({ ...prev, turnstileToken: "" }));
+          setTurnstileToken("");
         },
         "error-callback": () => {
-          setForm((prev) => ({ ...prev, turnstileToken: "" }));
+          setTurnstileToken("");
         },
       });
     };
@@ -107,13 +90,21 @@ function Contact() {
     };
   }, [turnstileRequested, turnstileSiteKey]);
 
-  const updateField = (key: keyof FormState, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (turnstileSiteKey && !form.turnstileToken) {
+    const formElement = event.currentTarget;
+    const formData = new FormData(formElement);
+    const payload = {
+      name: String(formData.get("name") || "").trim(),
+      email: String(formData.get("email") || "").trim(),
+      phone: String(formData.get("phone") || "").trim(),
+      interest: String(formData.get("interest") || initialInterest).trim(),
+      message: String(formData.get("message") || "").trim(),
+      website: String(formData.get("website") || "").trim(),
+      turnstileToken,
+    };
+
+    if (turnstileSiteKey && !payload.turnstileToken) {
       setTurnstileRequested(true);
       setStatus("error");
       setNotice("Please complete the anti-bot check before sending.");
@@ -126,7 +117,7 @@ function Contact() {
       const response = await fetch(apiUrl("/api/contact"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       const data = (await response.json()) as { message?: string; error?: string };
@@ -140,7 +131,7 @@ function Contact() {
         data.message ||
           `Thanks. Your message has been sent to ${SUPPORT_EMAIL} and our team will reply soon.`,
       );
-      setForm(initialFormState);
+      formElement.reset();
       resetTurnstile();
       setTurnstileRequested(false);
     } catch (error) {
@@ -210,6 +201,7 @@ function Contact() {
           </div>
 
           <form
+            ref={formRef}
             onSubmit={handleSubmit}
             className="glass-strong relative isolate overflow-hidden rounded-3xl p-7 md:p-9 lg:col-span-3"
           >
@@ -235,26 +227,26 @@ function Contact() {
               <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
                 <Field
                   label="Full name"
-                  value={form.name}
-                  onChange={(value) => updateField("name", value)}
+                  name="name"
+                  defaultValue=""
                   placeholder="Your name"
                   autoComplete="name"
                   required
                 />
                 <Field
                   label="Email"
+                  name="email"
                   type="email"
-                  value={form.email}
-                  onChange={(value) => updateField("email", value)}
+                  defaultValue=""
                   placeholder="you@email.com"
                   autoComplete="email"
                   required
                 />
                 <Field
                   label="Phone"
+                  name="phone"
                   type="tel"
-                  value={form.phone}
-                  onChange={(value) => updateField("phone", value)}
+                  defaultValue=""
                   placeholder="+234..."
                   autoComplete="tel"
                 />
@@ -264,8 +256,8 @@ function Contact() {
                   </label>
                   <select
                     id="contact-interest"
-                    value={form.interest}
-                    onChange={(event) => updateField("interest", event.target.value)}
+                    name="interest"
+                    defaultValue={initialInterest}
                     className="relative z-10 mt-1.5 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
                   >
                     <option className="bg-[#060243]">Buying property</option>
@@ -311,9 +303,9 @@ function Contact() {
                 </label>
                 <textarea
                   id="contact-message"
+                  name="message"
                   rows={6}
-                  value={form.message}
-                  onChange={(event) => updateField("message", event.target.value)}
+                  defaultValue=""
                   placeholder="Tell us a bit more..."
                   required
                   className="relative z-10 mt-1.5 w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
@@ -321,13 +313,13 @@ function Contact() {
               </div>
 
               <input
+                name="website"
                 type="text"
                 tabIndex={-1}
                 autoComplete="off"
                 aria-hidden="true"
                 className="hidden"
-                value={form.website}
-                onChange={(event) => updateField("website", event.target.value)}
+                defaultValue=""
               />
               <button
                 type="submit"
@@ -347,21 +339,15 @@ function Contact() {
 
 function Field({
   label,
-  value,
-  onChange,
   ...props
 }: {
   label: string;
-  value: string;
-  onChange: (value: string) => void;
 } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div>
       <label className="text-xs text-muted-foreground">{label}</label>
       <input
         {...props}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
         className="relative z-10 mt-1.5 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
       />
     </div>
