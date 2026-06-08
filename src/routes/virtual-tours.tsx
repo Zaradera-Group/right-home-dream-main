@@ -1,13 +1,32 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { PageShell, PageHeader } from "@/components/PageShell";
-import { Eye, Video, Play } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, Eye, MapPin, MessageCircle, Play, Video } from "lucide-react";
 
-const featuredTours = [
+import { PageHeader, PageShell } from "@/components/PageShell";
+
+type TourItem = {
+  title: string;
+  caption: string;
+  image?: string;
+  video?: string;
+  poster?: string;
+  kind: "image" | "video";
+  details: string;
+  location: string;
+  status: string;
+};
+
+const featuredTours: TourItem[] = [
   {
     title: "Abijo Luxury Villa",
     caption: "High-resolution photo tour with exterior and living space highlights.",
     image:
       "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
+    kind: "image",
+    details:
+      "A polished walkthrough of the villa's frontage, lounge, dining space, and landscaped outdoor areas.",
+    location: "Abijo, Lagos",
+    status: "Photo tour",
   },
   {
     title: "City Penthouse Video Tour",
@@ -15,19 +34,29 @@ const featuredTours = [
     video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
     poster:
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80",
+    kind: "video",
+    details:
+      "A full-screen walkthrough with motion, room transitions, and a guided look at the skyline-facing rooms.",
+    location: "Victoria Island, Lagos",
+    status: "Video tour",
   },
   {
     title: "Riverside Duplex Gallery",
     caption: "A curated image preview of architect-designed indoor and outdoor spaces.",
     image:
       "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80",
+    kind: "image",
+    details:
+      "A gallery-style preview of the duplex, including shared spaces, bedrooms, and the surrounding environment.",
+    location: "Riverside, Port Harcourt",
+    status: "Image gallery",
   },
 ];
 
 export const Route = createFileRoute("/virtual-tours")({
   head: () => ({
     meta: [
-      { title: "Virtual Tours — RIGHTHOME" },
+      { title: "Virtual Tours - RIGHTHOME" },
       {
         name: "description",
         content:
@@ -37,7 +66,7 @@ export const Route = createFileRoute("/virtual-tours")({
       {
         property: "og:description",
         content:
-          "See homes in vivid detail from anywhere with 360°, VR-ready walkthroughs and interactive floor plans.",
+          "See homes in vivid detail from anywhere with 360-degree walkthroughs and interactive floor plans.",
       },
     ],
   }),
@@ -45,21 +74,80 @@ export const Route = createFileRoute("/virtual-tours")({
 });
 
 function VirtualToursPage() {
+  const [selectedTour, setSelectedTour] = useState<TourItem | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const closeTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (drawerOpen) {
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = "";
+      };
+    }
+
+    document.body.style.overflow = "";
+    return undefined;
+  }, [drawerOpen]);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeTourDrawer();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        window.clearTimeout(closeTimerRef.current);
+      }
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  const openTourDrawer = (tour: TourItem) => {
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+
+    setSelectedTour(tour);
+    setDrawerOpen(true);
+  };
+
+  const closeTourDrawer = () => {
+    setDrawerOpen(false);
+
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current);
+    }
+
+    closeTimerRef.current = window.setTimeout(() => {
+      setSelectedTour(null);
+      closeTimerRef.current = null;
+    }, 320);
+  };
+
   return (
     <PageShell>
       <PageHeader
         eyebrow="VIRTUAL TOURS"
         title="Explore properties remotely with immersive walkthroughs"
-        subtitle="View homes from anywhere in Africa using 360° tours, VR-ready previews and live guided walkthroughs."
+        subtitle="View homes from anywhere in Africa using 360-degree tours, VR-ready previews and live guided walkthroughs."
       />
 
       <section className="px-4 pb-20">
-        <div className="max-w-7xl mx-auto grid gap-10">
+        <div className="mx-auto grid max-w-7xl gap-10">
           <div className="grid gap-6 lg:grid-cols-3">
             {[
               {
                 icon: Eye,
-                title: "360° Home Tours",
+                title: "360-degree Home Tours",
                 desc: "Move through rooms, inspect finishes, and compare layouts with fully immersive property previews.",
               },
               {
@@ -69,44 +157,44 @@ function VirtualToursPage() {
               },
               {
                 icon: Play,
-                title: "VR & Mobile Ready",
-                desc: "Use any device—desktop, phone, or VR headset—to experience the property as if you were there.",
+                title: "VR and Mobile Ready",
+                desc: "Use any device - desktop, phone, or VR headset - to experience the property as if you were there.",
               },
             ].map((item) => (
               <div key={item.title} className="glass-strong rounded-3xl p-8">
-                <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-[var(--gradient-primary)] text-white shadow-[var(--shadow-glow)] mb-5">
-                  <item.icon className="w-6 h-6" />
+                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-3xl bg-[var(--gradient-primary)] text-white shadow-[var(--shadow-glow)]">
+                  <item.icon className="h-6 w-6" />
                 </div>
                 <h2 className="text-xl font-semibold">{item.title}</h2>
-                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
               </div>
             ))}
           </div>
 
-          <div className="glass-strong rounded-3xl p-10 grid gap-6 lg:grid-cols-2">
+          <div className="glass-strong grid gap-6 rounded-3xl p-10 lg:grid-cols-2">
             <div>
               <h3 className="text-2xl font-semibold">On-demand property previews</h3>
-              <p className="mt-4 text-muted-foreground leading-relaxed">
+              <p className="mt-4 leading-relaxed text-muted-foreground">
                 Explore listings instantly without travel. Our virtual tours combine high-resolution
                 imagery, rich floor plans, and embedded neighborhood data so you can make decisions
                 faster.
               </p>
               <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                <li>• Panoramic room views with quick jump points</li>
-                <li>• Floor-plan overlays with room dimensions</li>
-                <li>• Virtual staging to visualize furniture and finishes</li>
+                <li>- Panoramic room views with quick jump points</li>
+                <li>- Floor-plan overlays with room dimensions</li>
+                <li>- Virtual staging to visualize furniture and finishes</li>
               </ul>
             </div>
             <div>
               <h3 className="text-2xl font-semibold">Guided walkthroughs for remote buyers</h3>
-              <p className="mt-4 text-muted-foreground leading-relaxed">
+              <p className="mt-4 leading-relaxed text-muted-foreground">
                 Book a live session with a local expert who walks the property on your behalf,
                 highlights features, and answers your questions as you explore remotely.
               </p>
               <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                <li>• Real-time commentary from listing agents</li>
-                <li>• Instant chat, notes, and screenshot sharing</li>
-                <li>• Seamless follow-up booking for in-person visits</li>
+                <li>- Real-time commentary from listing agents</li>
+                <li>- Instant chat, notes, and screenshot sharing</li>
+                <li>- Seamless follow-up booking for in-person visits</li>
               </ul>
             </div>
           </div>
@@ -115,31 +203,65 @@ function VirtualToursPage() {
             <div className="text-xs uppercase tracking-[0.2em] text-primary">FEATURED TOURS</div>
             <div className="mt-6 grid gap-6 lg:grid-cols-3">
               {featuredTours.map((item) => (
-                <div
+                <button
                   key={item.title}
-                  className="overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80"
+                  type="button"
+                  onClick={() => openTourDrawer(item)}
+                  className={`group rounded-2xl text-left hover:-translate-y-1 ${selectedTour?.title === item.title ? "ring-1 ring-primary/40 shadow-[0_24px_80px_rgba(242,76,33,0.18)]" : ""}`}
                 >
-                  {item.video ? (
-                    <video
-                      controls
-                      muted
-                      playsInline
-                      poster={item.poster}
-                      className="h-64 w-full object-cover"
-                    >
-                      <source src={item.video} type="video/mp4" />
-                      Your browser does not support video playback.
-                    </video>
-                  ) : (
-                    <img src={item.image} alt={item.title} className="h-64 w-full object-cover" />
-                  )}
-                  <div className="p-5">
-                    <div className="font-semibold text-lg">{item.title}</div>
-                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                      {item.caption}
-                    </p>
+                  <div className="glass-strong overflow-hidden rounded-2xl">
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      {item.kind === "video" ? (
+                        <img
+                          src={item.poster}
+                          alt={item.title}
+                          className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                        />
+                      ) : (
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+                      <div className="absolute left-3 top-3 rounded-full glass-strong px-2.5 py-1 text-[11px] flex items-center gap-1">
+                        <Video className="h-3 w-3 text-success" />
+                        {item.status}
+                      </div>
+                      <div className="absolute right-3 top-3 rounded-full glass-strong px-2.5 py-1 text-[11px] font-semibold text-primary">
+                        {item.kind === "video" ? "Video" : "Gallery"}
+                      </div>
+                      <div className="absolute bottom-3 right-3 rounded-full bg-black/40 px-3 py-1.5 text-[11px] text-white/90 backdrop-blur-sm">
+                        Tap to expand
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="text-xs text-muted-foreground">
+                            {item.kind === "video" ? "Video walkthrough" : "Photo gallery"}
+                          </div>
+                          <div className="mt-0.5 flex items-center gap-1 text-sm font-display font-semibold">
+                            <MapPin className="h-3 w-3 text-primary" /> {item.location}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-display text-lg font-bold text-gradient-primary">
+                            {item.kind === "video" ? "Play" : "View"}
+                          </div>
+                        </div>
+                      </div>
+                      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                        {item.caption}
+                      </p>
+                      <div className="mt-4 flex gap-4 border-t border-white/10 pt-4 text-xs text-muted-foreground">
+                        <span>{item.kind === "video" ? "Motion preview" : "Still preview"}</span>
+                        <span>Open details</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -167,11 +289,11 @@ function VirtualToursPage() {
                 },
               ].map((item) => (
                 <div key={item.step} className="rounded-3xl border border-white/10 p-6">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-white/5 text-lg font-bold text-primary mb-4">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-3xl bg-white/5 text-lg font-bold text-primary">
                     {item.step}
                   </div>
-                  <div className="font-semibold text-lg">{item.title}</div>
-                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                  <div className="text-lg font-semibold">{item.title}</div>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                     {item.details}
                   </p>
                 </div>
@@ -180,6 +302,166 @@ function VirtualToursPage() {
           </div>
         </div>
       </section>
+
+      {selectedTour ? (
+        <div
+          className={`fixed inset-0 z-[60] transition-opacity duration-300 ${drawerOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+          aria-hidden={!drawerOpen}
+        >
+          <button
+            type="button"
+            className="absolute inset-0 bg-[#020114]/70 backdrop-blur-xl"
+            onClick={closeTourDrawer}
+            aria-label="Close tour details"
+          />
+          <aside
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${selectedTour.title} tour details`}
+            className={`absolute inset-0 flex h-full w-full flex-col overflow-y-auto bg-[#05031f]/95 text-foreground shadow-[0_30px_120px_rgba(0,0,0,0.45)] transition-transform duration-300 ease-out ${drawerOpen ? "translate-x-0" : "translate-x-full"}`}
+          >
+            <div className="sticky top-0 z-10 border-b border-white/10 bg-[#05031f]/90 backdrop-blur-2xl">
+              <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8">
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={closeTourDrawer}
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 transition hover:bg-white/10"
+                    aria-label="Close tour details"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                  </button>
+                  <div>
+                    <div className="text-[10px] uppercase tracking-[0.24em] text-primary">
+                      Featured tour
+                    </div>
+                    <h3 className="text-lg font-display font-semibold md:text-xl">
+                      {selectedTour.title}
+                    </h3>
+                  </div>
+                </div>
+                <Link
+                  to="/contact"
+                  className="hidden rounded-full bg-[var(--gradient-primary)] px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition hover:scale-[1.03] md:inline-flex"
+                >
+                  Request viewing
+                </Link>
+              </div>
+            </div>
+
+            <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-6 md:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:py-8">
+              <div className="space-y-6">
+                <div className="relative overflow-hidden rounded-[2rem] border border-white/10">
+                  {selectedTour.kind === "video" && selectedTour.video ? (
+                    <video
+                      controls
+                      autoPlay
+                      muted
+                      playsInline
+                      poster={selectedTour.poster}
+                      className="h-[320px] w-full object-cover md:h-[460px]"
+                    >
+                      <source src={selectedTour.video} type="video/mp4" />
+                      Your browser does not support video playback.
+                    </video>
+                  ) : (
+                    <img
+                      src={selectedTour.image}
+                      alt={selectedTour.title}
+                      className="h-[320px] w-full object-cover md:h-[460px]"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-[#05031f] via-transparent to-transparent" />
+                  <div className="absolute left-4 top-4 rounded-full glass-strong px-3 py-1.5 text-xs flex items-center gap-2">
+                    <Video className="h-3.5 w-3.5 text-success" /> {selectedTour.status}
+                  </div>
+                  <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-end justify-between gap-4">
+                    <div>
+                      <div className="text-xs uppercase tracking-[0.2em] text-white/70">
+                        {selectedTour.kind === "video" ? "Video walkthrough" : "Photo gallery"}
+                      </div>
+                      <div className="text-3xl font-display font-bold text-white md:text-5xl">
+                        {selectedTour.title}
+                      </div>
+                    </div>
+                    <div className="rounded-full bg-black/40 px-4 py-2 text-sm backdrop-blur-md">
+                      {selectedTour.location}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+                    <div className="text-[10px] uppercase tracking-[0.22em] text-primary">
+                      About
+                    </div>
+                    <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                      {selectedTour.caption}
+                    </p>
+                  </div>
+                  <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+                    <div className="text-[10px] uppercase tracking-[0.22em] text-primary">
+                      Tour notes
+                    </div>
+                    <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                      {selectedTour.details}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-5 md:p-6">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-primary">Details</div>
+                  <div className="mt-4 space-y-4">
+                    <DetailRow label="Title" value={selectedTour.title} />
+                    <DetailRow label="Location" value={selectedTour.location} />
+                    <DetailRow
+                      label="Format"
+                      value={selectedTour.kind === "video" ? "Video" : "Image"}
+                    />
+                    <DetailRow label="Status" value={selectedTour.status} />
+                  </div>
+                </div>
+
+                <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-5 md:p-6">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-primary">
+                    Next steps
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <Link
+                      to="/chat"
+                      className="inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-4 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition hover:scale-[1.03]"
+                    >
+                      Ask RightAI
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                    <Link
+                      to="/contact"
+                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold transition hover:bg-white/10"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                      Request callback
+                    </Link>
+                  </div>
+                  <p className="mt-4 text-[11px] leading-5 text-muted-foreground">
+                    This full-screen drawer keeps the tour readable while staying on the page.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      ) : null}
     </PageShell>
+  );
+}
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-3 last:border-b-0 last:pb-0">
+      <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
+      <div className="max-w-[68%] text-sm leading-6 text-foreground/90">{value}</div>
+    </div>
   );
 }
