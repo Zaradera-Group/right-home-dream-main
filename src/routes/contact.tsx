@@ -181,6 +181,14 @@ function Contact() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formElement = event.currentTarget;
+    const nameInput = formElement.elements.namedItem("name") as HTMLInputElement | null;
+    const emailInput = formElement.elements.namedItem("email") as HTMLInputElement | null;
+    const messageInput = formElement.elements.namedItem("message") as HTMLTextAreaElement | null;
+
+    nameInput?.setCustomValidity("");
+    emailInput?.setCustomValidity("");
+    messageInput?.setCustomValidity("");
+
     const formData = new FormData(formElement);
     const payload = {
       name: String(formData.get("name") || "").trim(),
@@ -191,6 +199,33 @@ function Contact() {
       website: String(formData.get("website") || "").trim(),
       turnstileToken,
     };
+
+    let hasClientValidationError = false;
+
+    if (!payload.name) {
+      nameInput?.setCustomValidity("Please enter your name.");
+      hasClientValidationError = true;
+    }
+
+    if (!payload.email) {
+      emailInput?.setCustomValidity("Please enter your email address.");
+      hasClientValidationError = true;
+    } else if (emailInput && !emailInput.checkValidity()) {
+      emailInput.setCustomValidity("Please enter a valid email address.");
+      hasClientValidationError = true;
+    }
+
+    if (!payload.message) {
+      messageInput?.setCustomValidity("Please enter a message.");
+      hasClientValidationError = true;
+    }
+
+    if (hasClientValidationError) {
+      formElement.reportValidity();
+      setStatus("error");
+      setNotice("Please complete the required fields.");
+      return;
+    }
 
     if (turnstileSiteKey && !payload.turnstileToken) {
       setTurnstileRequested(true);
@@ -211,7 +246,13 @@ function Contact() {
       const data = (await response.json()) as { message?: string; error?: string };
 
       if (!response.ok) {
-        throw new Error(data.error || "We could not send your message.");
+        setStatus("error");
+        setNotice(
+          data.error ||
+            `We could not send your message right now. Please email ${SUPPORT_EMAIL} directly.`,
+        );
+        resetTurnstile();
+        return;
       }
 
       setStatus("success");
