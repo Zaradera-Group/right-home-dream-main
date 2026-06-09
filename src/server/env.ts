@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const REQUIRED_SERVER_KEYS = ["OPENAI_API_KEY", "RESEND_API_KEY", "TURNSTILE_SECRET_KEY"] as const;
+const REQUIRED_SERVER_KEYS = ["OPENAI_API_KEY", "RESEND_API_KEY"] as const;
 
 function parseDotEnv(content: string): Record<string, string> {
   const parsed: Record<string, string> = {};

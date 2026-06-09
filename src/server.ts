@@ -106,6 +106,25 @@ function jsonSecureResponse(body: unknown, status = 200): Response {
   return secureResponse(jsonResponse(body, status));
 }
 
+function withCorsHeaders(response: Response, request: Request): Response {
+  const origin = request.headers.get("origin");
+  if (!origin) {
+    return response;
+  }
+
+  const headers = new Headers(response.headers);
+  headers.set("Access-Control-Allow-Origin", origin);
+  headers.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  headers.set("Access-Control-Allow-Headers", "Content-Type");
+  headers.set("Vary", "Origin");
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 function describeRightAIError(error: unknown): string {
   const message = error instanceof Error ? error.message : "";
 
@@ -337,83 +356,73 @@ function describeContactError(error: unknown): string | null {
 
 async function handleContactRequest(request: Request, env: unknown): Promise<Response> {
   if (request.method !== "POST") {
-    return jsonSecureResponse({ error: "Method not allowed" }, 405);
+    return withCorsHeaders(jsonSecureResponse({ error: "Method not allowed" }, 405), request);
   }
 
   if (!isAllowedOrigin(request)) {
-    return jsonSecureResponse({ error: "Invalid origin" }, 403);
+    return withCorsHeaders(jsonSecureResponse({ error: "Invalid origin" }, 403), request);
   }
 
   const ip = getClientIp(request);
   pruneRateLimitBuckets();
   if (isRateLimited(`contact:${ip}`, 5, 10 * 60 * 1000)) {
-    return jsonSecureResponse({ error: "Too many submissions. Please try again shortly." }, 429);
+    return withCorsHeaders(
+      jsonSecureResponse({ error: "Too many submissions. Please try again shortly." }, 429),
+      request,
+    );
   }
 
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return jsonSecureResponse({ error: "Invalid request body" }, 400);
+    return withCorsHeaders(jsonSecureResponse({ error: "Invalid request body" }, 400), request);
   }
 
   const payload = parseContactPayload(body);
   if (payload.honeypot) {
-    return jsonSecureResponse({ ok: true });
+    return withCorsHeaders(jsonSecureResponse({ ok: true }), request);
   }
 
   if (!payload.name || !payload.email || !payload.message) {
-    return jsonSecureResponse({ error: "Please complete the required fields." }, 400);
-  }
-
-  if (!isValidEmail(payload.email)) {
-    return jsonSecureResponse({ error: "Please enter a valid email address." }, 400);
-  }
-
-  const turnstileToken =
-    clampText((body as Record<string, unknown> | null)?.turnstileToken, 2000) ||
-    clampText((body as Record<string, unknown> | null)?.cfTurnstileResponse, 2000);
-
-  if (getTurnstileSecret(env) && !turnstileToken) {
-    return jsonSecureResponse(
-      {
-        error:
-          "The anti-bot check is not configured on this deployment. Set VITE_TURNSTILE_SITE_KEY on Netlify and make sure the Turnstile site key is allowed for righthome.netlify.app.",
-      },
-      403,
+    return withCorsHeaders(
+      jsonSecureResponse({ error: "Please complete the required fields." }, 400),
+      request,
     );
   }
 
-  const turnstileOk = await verifyTurnstileToken(turnstileToken, env, request);
-  if (!turnstileOk) {
-    return jsonSecureResponse(
-      {
-        error:
-          "The anti-bot check failed. Verify that the Turnstile site key and secret match, and that righthome.netlify.app is allowed in Cloudflare Turnstile.",
-      },
-      403,
+  if (!isValidEmail(payload.email)) {
+    return withCorsHeaders(
+      jsonSecureResponse({ error: "Please enter a valid email address." }, 400),
+      request,
     );
   }
 
   try {
     await sendContactEmail(env, payload, request);
-    return jsonSecureResponse({
-      ok: true,
-      message:
-        "Thanks. Your message has been sent to hello@zaraderagroup.com and our team will respond soon.",
-    });
+    return withCorsHeaders(
+      jsonSecureResponse({
+        ok: true,
+        message:
+          "Thanks. Your message has been sent to hello@zaraderagroup.com and our team will respond soon.",
+      }),
+      request,
+    );
   } catch (error) {
     console.error("Contact submission failed", error);
     const contactError = describeContactError(error);
     if (contactError) {
-      return jsonSecureResponse({ error: contactError }, 502);
+      return withCorsHeaders(jsonSecureResponse({ error: contactError }, 502), request);
     }
-    return jsonSecureResponse(
-      {
-        error:
-          "We could not send your message right now. Please email hello@zaraderagroup.com directly.",
-      },
-      503,
+    return withCorsHeaders(
+      jsonSecureResponse(
+        {
+          error:
+            "We could not send your message right now. Please email hello@zaraderagroup.com directly.",
+        },
+        503,
+      ),
+      request,
     );
   }
 }

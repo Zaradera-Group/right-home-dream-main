@@ -108,6 +108,25 @@ function jsonResponse(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: jsonHeaders });
 }
 
+function withCorsHeaders(response, request) {
+  const origin = request.headers.get("origin");
+  if (!origin) {
+    return response;
+  }
+
+  const headers = new Headers(response.headers);
+  headers.set("Access-Control-Allow-Origin", origin);
+  headers.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  headers.set("Access-Control-Allow-Headers", "Content-Type");
+  headers.set("Vary", "Origin");
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 function describeRightAIError(error) {
   const message = error instanceof Error ? error.message : "";
 
@@ -450,82 +469,73 @@ function writeSse(controller, event, data) {
 
 async function handleContactRequest(request, env) {
   if (request.method !== "POST") {
-    return jsonResponse({ error: "Method not allowed" }, 405);
+    return withCorsHeaders(jsonResponse({ error: "Method not allowed" }, 405), request);
   }
 
   if (!isAllowedOrigin(request)) {
-    return jsonResponse({ error: "Invalid origin" }, 403);
+    return withCorsHeaders(jsonResponse({ error: "Invalid origin" }, 403), request);
   }
 
   const ip = getClientIp(request);
   pruneRateLimitBuckets();
   if (isRateLimited(`contact:${ip}`, 5, 10 * 60 * 1000)) {
-    return jsonResponse({ error: "Too many submissions. Please try again shortly." }, 429);
+    return withCorsHeaders(
+      jsonResponse({ error: "Too many submissions. Please try again shortly." }, 429),
+      request,
+    );
   }
 
   let body;
   try {
     body = await request.json();
   } catch {
-    return jsonResponse({ error: "Invalid request body" }, 400);
+    return withCorsHeaders(jsonResponse({ error: "Invalid request body" }, 400), request);
   }
 
   const payload = parseContactPayload(body);
   if (payload.honeypot) {
-    return jsonResponse({ ok: true });
+    return withCorsHeaders(jsonResponse({ ok: true }), request);
   }
 
   if (!payload.name || !payload.email || !payload.message) {
-    return jsonResponse({ error: "Please complete the required fields." }, 400);
-  }
-
-  if (!isValidEmail(payload.email)) {
-    return jsonResponse({ error: "Please enter a valid email address." }, 400);
-  }
-
-  const turnstileToken =
-    clampText(body?.turnstileToken, 2000) || clampText(body?.cfTurnstileResponse, 2000);
-
-  if (getTurnstileSecret(env) && !turnstileToken) {
-    return jsonResponse(
-      {
-        error:
-          "The anti-bot check is not configured on this deployment. Set VITE_TURNSTILE_SITE_KEY on Netlify and make sure the Turnstile site key is allowed for righthome.netlify.app.",
-      },
-      403,
+    return withCorsHeaders(
+      jsonResponse({ error: "Please complete the required fields." }, 400),
+      request,
     );
   }
 
-  const turnstileOk = await verifyTurnstileToken(turnstileToken, env, request);
-  if (!turnstileOk) {
-    return jsonResponse(
-      {
-        error:
-          "The anti-bot check failed. Verify that the Turnstile site key and secret match, and that righthome.netlify.app is allowed in Cloudflare Turnstile.",
-      },
-      403,
+  if (!isValidEmail(payload.email)) {
+    return withCorsHeaders(
+      jsonResponse({ error: "Please enter a valid email address." }, 400),
+      request,
     );
   }
 
   try {
     await sendContactEmail(env, payload, request);
-    return jsonResponse({
-      ok: true,
-      message:
-        "Thanks. Your message has been sent to hello@zaraderagroup.com and our team will respond soon.",
-    });
+    return withCorsHeaders(
+      jsonResponse({
+        ok: true,
+        message:
+          "Thanks. Your message has been sent to hello@zaraderagroup.com and our team will respond soon.",
+      }),
+      request,
+    );
   } catch (error) {
     console.error("Contact submission failed", error);
     const contactError = describeContactError(error);
     if (contactError) {
-      return jsonResponse({ error: contactError }, 502);
+      return withCorsHeaders(jsonResponse({ error: contactError }, 502), request);
     }
-    return jsonResponse(
-      {
-        error:
-          "We could not send your message right now. Please email hello@zaraderagroup.com directly.",
-      },
-      503,
+    return withCorsHeaders(
+      jsonResponse(
+        {
+          error:
+            "We could not send your message right now. Please email hello@zaraderagroup.com directly.",
+        },
+        503,
+      ),
+      request,
     );
   }
 }
@@ -677,6 +687,15 @@ export const handler = async (event, context) => {
 
   let response;
   const pathname = new URL(request.url).pathname;
+
+  if (event.httpMethod === "OPTIONS") {
+    const preflight = new Response(null, { status: 204 });
+    preflight.headers.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    preflight.headers.set("Access-Control-Allow-Headers", "Content-Type");
+    preflight.headers.set("Access-Control-Allow-Origin", request.headers.get("origin") || "*");
+    preflight.headers.set("Vary", "Origin");
+    return toNetlifyResponse(preflight);
+  }
 
   if (pathname === "/api/contact") {
     response = await handleContactRequest(request, process.env);

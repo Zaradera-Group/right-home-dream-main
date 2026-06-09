@@ -1,7 +1,7 @@
 'use client';
 
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck } from "lucide-react";
 
 import { apiUrl } from "@/lib/api-base";
@@ -29,147 +29,22 @@ const initialInterest = "Buying property";
 function Contact() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [notice, setNotice] = useState("");
-  const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
-  // Don't auto-load Turnstile on localhost to avoid invalid-site-key errors during dev.
-  const [turnstileRequested, setTurnstileRequested] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState("");
-  const [turnstileFailed, setTurnstileFailed] = useState(false);
-  const turnstileAttempts = useRef(0);
-  const formRef = useRef<HTMLFormElement | null>(null);
-  const turnstileRef = useRef<HTMLDivElement | null>(null);
-  const turnstileWidgetId = useRef<string | null>(null);
-
-  const resetTurnstile = () => {
-    if (window.turnstile && turnstileWidgetId.current) {
-      window.turnstile.reset(turnstileWidgetId.current);
-    }
-
-    setTurnstileToken("");
-  };
-
-  useEffect(() => {
-    if (!turnstileSiteKey || !turnstileRef.current) {
-      return undefined;
-    }
-
-    // If we're in the browser, only auto-request the widget when not on localhost.
-    try {
-      if (typeof window !== "undefined") {
-        const host = window.location.hostname;
-        const isLocal =
-          host === "localhost" || host === "127.0.0.1" || host === "::1" || host.startsWith("192.168.");
-        if (!isLocal) {
-          setTurnstileRequested(true);
-        }
-      }
-    } catch (err) {
-      // ignore
-    }
-
-    const scriptId = "turnstile-api";
-    const existingScript = document.getElementById(scriptId);
-
-    const renderWidget = () => {
-      if (!turnstileRef.current || turnstileWidgetId.current) return;
-
-      try {
-        if (!window.turnstile) {
-          // script not ready yet — retry a few times
-          turnstileAttempts.current += 1;
-          if (turnstileAttempts.current <= 3) {
-            setTimeout(renderWidget, 300 * turnstileAttempts.current);
-          } else {
-            setTurnstileFailed(true);
-          }
-          return;
-        }
-
-        // render can occasionally throw; guard it
-        const wid = window.turnstile.render(turnstileRef.current, {
-          sitekey: turnstileSiteKey,
-          theme: "dark",
-          callback: (token: string) => {
-            setTurnstileToken(token);
-          },
-          "expired-callback": () => setTurnstileToken(""),
-          "error-callback": () => setTurnstileToken(""),
-        });
-
-        turnstileWidgetId.current = wid ?? String(Date.now());
-        setTurnstileFailed(false);
-        turnstileAttempts.current = 0;
-      } catch (err) {
-        // swallow errors and avoid blocking the page
-        // schedule a retry with exponential backoff
-        // eslint-disable-next-line no-console
-        console.error("Turnstile render failed", err);
-        turnstileAttempts.current += 1;
-        if (turnstileAttempts.current <= 3) {
-          const delay = 500 * Math.pow(2, turnstileAttempts.current - 1);
-          setTimeout(renderWidget, delay);
-        } else {
-          setTurnstileFailed(true);
-        }
-      }
-    };
-
-    if (!existingScript) {
-      const script = document.createElement("script");
-      script.id = scriptId;
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-      script.async = true;
-      script.defer = true;
-      script.onload = () => setTimeout(renderWidget, 0);
-      document.head.appendChild(script);
-    } else {
-      renderWidget();
-    }
-
-    return () => {
-      try {
-        if (window.turnstile && turnstileWidgetId.current) {
-          window.turnstile.remove(turnstileWidgetId.current);
-          turnstileWidgetId.current = null;
-        }
-      } catch (err) {
-        // ignore cleanup errors
-      }
-    };
-  }, [turnstileRequested, turnstileSiteKey]);
-
-  const reloadTurnstile = () => {
-    setTurnstileFailed(false);
-    turnstileAttempts.current = 0;
-    const existing = document.getElementById("turnstile-api");
-    if (existing) existing.remove();
-    turnstileWidgetId.current = null;
-    // trigger effect to re-add script
-    setTimeout(() => setTurnstileRequested((v) => !v), 50);
-  };
 
   const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const allowed = [
-      'Backspace',
-      'Delete',
-      'ArrowLeft',
-      'ArrowRight',
-      'Home',
-      'End',
-      'Tab',
-    ];
+    const allowed = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Home", "End", "Tab"];
     if (e.ctrlKey || e.metaKey || allowed.includes(e.key)) return;
     if (/^[0-9]$/.test(e.key)) return;
     e.preventDefault();
   };
 
   const handlePhonePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    const pasted = e.clipboardData.getData('text') || '';
-    const digits = pasted.replace(/\D/g, '');
+    const pasted = e.clipboardData.getData("text") || "";
+    const digits = pasted.replace(/\D/g, "");
     if (!digits) {
       e.preventDefault();
       return;
     }
-    // insert cleaned digits at cursor position
+
     const input = e.currentTarget;
     const start = input.selectionStart ?? input.value.length;
     const end = input.selectionEnd ?? start;
@@ -197,7 +72,6 @@ function Contact() {
       interest: String(formData.get("interest") || initialInterest).trim(),
       message: String(formData.get("message") || "").trim(),
       website: String(formData.get("website") || "").trim(),
-      turnstileToken,
     };
 
     let hasClientValidationError = false;
@@ -227,12 +101,6 @@ function Contact() {
       return;
     }
 
-    if (turnstileSiteKey && !payload.turnstileToken) {
-      setTurnstileRequested(true);
-      setStatus("error");
-      setNotice("Please complete the anti-bot check before sending.");
-      return;
-    }
     setStatus("sending");
     setNotice("");
 
@@ -251,7 +119,6 @@ function Contact() {
           data.error ||
             `We could not send your message right now. Please email ${SUPPORT_EMAIL} directly.`,
         );
-        resetTurnstile();
         return;
       }
 
@@ -261,15 +128,12 @@ function Contact() {
           `Thanks. Your message has been sent to ${SUPPORT_EMAIL} and our team will reply soon.`,
       );
       formElement.reset();
-      resetTurnstile();
-      setTurnstileRequested(false);
     } catch (error) {
       console.error(error);
       setStatus("error");
       setNotice(
         `We could not send your message right now. Please email ${SUPPORT_EMAIL} directly.`,
       );
-      resetTurnstile();
     }
   };
 
@@ -330,7 +194,6 @@ function Contact() {
           </div>
 
           <form
-            ref={formRef}
             onSubmit={handleSubmit}
             noValidate
             className="glass-strong relative isolate overflow-hidden rounded-3xl p-7 md:p-9 lg:col-span-3"
@@ -373,7 +236,9 @@ function Contact() {
                   required
                 />
                 <div>
-                  <label htmlFor="contact-phone" className="text-xs text-muted-foreground">Phone</label>
+                  <label htmlFor="contact-phone" className="text-xs text-muted-foreground">
+                    Phone
+                  </label>
                   <input
                     id="contact-phone"
                     name="phone"
@@ -404,41 +269,6 @@ function Contact() {
                     <option className="bg-[#060243]">Partnership</option>
                   </select>
                 </div>
-              </div>
-
-              <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4">
-                <div className="text-[10px] uppercase tracking-[0.2em] text-primary">
-                  Anti-bot check
-                </div>
-                <p className="mt-2 text-xs leading-5 text-muted-foreground">
-                  This protects your inbox from automated spam. Complete the check below before
-                  sending.
-                </p>
-                {turnstileSiteKey ? (
-                  <>
-                    <div ref={turnstileRef} className="relative z-10 mt-4 min-h-[65px]" />
-                    {turnstileFailed ? (
-                      <div className="mt-3 text-sm text-amber-200">
-                        Cloudflare Turnstile failed to load (code 110200). Please verify your
-                        Turnstile site key and secret are configured for this domain.
-                        <div className="mt-2">
-                          <button
-                            type="button"
-                            onClick={reloadTurnstile}
-                            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold"
-                          >
-                            Retry
-                          </button>
-                        </div>
-                      </div>
-                    ) : null}
-                  </>
-                ) : (
-                  <p className="mt-3 text-xs text-amber-200/90">
-                    Turnstile is not configured yet. Add `VITE_TURNSTILE_SITE_KEY` for the widget
-                    and `TURNSTILE_SECRET_KEY` on the server.
-                  </p>
-                )}
               </div>
 
               <div className="mt-4">
@@ -496,14 +326,4 @@ function Field({
       />
     </div>
   );
-}
-
-declare global {
-  interface Window {
-    turnstile?: {
-      render: (container: HTMLDivElement, options: Record<string, unknown>) => string;
-      reset: (widgetId: string) => void;
-      remove: (widgetId: string) => void;
-    };
-  }
 }

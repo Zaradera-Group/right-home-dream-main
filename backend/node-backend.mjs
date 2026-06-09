@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const REQUIRED_SERVER_KEYS = ["OPENAI_API_KEY", "RESEND_API_KEY", "TURNSTILE_SECRET_KEY"];
+const REQUIRED_SERVER_KEYS = ["OPENAI_API_KEY", "RESEND_API_KEY"];
 
 const projectRoot = process.cwd();
 const dotenvPath = resolve(projectRoot, ".env");
@@ -143,6 +143,24 @@ function sendJson(response, statusCode, payload) {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
   });
+  response.end(JSON.stringify(payload));
+}
+
+function sendJsonWithCors(request, response, statusCode, payload) {
+  const origin = request.headers.origin;
+  const headers = {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store",
+  };
+
+  if (origin) {
+    headers["Access-Control-Allow-Origin"] = origin;
+    headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS";
+    headers["Access-Control-Allow-Headers"] = "Content-Type";
+    headers.Vary = "Origin";
+  }
+
+  response.writeHead(statusCode, headers);
   response.end(JSON.stringify(payload));
 }
 
@@ -564,17 +582,19 @@ async function handleRightAIStreamRequest(request, response) {
 
 async function handleContactRequest(request, response) {
   if (request.method !== "POST") {
-    return sendJson(response, 405, { error: "Method not allowed" });
+    return sendJsonWithCors(request, response, 405, { error: "Method not allowed" });
   }
 
   if (!isAllowedOrigin(request)) {
-    return sendJson(response, 403, { error: "Invalid origin" });
+    return sendJsonWithCors(request, response, 403, { error: "Invalid origin" });
   }
 
   const ip = getClientIp(request);
   pruneRateLimitBuckets();
   if (isRateLimited(`contact:${ip}`, 5, 10 * 60 * 1000)) {
-    return sendJson(response, 429, { error: "Too many submissions. Please try again shortly." });
+    return sendJsonWithCors(request, response, 429, {
+      error: "Too many submissions. Please try again shortly.",
+    });
   }
 
   try {
@@ -587,38 +607,26 @@ async function handleContactRequest(request, response) {
       message: clampText(body?.message, 2000),
       company: clampText(body?.company, 120),
       honeypot: clampText(body?.website, 120) || clampText(body?.companyWebsite, 120),
-      turnstileToken:
-        clampText(body?.turnstileToken, 2000) || clampText(body?.cfTurnstileResponse, 2000),
     };
 
     if (payload.honeypot) {
-      return sendJson(response, 200, { ok: true });
+      return sendJsonWithCors(request, response, 200, { ok: true });
     }
 
     if (!payload.name || !payload.email || !payload.message) {
-      return sendJson(response, 400, { error: "Please complete the required fields." });
-    }
-
-    if (!isValidEmail(payload.email)) {
-      return sendJson(response, 400, { error: "Please enter a valid email address." });
-    }
-
-    if (process.env.TURNSTILE_SECRET_KEY && !payload.turnstileToken) {
-      return sendJson(response, 403, {
-        error:
-          "The anti-bot check is not configured on this deployment. Set VITE_TURNSTILE_SITE_KEY on Netlify and make sure the Turnstile site key is allowed for righthome.netlify.app.",
+      return sendJsonWithCors(request, response, 400, {
+        error: "Please complete the required fields.",
       });
     }
 
-    if (!(await verifyTurnstileToken(payload.turnstileToken, request))) {
-      return sendJson(response, 403, {
-        error:
-          "The anti-bot check failed. Verify that the Turnstile site key and secret match, and that righthome.netlify.app is allowed in Cloudflare Turnstile.",
+    if (!isValidEmail(payload.email)) {
+      return sendJsonWithCors(request, response, 400, {
+        error: "Please enter a valid email address.",
       });
     }
 
     await sendContactEmail(payload, request);
-    return sendJson(response, 200, {
+    return sendJsonWithCors(request, response, 200, {
       ok: true,
       message: `Thanks. Your message has been sent to ${supportEmail} and our team will respond soon.`,
     });
@@ -626,9 +634,9 @@ async function handleContactRequest(request, response) {
     console.error("Contact submission failed", error);
     const contactError = describeContactError(error);
     if (contactError) {
-      return sendJson(response, 502, { error: contactError });
+      return sendJsonWithCors(request, response, 502, { error: contactError });
     }
-    return sendJson(response, 503, {
+    return sendJsonWithCors(request, response, 503, {
       error: `We could not send your message right now. Please email ${supportEmail} directly.`,
     });
   }
@@ -645,6 +653,8 @@ const server = createServer(async (request, response) => {
     response.writeHead(204, {
       "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Origin": request.headers.origin || "*",
+      Vary: "Origin",
     });
     response.end();
     return;
