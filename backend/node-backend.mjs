@@ -603,9 +603,17 @@ async function handleContactRequest(request, response) {
       return sendJson(response, 400, { error: "Please enter a valid email address." });
     }
 
+    if (process.env.TURNSTILE_SECRET_KEY && !payload.turnstileToken) {
+      return sendJson(response, 403, {
+        error:
+          "The anti-bot check is not configured on this deployment. Set VITE_TURNSTILE_SITE_KEY on Netlify and make sure the Turnstile site key is allowed for righthome.netlify.app.",
+      });
+    }
+
     if (!(await verifyTurnstileToken(payload.turnstileToken, request))) {
       return sendJson(response, 403, {
-        error: "Please complete the anti-bot check and try again.",
+        error:
+          "The anti-bot check failed. Verify that the Turnstile site key and secret match, and that righthome.netlify.app is allowed in Cloudflare Turnstile.",
       });
     }
 

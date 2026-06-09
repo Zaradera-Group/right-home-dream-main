@@ -485,9 +485,26 @@ async function handleContactRequest(request, env) {
 
   const turnstileToken =
     clampText(body?.turnstileToken, 2000) || clampText(body?.cfTurnstileResponse, 2000);
+
+  if (getTurnstileSecret(env) && !turnstileToken) {
+    return jsonResponse(
+      {
+        error:
+          "The anti-bot check is not configured on this deployment. Set VITE_TURNSTILE_SITE_KEY on Netlify and make sure the Turnstile site key is allowed for righthome.netlify.app.",
+      },
+      403,
+    );
+  }
+
   const turnstileOk = await verifyTurnstileToken(turnstileToken, env, request);
   if (!turnstileOk) {
-    return jsonResponse({ error: "Please complete the anti-bot check and try again." }, 403);
+    return jsonResponse(
+      {
+        error:
+          "The anti-bot check failed. Verify that the Turnstile site key and secret match, and that righthome.netlify.app is allowed in Cloudflare Turnstile.",
+      },
+      403,
+    );
   }
 
   try {
