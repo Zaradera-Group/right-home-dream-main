@@ -296,7 +296,21 @@ async function sendContactEmail(
   env: unknown,
   payload: ReturnType<typeof parseContactPayload>,
   request: Request,
-): Promise<void> {
+): Promise<"send" | "log"> {
+  const deliveryMode = (env as { CONTACT_DELIVERY_MODE?: string })?.CONTACT_DELIVERY_MODE?.trim() || "send";
+  if (deliveryMode === "log") {
+    console.info("Contact form captured in temporary log mode", {
+      name: payload.name || "Not provided",
+      email: payload.email || "Not provided",
+      phone: payload.phone || "Not provided",
+      interest: payload.interest || "Not provided",
+      company: payload.company || "Not provided",
+      message: payload.message || "Not provided",
+      origin: request.headers.get("origin") || "unknown",
+    });
+    return "log";
+  }
+
   const apiKey = (env as { RESEND_API_KEY?: string })?.RESEND_API_KEY ?? process.env.RESEND_API_KEY;
   const toEmail = getContactToEmail(env);
   const fromEmail = getContactFromEmail(env) ?? `Zara Dera Group <${DEFAULT_CONTACT_FROM_EMAIL}>`;
@@ -339,6 +353,8 @@ async function sendContactEmail(
     const errorText = await response.text();
     throw new Error(`Contact email delivery failed: ${response.status} ${errorText}`);
   }
+
+  return "send";
 }
 
 function describeContactError(error: unknown): string | null {
@@ -399,12 +415,14 @@ async function handleContactRequest(request: Request, env: unknown): Promise<Res
   }
 
   try {
-    await sendContactEmail(env, payload, request);
+    const deliveryMode = await sendContactEmail(env, payload, request);
     return withCorsHeaders(
       jsonSecureResponse({
         ok: true,
         message:
-          "Thanks. Your message has been sent to hello@zaraderagroup.com and our team will respond soon.",
+          deliveryMode === "log"
+            ? "Thanks. Your message was received in temporary test mode."
+            : "Thanks. Your message has been sent to hello@zaraderagroup.com and our team will respond soon.",
       }),
       request,
     );

@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const REQUIRED_SERVER_KEYS = ["OPENAI_API_KEY", "RESEND_API_KEY"];
+const REQUIRED_SERVER_KEYS = ["OPENAI_API_KEY"];
 
 const projectRoot = process.cwd();
 const dotenvPath = resolve(projectRoot, ".env");
@@ -46,7 +46,11 @@ function loadDotEnv(filePath) {
 loadDotEnv(dotenvPath);
 
 function validateRequiredServerEnv(context) {
-  const missingKeys = REQUIRED_SERVER_KEYS.filter((key) => !process.env[key]?.trim());
+  const requiredKeys =
+    process.env.CONTACT_DELIVERY_MODE?.trim() === "log"
+      ? REQUIRED_SERVER_KEYS
+      : [...REQUIRED_SERVER_KEYS, "RESEND_API_KEY"];
+  const missingKeys = requiredKeys.filter((key) => !process.env[key]?.trim());
   if (missingKeys.length === 0) {
     return;
   }
@@ -363,6 +367,20 @@ async function createRightAIChart(apiKey, messages) {
 }
 
 async function sendContactEmail(payload, request) {
+  const deliveryMode = (process.env.CONTACT_DELIVERY_MODE || "send").trim();
+  if (deliveryMode === "log") {
+    console.info("Contact form captured in temporary log mode", {
+      name: payload.name || "Not provided",
+      email: payload.email || "Not provided",
+      phone: payload.phone || "Not provided",
+      interest: payload.interest || "Not provided",
+      company: payload.company || "Not provided",
+      message: payload.message || "Not provided",
+      origin: request.headers.origin || "unknown",
+    });
+    return "log";
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     throw new Error("RESEND_API_KEY is not configured");
@@ -401,6 +419,8 @@ async function sendContactEmail(payload, request) {
   if (!response.ok) {
     throw new Error(`Resend error ${response.status}: ${await response.text()}`);
   }
+
+  return "send";
 }
 
 function describeContactError(error) {
@@ -625,10 +645,13 @@ async function handleContactRequest(request, response) {
       });
     }
 
-    await sendContactEmail(payload, request);
+    const deliveryMode = await sendContactEmail(payload, request);
     return sendJsonWithCors(request, response, 200, {
       ok: true,
-      message: `Thanks. Your message has been sent to ${supportEmail} and our team will respond soon.`,
+      message:
+        deliveryMode === "log"
+          ? "Thanks. Your message was received in temporary test mode."
+          : `Thanks. Your message has been sent to ${supportEmail} and our team will respond soon.`,
     });
   } catch (error) {
     console.error("Contact submission failed", error);

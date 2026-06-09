@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const REQUIRED_SERVER_KEYS = ["OPENAI_API_KEY", "RESEND_API_KEY"] as const;
+const REQUIRED_SERVER_KEYS = ["OPENAI_API_KEY"] as const;
 
 function parseDotEnv(content: string): Record<string, string> {
   const parsed: Record<string, string> = {};
@@ -51,7 +51,7 @@ export function loadDotEnvFile(filePath = resolve(process.cwd(), ".env")): strin
   return loadedKeys;
 }
 
-export function validateRequiredServerEnv(context: string, keys = REQUIRED_SERVER_KEYS): void {
+export function validateRequiredServerEnv(context: string, keys: readonly string[] = REQUIRED_SERVER_KEYS): void {
   const missingKeys = keys.filter((key) => !process.env[key]?.trim());
   if (missingKeys.length === 0) {
     return;
@@ -65,6 +65,10 @@ export function validateRequiredServerEnv(context: string, keys = REQUIRED_SERVE
 export function bootstrapLocalServerEnv(context: string): void {
   const loadedKeys = loadDotEnvFile();
   if (loadedKeys.length > 0 || existsSync(resolve(process.cwd(), ".env"))) {
-    validateRequiredServerEnv(context);
+    const requiredKeys =
+      process.env.CONTACT_DELIVERY_MODE?.trim() === "log"
+        ? REQUIRED_SERVER_KEYS
+        : [...REQUIRED_SERVER_KEYS, "RESEND_API_KEY"];
+    validateRequiredServerEnv(context, requiredKeys);
   }
 }
