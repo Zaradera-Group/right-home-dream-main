@@ -249,6 +249,7 @@ function parseContactPayload(body: unknown) {
     interest: clampText(payload?.interest, 80),
     message: clampText(payload?.message, 2000),
     company: clampText(payload?.company, 120),
+    turnstileToken: clampText(payload?.turnstileToken, 500),
     honeypot: clampText(payload?.website, 120) || clampText(payload?.companyWebsite, 120),
   };
 }
@@ -410,6 +411,30 @@ async function handleContactRequest(request: Request, env: unknown): Promise<Res
   if (!isValidEmail(payload.email)) {
     return withCorsHeaders(
       jsonSecureResponse({ error: "Please enter a valid email address." }, 400),
+      request,
+    );
+  }
+
+  if (!payload.turnstileToken) {
+    return withCorsHeaders(
+      jsonSecureResponse(
+        { error: "Please complete the Cloudflare verification widget before sending." },
+        400,
+      ),
+      request,
+    );
+  }
+
+  const turnstileSuccess = await verifyTurnstileToken(payload.turnstileToken, env, request);
+  if (!turnstileSuccess) {
+    return withCorsHeaders(
+      jsonSecureResponse(
+        {
+          error:
+            "Cloudflare verification failed. Please complete the widget and try again.",
+        },
+        400,
+      ),
       request,
     );
   }
