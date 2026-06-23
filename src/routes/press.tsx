@@ -4,7 +4,7 @@ import { PageShell, PageHeader } from "@/components/PageShell";
 export const Route = createFileRoute("/press")({
   head: () => ({
     meta: [
-      { title: "Press — RIGHTHOME" },
+      { title: "Press — RIGHTHOME_PROPTECH" },
       { name: "description", content: "Media and press information for RIGHTHOME." },
       { property: "og:title", content: "RIGHTHOME Press" },
       { property: "og:description", content: "Find the latest RIGHTHOME news and media contacts." },
@@ -19,7 +19,8 @@ function Press() {
       <PageHeader
         eyebrow="PRESS"
         title="RIGHTHOME in the news"
-        subtitle="Get the latest announcements, media resources, and press contacts for our proptech platform." 
+        subtitle="Get the latest announcements, media resources, and press contacts for our proptech platform."
+        highlightedWord="news"
       />
       <section className="px-4 pb-20">
         <div className="max-w-4xl mx-auto space-y-8 text-sm text-muted-foreground">

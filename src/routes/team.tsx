@@ -6,7 +6,7 @@ import { Linkedin, Instagram } from "lucide-react";
 export const Route = createFileRoute("/team")({
   head: () => ({
     meta: [
-      { title: "Team — RIGHTHOME" },
+      { title: "Team — RIGHTHOME_PROPTECH" },
       {
         name: "description",
         content: "Meet the RIGHTHOME team and connect with us on LinkedIn and Instagram.",
@@ -28,6 +28,7 @@ function TeamPage() {
         eyebrow="OUR TEAM"
         title="Meet the people building smarter property experiences"
         subtitle="Connect with our leadership and reach out through LinkedIn or Instagram for partnership, media, or product inquiries."
+        highlightedWord="smarter"
       />
 
       <Team />

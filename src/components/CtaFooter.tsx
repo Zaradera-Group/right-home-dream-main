@@ -1,4 +1,4 @@
-import { MessageCircle, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Facebook, Instagram, Linkedin, Twitter, Music2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 import logoUrl from "@/assets/Logo.png";
@@ -11,7 +11,6 @@ const footerLinks = [
       { label: "Virtual Tours", to: "/virtual-tours" },
       { label: "Analytics", to: "/analytics" },
       { label: "Management", to: "/management" },
-      { label: "RightAI Chat", to: "/chat" },
     ],
   },
   {
@@ -39,31 +38,30 @@ export function CtaFooter() {
     <section className="px-4 pb-20">
       <div className="mx-auto max-w-7xl">
         <div className="relative overflow-hidden rounded-3xl glass-strong p-10 text-center md:p-16">
-          <div className="absolute inset-0 bg-[var(--gradient-mesh)] opacity-60" />
+          <div className="absolute inset-0 bg-[var(--gradient-mesh)] opacity-40" />
           <div className="relative">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full glass px-3 py-1.5 text-xs">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full glass px-3 py-1.5 text-xs text-muted-foreground">
               <Sparkles className="h-3 w-3 text-primary" />
-              Meet your AI property concierge
+              Property guidance, whenever you need it
             </div>
             <h2 className="mx-auto max-w-3xl text-4xl font-display font-bold leading-tight md:text-6xl">
-              Your next property is one <span className="text-gradient-primary">conversation</span>{" "}
-              away.
+              Your next move starts with the right <span className="text-gradient-primary">details</span>.
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-muted-foreground">
-              Chat with RightAI - describe what you want and we'll surface verified, ROI-ranked
-              options instantly.
+              Use RightAI anywhere on the site for quick answers, or speak with our team for a
+              guided consultation and verified listings.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 to="/chat"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-7 py-3.5 text-sm font-semibold shadow-[var(--shadow-glow)] transition hover:scale-105"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition hover:scale-[1.02]"
               >
-                <MessageCircle className="h-4 w-4" />
                 Ask RightAI
+                <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 to="/contact"
-                className="rounded-full glass-strong px-7 py-3.5 text-sm font-semibold transition hover:bg-white/10"
+                className="rounded-full border border-white/10 bg-white/5 px-7 py-3.5 text-sm font-semibold transition hover:bg-[#f24c21]/15 hover:text-primary"
               >
                 Book a consultation
               </Link>
@@ -84,6 +82,64 @@ export function CtaFooter() {
             <p className="mt-3 max-w-xs text-xs text-muted-foreground">
               Africa's intelligent proptech platform - AI, blockchain, IoT.
             </p>
+            
+            {/* Social Media Links */}
+            <div className="mt-6 flex items-center gap-3">
+              <a
+                href="https://facebook.com/righthome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
+                title="Follow us on Facebook"
+              >
+                <Facebook className="h-4 w-4 text-muted-foreground group-hover:text-[#F24C21] transition-colors" />
+                <span className="absolute -inset-0.5 rounded-lg bg-[#F24C21]/0 group-hover:bg-[#F24C21]/10 transition-all duration-300" />
+              </a>
+              
+              <a
+                href="https://instagram.com/righthome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
+                title="Follow us on Instagram"
+              >
+                <Instagram className="h-4 w-4 text-muted-foreground group-hover:text-[#F24C21] transition-colors" />
+                <span className="absolute -inset-0.5 rounded-lg bg-[#F24C21]/0 group-hover:bg-[#F24C21]/10 transition-all duration-300" />
+              </a>
+              
+              <a
+                href="https://linkedin.com/company/righthome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
+                title="Connect with us on LinkedIn"
+              >
+                <Linkedin className="h-4 w-4 text-muted-foreground group-hover:text-[#F24C21] transition-colors" />
+                <span className="absolute -inset-0.5 rounded-lg bg-[#F24C21]/0 group-hover:bg-[#F24C21]/10 transition-all duration-300" />
+              </a>
+              
+              <a
+                href="https://twitter.com/righthome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
+                title="Follow us on Twitter"
+              >
+                <Twitter className="h-4 w-4 text-muted-foreground group-hover:text-[#F24C21] transition-colors" />
+                <span className="absolute -inset-0.5 rounded-lg bg-[#F24C21]/0 group-hover:bg-[#F24C21]/10 transition-all duration-300" />
+              </a>
+              
+              <a
+                href="https://tiktok.com/@righthome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
+                title="Follow us on TikTok"
+              >
+                <Music2 className="h-4 w-4 text-muted-foreground group-hover:text-[#F24C21] transition-colors" />
+                <span className="absolute -inset-0.5 rounded-lg bg-[#F24C21]/0 group-hover:bg-[#F24C21]/10 transition-all duration-300" />
+              </a>
+            </div>
           </div>
 
           {footerLinks.map((column) => (
@@ -96,7 +152,7 @@ export function CtaFooter() {
                   <li key={item.label}>
                     <Link
                       to={item.to}
-                      className="text-muted-foreground transition hover:text-foreground"
+                      className="text-muted-foreground transition hover:text-primary"
                     >
                       {item.label}
                     </Link>

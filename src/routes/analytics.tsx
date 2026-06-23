@@ -18,7 +18,7 @@ import { BarChart3, Sparkles, ShieldCheck, TrendingUp } from "lucide-react";
 export const Route = createFileRoute("/analytics")({
   head: () => ({
     meta: [
-      { title: "Analytics — RIGHTHOME" },
+      { title: "Analytics — RIGHTHOME_PROPTECH" },
       {
         name: "description",
         content:
@@ -42,6 +42,7 @@ function AnalyticsPage() {
         eyebrow="ANALYTICS"
         title="Data-powered insights for smarter property investments"
         subtitle="Monitor market trends, compare neighborhoods, and forecast returns with RIGHTHOME analytics."
+        highlightedWord="smarter"
       />
 
       <section className="px-4 pb-10">

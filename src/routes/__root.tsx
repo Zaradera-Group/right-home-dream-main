@@ -7,10 +7,11 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { MessageCircle } from "lucide-react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import appCss from "../styles.css?url";
-import logoUrl from "../assets/Logo.png";
+import logoUrl from "../assets/logo_bg.png";
 
 function NotFoundComponent() {
   return (
@@ -74,7 +75,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "RIGHTHOME — AI property, blockchain title security" },
+      { title: "RIGHTHOME_PROPTECH - AI property, blockchain title security" },
       {
         name: "description",
         content:
@@ -140,22 +141,68 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const [showSplash, setShowSplash] = useState(true);
+  const overflowRef = useRef<{ html: string; body: string } | null>(null);
 
+  // Use an effect that reliably hides the splash on mount and always
+  // restores html/body overflow on cleanup. Avoid requestAnimationFrame
+  // to prevent the timeout being deferred in some desktop environments.
   useEffect(() => {
-    let raf: number | null = null;
-    let timeoutId: number | null = null;
+    const root = document.documentElement;
+    const body = document.body;
+    // Save previous overflow values so we can restore them.
+    overflowRef.current = {
+      html: root.style.overflow,
+      body: body.style.overflow,
+    };
 
-    raf = window.requestAnimationFrame(() => {
-      timeoutId = window.setTimeout(() => {
-        setShowSplash(false);
-      }, 1400);
-    });
+    // Prevent scrolling while the splash is visible.
+    root.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+
+    const timeoutId = window.setTimeout(() => {
+      setShowSplash(false);
+    }, 1400);
 
     return () => {
-      if (raf !== null) window.cancelAnimationFrame(raf);
-      if (timeoutId !== null) window.clearTimeout(timeoutId);
+      // Restore previous overflow values.
+      if (overflowRef.current) {
+        root.style.overflow = overflowRef.current.html || "";
+        body.style.overflow = overflowRef.current.body || "";
+        overflowRef.current = null;
+      } else {
+        root.style.overflow = "";
+        body.style.overflow = "";
+      }
+
+      window.clearTimeout(timeoutId);
     };
+    // Run only once on mount/unmount.
   }, []);
+
+  // Ensure the splash is dismissed if the user interacts or navigates
+  // before the timeout completes (prevents stuck overlay on some devices).
+  useEffect(() => {
+    const hide = () => {
+      if (showSplash) setShowSplash(false);
+      if (overflowRef.current) {
+        document.documentElement.style.overflow = overflowRef.current.html || "";
+        document.body.style.overflow = overflowRef.current.body || "";
+        overflowRef.current = null;
+      }
+    };
+
+    const onInteraction = () => hide();
+
+    window.addEventListener("click", onInteraction, { once: true, capture: true });
+    window.addEventListener("keydown", onInteraction, { once: true, capture: true });
+    window.addEventListener("popstate", onInteraction);
+
+    return () => {
+      window.removeEventListener("click", onInteraction, { capture: true } as any);
+      window.removeEventListener("keydown", onInteraction, { capture: true } as any);
+      window.removeEventListener("popstate", onInteraction);
+    };
+  }, [showSplash]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -164,10 +211,17 @@ function RootComponent() {
           className={`min-h-screen transition-[opacity,transform,filter] duration-700 ease-out ${
             showSplash ? "opacity-0 scale-[0.985] blur-sm" : "opacity-100 scale-100 blur-0"
           }`}
-          aria-hidden={showSplash ? "true" : undefined}
+          inert={showSplash ? true : undefined}
         >
           <Outlet />
         </div>
+        <Link
+          to="/chat"
+          className="fixed right-4 top-1/2 z-40 inline-flex max-w-[calc(100vw-2rem)] -translate-y-1/2 items-center gap-2 rounded-full border border-white/10 bg-[#060243]/90 px-3.5 py-3 text-xs font-semibold text-white shadow-[0_18px_48px_rgba(0,0,0,0.35)] backdrop-blur-xl transition hover:-translate-y-[calc(50%+2px)] hover:border-[#f24c21]/40 hover:bg-[#0d0a55]/95 hover:shadow-[0_0_0_1px_rgba(242,76,33,0.3),0_0_40px_rgba(242,76,33,0.25)] md:right-6 md:px-4 md:text-sm"
+        >
+          <MessageCircle className="h-4 w-4 text-primary" />
+          Ask RightAI
+        </Link>
         {showSplash ? <SplashScreen /> : null}
       </div>
     </QueryClientProvider>

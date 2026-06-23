@@ -18,7 +18,7 @@ import { Personas } from "@/components/Personas";
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Services - RIGHTHOME" },
+      { title: "Services - RIGHTHOME_PROPTECH" },
       {
         name: "description",
         content:
@@ -99,6 +99,7 @@ function Services() {
         eyebrow="OUR SERVICES"
         title="The full proptech stack, in one platform"
         subtitle="Six services that cover the entire property lifecycle - from discovery to ownership to ongoing management."
+        highlightedWord="platform"
       />
       <section className="px-4 pb-12">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -112,7 +113,7 @@ function Services() {
                 onMouseLeave={() =>
                   setActiveService((current) => (current === service.title ? null : current))
                 }
-                className={`glass-strong group overflow-hidden rounded-2xl p-7 transition-all duration-500 hover:-translate-y-1 ${expanded ? "ring-1 ring-primary/30 shadow-[0_24px_80px_rgba(242,76,33,0.18)]" : ""}`}
+                className={`glass-strong group overflow-hidden rounded-2xl p-7 transition-all duration-500 hover:-translate-y-1 ${expanded ? "ring-2 ring-[#F24C21]/50 shadow-[0_24px_80px_rgba(242,76,33,0.3)]" : ""}`}
               >
                 <div className="mb-5 flex items-center justify-between gap-4">
                   <div className="w-12 h-12 rounded-xl bg-[var(--gradient-primary)] flex items-center justify-center shadow-[var(--shadow-glow)]">
@@ -163,14 +164,14 @@ function Services() {
                     className="inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition hover:scale-[1.03]"
                   >
                     Ask RightAI
-                    <ArrowRight className="h-3.5 w-3.5" />
+                    <ArrowRight className="h-3.5 w-3.5 animate-arrow-breathe" />
                   </Link>
                   <Link
                     to="/insights"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-semibold transition hover:bg-white/10"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-semibold transition hover:bg-[#f24c21]/12 hover:text-primary"
                   >
                     View insights
-                    <ArrowUpRight className="h-3.5 w-3.5" />
+                    <ArrowUpRight className="h-3.5 w-3.5 animate-arrow-breathe" />
                   </Link>
                 </div>
 
@@ -181,7 +182,7 @@ function Services() {
                 >
                   Learn more
                   <ArrowUpRight
-                    className={`h-3 w-3 transition-transform ${expanded ? "rotate-180" : ""}`}
+                    className={`h-3 w-3 transition-transform ${expanded ? "rotate-180" : ""} animate-arrow-breathe`}
                   />
                 </button>
               </article>

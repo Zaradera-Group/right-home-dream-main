@@ -9,7 +9,7 @@ import { Activity, TrendingUp, BarChart3, DollarSign } from "lucide-react";
 export const Route = createFileRoute("/insights")({
   head: () => ({
     meta: [
-      { title: "Market Insights — RIGHTHOME" },
+      { title: "Market Insights — RIGHTHOME_PROPTECH" },
       {
         name: "description",
         content:
@@ -38,6 +38,7 @@ function Insights() {
         eyebrow="MARKET INTELLIGENCE"
         title="Data that moves before the market does"
         subtitle="Live indicators, AI valuations and risk signals across every active corridor we track."
+        highlightedWord="moves"
       />
 
       <section className="px-4 pb-8">

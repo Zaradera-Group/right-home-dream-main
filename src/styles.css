@@ -120,6 +120,95 @@
   }
 }
 
+/* Global interactive styles for RIGHTHOME_PROPTECH brand */
+.link-primary {
+  color: var(--color-primary);
+  transition: color 280ms var(--transition-smooth), text-shadow 280ms var(--transition-smooth), transform 280ms var(--transition-smooth);
+}
+.link-primary:hover,
+.link-primary:focus-visible {
+  color: color-mix(in oklab, var(--color-primary) 85%, #fff 15%);
+  text-shadow: 0 6px 24px color-mix(in oklab, var(--color-primary) 30%, transparent);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* subtle glow hover for cards and buttons */
+.hover-accent {
+  transition: transform 320ms var(--transition-smooth), box-shadow 320ms var(--transition-smooth);
+}
+.hover-accent:hover,
+.hover-accent:focus-visible {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px -20px color-mix(in oklab, var(--color-primary) 45%, transparent);
+}
+
+/* Learn More / CTA primary variant */
+.learn-more {
+  color: var(--color-primary);
+  transition: color 260ms var(--transition-smooth), text-shadow 260ms var(--transition-smooth);
+}
+.learn-more:hover,
+.learn-more:focus-visible {
+  color: var(--color-primary);
+  text-shadow: 0 6px 20px color-mix(in oklab, var(--color-primary) 35%, transparent);
+  text-decoration: underline;
+}
+
+/* Gradient text from white to primary */
+.gradient-text-primary {
+  background: linear-gradient(180deg, #ffffff 0%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Arrow breathing animation used on small icons */
+@keyframes arrow-breathe {
+  0% { transform: translateX(0) scale(1); filter: drop-shadow(0 0 0 rgba(244,76,33,0)); opacity: 0.95; }
+  50% { transform: translateX(2px) scale(1.03); filter: drop-shadow(0 6px 20px rgba(242,76,33,0.14)); opacity: 1; }
+  100% { transform: translateX(0) scale(1); filter: drop-shadow(0 0 0 rgba(244,76,33,0)); opacity: 0.95; }
+}
+.animate-arrow-breathe {
+  animation: arrow-breathe 2.6s ease-in-out infinite;
+  will-change: transform, filter;
+}
+
+/* Enhanced button hover effects */
+button, [role="button"], .button {
+  transition: transform 260ms var(--transition-smooth), box-shadow 260ms var(--transition-smooth), background-color 260ms var(--transition-smooth);
+}
+
+button:hover:not(:disabled), 
+[role="button"]:hover, 
+.button:hover {
+  transform: translateY(-2px);
+}
+
+button:active:not(:disabled),
+[role="button"]:active,
+.button:active {
+  transform: translateY(0px);
+}
+
+/* Primary button glow effect */
+button.bg-primary:hover:not(:disabled) {
+  box-shadow: 0 12px 32px -8px color-mix(in oklab, var(--color-primary) 60%, transparent);
+}
+
+/* Card hover effects with subtle elevation */
+article, [role="article"], .card {
+  transition: transform 280ms var(--transition-smooth), box-shadow 280ms var(--transition-smooth), border-color 280ms var(--transition-smooth);
+}
+
+article:hover,
+[role="article"]:hover,
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px -12px color-mix(in oklab, var(--color-primary) 25%, transparent);
+}
+
+
 @keyframes splash-progress {
   0% {
     transform: translateX(-100%);
@@ -182,6 +271,16 @@
   }
 }
 
+@keyframes arrow-breathe {
+  0%,
+  100% {
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    transform: translateX(2px) scale(1.08);
+  }
+}
+
 .animate-splash-progress {
   animation: splash-progress 1.4s ease-in-out infinite;
 }
@@ -200,6 +299,10 @@
 
 .animate-verified-pop {
   animation: verified-pop 0.45s ease-out;
+}
+
+.animate-arrow-breathe {
+  animation: arrow-breathe 1.6s ease-in-out infinite;
 }
 
 .splash-screen {
@@ -239,10 +342,13 @@
 
 .turnstile-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   width: 100%;
   max-width: 100%;
   min-width: 0;
+  min-height: 140px;
   overflow: hidden;
 }
 
@@ -252,6 +358,44 @@
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f24c21 0%, #ff7b4f 100%);
+  border-radius: 9999px;
+  border: 2px solid rgba(6, 2, 67, 0.7);
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff7b4f 0%, #f24c21 100%);
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #ff7b4f rgba(255, 255, 255, 0.05);
+}
+
+body {
+  scrollbar-width: thin;
+  scrollbar-color: #ff7b4f rgba(255, 255, 255, 0.05);
 }
 
 @layer base {

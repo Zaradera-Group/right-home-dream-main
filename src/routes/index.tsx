@@ -7,7 +7,7 @@ import { Personas } from "@/components/Personas";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "RIGHTHOME — Smart Property Transactions, AI · Blockchain · IoT" },
+      { title: "RIGHTHOME_PROPTECH — Smart Property Transactions, AI · Blockchain · IoT" },
       { name: "description", content: "Africa's intelligent proptech platform. Discover verified properties, virtual tours, and ROI forecasts powered by AI and secured on blockchain." },
       { property: "og:title", content: "RIGHTHOME — Smart Property Transactions" },
       { property: "og:description", content: "AI-matched listings, blockchain-verified titles, IoT-enabled smart homes." },

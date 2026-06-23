@@ -56,7 +56,7 @@ const featuredTours: TourItem[] = [
 export const Route = createFileRoute("/virtual-tours")({
   head: () => ({
     meta: [
-      { title: "Virtual Tours - RIGHTHOME" },
+      { title: "Virtual Tours - RIGHTHOME_PROPTECH" },
       {
         name: "description",
         content:
@@ -139,6 +139,7 @@ function VirtualToursPage() {
         eyebrow="VIRTUAL TOURS"
         title="Explore properties remotely with immersive walkthroughs"
         subtitle="View homes from anywhere in Africa using 360-degree tours, VR-ready previews and live guided walkthroughs."
+        highlightedWord="immersive"
       />
 
       <section className="px-4 pb-20">
@@ -434,11 +435,11 @@ function VirtualToursPage() {
                       className="inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-4 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition hover:scale-[1.03]"
                     >
                       Ask RightAI
-                      <ArrowRight className="h-4 w-4" />
+                      <ArrowRight className="h-4 w-4 animate-arrow-breathe" />
                     </Link>
                     <Link
                       to="/contact"
-                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold transition hover:bg-white/10"
+                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold transition hover:bg-[#f24c21]/12 hover:text-primary"
                     >
                       <MessageCircle className="h-4 w-4" />
                       Request callback

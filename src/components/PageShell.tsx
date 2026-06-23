@@ -1,34 +1,52 @@
-import { Link } from "@tanstack/react-router";
-import { MessageCircle } from "lucide-react";
 import { Navbar } from "./Navbar";
 import { CtaFooter } from "./CtaFooter";
 
 export function PageShell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen overflow-x-clip">
       <Navbar />
       {children}
       <CtaFooter />
-      <Link
-        to="/chat"
-        className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-4 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] hover:-translate-y-0.5 transition-transform"
-      >
-        <MessageCircle className="w-4 h-4" />
-        Ask RightAI
-      </Link>
     </main>
   );
 }
 
-export function PageHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle?: string }) {
+export function PageHeader({
+  eyebrow,
+  title,
+  subtitle,
+  highlightedWord,
+}: {
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+  highlightedWord?: string;
+}) {
+  const renderTitle = () => {
+    if (!highlightedWord || !title.includes(highlightedWord)) {
+      return title;
+    }
+
+    const parts = title.split(new RegExp(`\\b(${highlightedWord})\\b`, "gi"));
+    return parts.map((part, index) =>
+      part.toLowerCase() === highlightedWord.toLowerCase() ? (
+        <span key={index} className="text-gradient-primary">
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
   return (
-    <section className="pt-36 pb-12 px-4">
-      <div className="max-w-7xl mx-auto text-center">
-        <div className="text-xs text-primary font-mono tracking-wider">{eyebrow}</div>
-        <h1 className="text-4xl md:text-6xl font-display font-bold mt-3 max-w-3xl mx-auto leading-tight">
-          {title}
+    <section className="px-4 pt-28 pb-12 md:pt-36">
+      <div className="mx-auto max-w-7xl text-center">
+        <div className="text-xs text-[#F24C21] font-mono tracking-wider">{eyebrow}</div>
+        <h1 className="mx-auto mt-3 max-w-3xl font-display text-4xl font-bold leading-tight text-white md:text-6xl">
+          {renderTitle()}
         </h1>
-        {subtitle && <p className="text-muted-foreground mt-5 max-w-2xl mx-auto">{subtitle}</p>}
+        {subtitle && <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">{subtitle}</p>}
       </div>
     </section>
   );

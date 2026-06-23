@@ -32,7 +32,7 @@ function createMathChallenge() {
   const b = Math.floor(Math.random() * 8) + 2;
   const isMultiply = Math.random() < 0.5;
   return {
-    question: `${a} ${isMultiply ? "�" : "+"} ${b}`,
+    question: `${a} ${isMultiply ? "*" : "+"} ${b}`,
     answer: isMultiply ? a * b : a + b,
   };
 }
@@ -40,7 +40,7 @@ function createMathChallenge() {
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact - RIGHTHOME" },
+      { title: "Contact - RIGHTHOME_PROPTECH" },
       {
         name: "description",
         content:
@@ -211,6 +211,13 @@ function Contact() {
       hasClientValidationError = true;
     }
 
+    if (!formElement.checkValidity()) {
+      formElement.reportValidity();
+      setStatus("error");
+      setNotice("Please complete the required fields.");
+      return;
+    }
+
     if (!turnstileVerified) {
       setStatus("error");
       setNotice("Please complete the Cloudflare verification widget before sending.");
@@ -282,6 +289,7 @@ function Contact() {
         eyebrow="GET IN TOUCH"
         title="Let's find your right home"
         subtitle="Book a consultation, list a property, or partner with us. We respond within 24 hours."
+        highlightedWord="right"
       />
 
       <section className="px-4 pb-20">
@@ -411,7 +419,7 @@ function Contact() {
               </div>
 
               <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                <div className="glass rounded-3xl border border-white/15 bg-white/10 p-5 ring-2 ring-primary/20 shadow-[0_28px_80px_rgba(242,76,33,0.18)] transition duration-300 hover:-translate-y-1">
+                <div className="glass rounded-3xl border border-white/15 bg-white/10 p-5 ring-2 ring-primary/20 shadow-[0_28px_80px_rgba(242,76,33,0.18)] transition duration-300 hover:-translate-y-1 w-full">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="text-xs text-muted-foreground">Human verification</div>
@@ -487,7 +495,7 @@ function Contact() {
                   ) : null}
                   <div className="mt-4 min-h-[140px] rounded-3xl border border-white/10 bg-white/5 p-4">
                     {turnstileSiteKey ? (
-                      <div ref={turnstileContainerRef} className="turnstile-container" />
+                      <div ref={turnstileContainerRef} className="turnstile-container min-h-[140px] w-full" />
                     ) : (
                       <div className="rounded-3xl border border-white/10 bg-[#0d0c30] p-4 text-sm text-muted-foreground">
                         Turnstile is not configured. Please set VITE_TURNSTILE_SITE_KEY.
@@ -526,15 +534,26 @@ function Contact() {
                 className="hidden"
                 defaultValue=""
               />
-              <button
-                type="submit"
-                disabled={isSubmitDisabled}
-                aria-busy={status === "sending" ? "true" : undefined}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-7 py-3.5 text-sm font-semibold shadow-[var(--shadow-glow)] transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                {submitLabel}
-                <Send className="h-4 w-4" />
-              </button>
+              {status === "sending" ? (
+                <button
+                  type="submit"
+                  disabled={isSubmitDisabled}
+                  aria-busy="true"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-7 py-3.5 text-sm font-semibold shadow-[var(--shadow-glow)] transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {submitLabel}
+                  <Send className="h-4 w-4" />
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={isSubmitDisabled}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-7 py-3.5 text-sm font-semibold shadow-[var(--shadow-glow)] transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {submitLabel}
+                  <Send className="h-4 w-4" />
+                </button>
+              )}
             </div>
           </form>
         </div>

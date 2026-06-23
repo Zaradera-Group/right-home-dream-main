@@ -24,6 +24,7 @@ import { Route as ChatRouteImport } from './routes/chat'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as PropertiesSlugRouteImport } from './routes/properties.$slug'
 import { Route as IndexRouteImport } from './routes/index'
 
 const VirtualToursRoute = VirtualToursRouteImport.update({
@@ -101,6 +102,11 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PropertiesSlugRoute = PropertiesSlugRouteImport.update({
+  id: '/properties/$slug',
+  path: '/properties/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
+  '/properties/$slug': typeof PropertiesSlugRoute
   '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
   '/team': typeof TeamRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
+  '/properties/$slug': typeof PropertiesSlugRoute
   '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
   '/team': typeof TeamRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
+  '/properties/$slug': typeof PropertiesSlugRoute
   '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
   '/team': typeof TeamRoute
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/press'
     | '/privacy'
     | '/properties'
+    | '/properties/$slug'
     | '/security'
     | '/services'
     | '/team'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/press'
     | '/privacy'
     | '/properties'
+    | '/properties/$slug'
     | '/security'
     | '/services'
     | '/team'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '/press'
     | '/privacy'
     | '/properties'
+    | '/properties/$slug'
     | '/security'
     | '/services'
     | '/team'
@@ -280,6 +292,13 @@ declare module '@tanstack/react-router' {
       path: '/properties'
       fullPath: '/properties'
       preLoaderRoute: typeof PropertiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/properties/$slug': {
+      id: '/properties/$slug'
+      path: '/properties/$slug'
+      fullPath: '/properties/$slug'
+      preLoaderRoute: typeof PropertiesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -367,6 +386,7 @@ const rootRouteChildren: RootRouteChildren = {
   PressRoute: PressRoute,
   PrivacyRoute: PrivacyRoute,
   PropertiesRoute: PropertiesRoute,
+  PropertiesSlugRoute: PropertiesSlugRoute,
   SecurityRoute: SecurityRoute,
   ServicesRoute: ServicesRoute,
   TeamRoute: TeamRoute,

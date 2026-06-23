@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">RIGHTHOME logo</title>
+  <desc id="logoDesc">RIGHTHOME property and secure ownership icon combining house and wallet design.</desc>
+  
+  <!-- White background for favicon visibility -->
+  <rect width="120" height="120" fill="#ffffff" rx="24"/>
+  
+  <!-- House/Building structure with orange accent and navy -->
+  <!-- Left orange accent bar -->
+  <rect x="12" y="18" width="14" height="28" fill="#FF5722" rx="2"/>
+  
+  <!-- Navy building blocks -->
+  <rect x="32" y="10" width="16" height="32" fill="#001a47"/>
+  <rect x="54" y="8" width="18" height="36" fill="#001a47"/>
+  
+  <!-- House roof - navy with white highlight -->
+  <path d="M 18 46 L 60 16 L 102 46 Z" fill="#001a47" stroke="none"/>
+  <path d="M 60 16 L 102 46" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- House body - navy background -->
+  <rect x="24" y="46" width="72" height="28" fill="#001a47" rx="3"/>
+  
+  <!-- Window grid (white squares) -->
+  <rect x="38" y="56" width="8" height="8" fill="#ffffff"/>
+  <rect x="50" y="56" width="8" height="8" fill="#ffffff"/>
+  <rect x="38" y="68" width="8" height="8" fill="#ffffff"/>
+  <rect x="50" y="68" width="8" height="8" fill="#ffffff"/>
+  
+  <!-- Wallet/Lock icon below -->
+  <!-- Wallet body - large navy rounded rectangle -->
+  <rect x="14" y="82" width="58" height="28" fill="#001a47" rx="6"/>
+  
+  <!-- Wallet orange accent - right side lock mechanism -->
+  <ellipse cx="82" cy="96" rx="16" ry="20" fill="#FF5722"/>
+  
+  <!-- Inner circle for lock -->
+  <circle cx="82" cy="96" r="8" fill="#001a47"/>
+  
+  <!-- Lock top accent -->
+  <rect x="76" y="75" width="12" height="8" fill="#FF5722" rx="2"/>
+</svg>

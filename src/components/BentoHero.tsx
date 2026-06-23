@@ -6,8 +6,18 @@ import prop2 from "@/assets/property-2.jpg";
 import prop3 from "@/assets/property-3.jpg";
 import prop4 from "@/assets/property-4.jpg";
 import {
-  Search, Sparkles, ShieldCheck, Boxes, Eye, TrendingUp, Link2,
-  ArrowUpRight, MapPin, Activity, BarChart3, Play,
+  Search,
+  Sparkles,
+  ShieldCheck,
+  Boxes,
+  Eye,
+  TrendingUp,
+  Link2,
+  ArrowUpRight,
+  MapPin,
+  Activity,
+  BarChart3,
+  Play,
 } from "lucide-react";
 import { AnimatedNumber } from "@/components/ui/animated-number";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -19,7 +29,11 @@ export function BentoHero() {
       <div className="max-w-7xl mx-auto grid grid-cols-12 grid-rows-[auto_auto] gap-4 md:gap-5">
         {/* HERO — top-left large */}
         <div className="col-span-12 lg:col-span-8 row-span-1 relative overflow-hidden rounded-3xl glass-strong p-8 md:p-12 min-h-[560px] flex flex-col justify-between">
-          <img src={heroImg} alt="Luxury Nigerian real estate at twilight" className="absolute inset-0 w-full h-full object-cover opacity-50" />
+          <img
+            src={heroImg}
+            alt="Luxury Nigerian real estate at twilight"
+            className="absolute inset-0 w-full h-full object-cover opacity-50"
+          />
           <div className="absolute inset-0 bg-gradient-to-tr from-[#060243] via-[#060243]/70 to-transparent" />
           <div className="relative">
             <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -27,18 +41,25 @@ export function BentoHero() {
                 <img src={logoUrl} alt="RIGHTHOME logo" className="h-8 w-8 object-contain" />
               </div>
               <div>
-                <div className="text-sm font-semibold tracking-[0.28em] uppercase text-primary">RIGHTHOME</div>
-                <p className="text-xs text-muted-foreground">AI · Blockchain · IoT property platform</p>
+                <div className="text-sm font-semibold tracking-[0.28em] uppercase text-primary">
+                  RIGHTHOME
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  AI · Blockchain · IoT property platform
+                </p>
               </div>
             </div>
             <div className="inline-flex items-center gap-2 glass px-3 py-1.5 rounded-full text-xs">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" /> Powered by AI · Blockchain · IoT
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" /> Powered by AI ·
+              Blockchain · IoT
             </div>
             <h1 className="mt-6 text-4xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.05] max-w-3xl">
-              Seamless, Secure, <span className="text-gradient-primary">Smart</span> Property Transactions
+              Seamless, Secure, <span className="text-gradient-primary">Smart</span> Property
+              Transactions
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-xl">
-              Africa's most intelligent proptech platform — discover, verify and own property with confidence, from anywhere.
+              Africa's most intelligent proptech platform — discover, verify and own property with
+              confidence, from anywhere.
             </p>
           </div>
 
@@ -54,20 +75,34 @@ export function BentoHero() {
                 <Sparkles className="w-4 h-4 text-primary/70" />
               </div>
               <div className="flex gap-1 text-xs">
-                {["Buy","Rent","Invest","Workspace"].map(t => (
-                  <button key={t} className="px-3 py-2 rounded-xl hover:bg-white/10 transition text-muted-foreground hover:text-foreground">{t}</button>
+                {["Buy", "Rent", "Invest", "Workspace"].map((t) => (
+                  <button
+                    key={t}
+                    className="rounded-xl px-3 py-2 text-muted-foreground transition hover:bg-[#f24c21]/12 hover:text-primary"
+                  >
+                    {t}
+                  </button>
                 ))}
               </div>
-              <Link to="/properties" className="rounded-xl bg-[var(--gradient-primary)] px-6 py-3 text-sm font-semibold shadow-[var(--shadow-glow)] hover:scale-[1.02] transition inline-flex items-center justify-center">
+              <Link
+                to="/properties"
+                className="rounded-xl bg-[var(--gradient-primary)] px-6 py-3 text-sm font-semibold shadow-[var(--shadow-glow)] hover:scale-[1.02] transition inline-flex items-center justify-center"
+              >
                 Search
               </Link>
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Link to="/properties" className="inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-6 py-3 text-sm font-semibold shadow-[var(--shadow-glow)] hover:scale-105 transition">
-                Explore Properties <ArrowUpRight className="w-4 h-4" />
+              <Link
+                to="/properties"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-6 py-3 text-sm font-semibold shadow-[var(--shadow-glow)] transition hover:scale-105"
+              >
+                Explore Properties <ArrowUpRight className="h-4 w-4 animate-arrow-breathe" />
               </Link>
-              <Link to="/contact" className="inline-flex items-center gap-2 rounded-full glass-strong px-6 py-3 text-sm font-semibold hover:bg-white/10 transition">
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 rounded-full glass-strong px-6 py-3 text-sm font-semibold transition hover:bg-[#f24c21]/12 hover:text-primary"
+              >
                 <Play className="w-4 h-4" /> List Your Property
               </Link>
             </div>
@@ -75,7 +110,10 @@ export function BentoHero() {
         </div>
 
         {/* QUICK ACCESS — top-right */}
-        <div id="services" className="col-span-12 lg:col-span-4 grid grid-cols-2 gap-4 md:gap-5 content-stretch">
+        <div
+          id="services"
+          className="col-span-12 lg:col-span-4 grid grid-cols-2 gap-4 md:gap-5 content-stretch"
+        >
           {[
             { icon: Sparkles, label: "AI Property Match", sub: "Personalized for you" },
             { icon: Eye, label: "Virtual Tours", sub: "360° + VR ready" },
@@ -87,7 +125,7 @@ export function BentoHero() {
             <Link
               key={label}
               to="/services"
-              className="glass-strong rounded-2xl p-4 text-left group hover:bg-white/10 hover:-translate-y-1 transition-all duration-300"
+              className="glass-strong rounded-2xl p-4 text-left group transition-all duration-300 hover:-translate-y-1 hover:bg-[#f24c21]/12 hover:text-primary"
             >
               <div className="w-10 h-10 rounded-xl bg-[var(--gradient-primary)] flex items-center justify-center mb-3 shadow-[var(--shadow-glow)] group-hover:scale-110 transition">
                 <Icon className="w-5 h-5" />
@@ -99,11 +137,16 @@ export function BentoHero() {
         </div>
 
         {/* ANALYTICS — bottom-left wide */}
-        <div id="insights" className="col-span-12 lg:col-span-7 glass-strong rounded-3xl p-6 md:p-8">
+        <div
+          id="insights"
+          className="col-span-12 lg:col-span-7 glass-strong rounded-3xl p-6 md:p-8"
+        >
           <div className="flex items-start justify-between mb-6">
             <div>
               <div className="text-xs text-primary font-mono tracking-wider">MARKET INSIGHTS</div>
-              <h3 className="text-2xl md:text-3xl font-display font-semibold mt-1">Live property intelligence</h3>
+              <h3 className="text-2xl md:text-3xl font-display font-semibold mt-1">
+                Live property intelligence
+              </h3>
             </div>
             <div className="text-xs glass px-3 py-1.5 rounded-full flex items-center gap-2">
               <Activity className="w-3 h-3 text-success" /> Live
@@ -121,21 +164,29 @@ export function BentoHero() {
             </div>
             {/* KPIs */}
             <div className="md:col-span-2 grid grid-cols-2 md:grid-cols-1 gap-3">
-                <Kpi label="Active Listings" value="3,284" delta="+8%" />
-                <Kpi label="Verified Owners" value="1,156" delta="+22%" />
-                <Kpi label="Avg. ROI / yr" value="18.3%" delta="+1.2pp" />
+              <Kpi label="Active Listings" value="3,284" delta="+8%" />
+              <Kpi label="Verified Owners" value="1,156" delta="+22%" />
+              <Kpi label="Avg. ROI / yr" value="18.3%" delta="+1.2pp" />
             </div>
           </div>
         </div>
 
         {/* FEATURED PROPERTIES — bottom-right */}
-        <div id="properties" className="col-span-12 lg:col-span-5 glass-strong rounded-3xl p-6 md:p-7">
+        <div
+          id="properties"
+          className="col-span-12 lg:col-span-5 glass-strong rounded-3xl p-6 md:p-7"
+        >
           <div className="flex items-center justify-between mb-5">
             <div>
               <div className="text-xs text-primary font-mono tracking-wider">FEATURED</div>
               <h3 className="text-xl font-display font-semibold mt-1">Premium properties</h3>
             </div>
-            <Link to="/properties" className="text-xs text-muted-foreground hover:text-primary transition inline-flex items-center gap-1">View all <ArrowUpRight className="w-3 h-3" /></Link>
+            <Link
+              to="/properties"
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground transition hover:text-primary"
+            >
+              View all <ArrowUpRight className="h-3 w-3 animate-arrow-breathe" />
+            </Link>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[
@@ -144,9 +195,18 @@ export function BentoHero() {
               { img: prop3, price: "₦240K/mo", loc: "GRA Phase II", roi: "Lease" },
               { img: prop4, price: "₦42M", loc: "Omagwa Plots", roi: "Land" },
             ].map((p, i) => (
-              <Link key={i} to="/properties" className="group relative rounded-2xl overflow-hidden glass hover:scale-[1.03] transition-all duration-300 cursor-pointer">
+              <Link
+                key={i}
+                to="/properties"
+                className="group relative rounded-2xl overflow-hidden glass hover:scale-[1.03] transition-all duration-300 cursor-pointer"
+              >
                 <div className="aspect-[4/3] overflow-hidden">
-                  <img src={p.img} alt={p.loc} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+                  <img
+                    src={p.img}
+                    alt={p.loc}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                  />
                 </div>
                 <div className="absolute top-2 left-2 glass-strong rounded-full px-2 py-1 text-[10px] flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3 text-success" /> Verified
@@ -170,7 +230,9 @@ export function BentoHero() {
 }
 
 function Kpi({ label, value, delta }: { label: string; value: string; delta: string }) {
-  const numericMatch = String(value).replace(/,/g, "").match(/-?\d+\.?\d*/);
+  const numericMatch = String(value)
+    .replace(/,/g, "")
+    .match(/-?\d+\.?\d*/);
   const numeric = numericMatch ? Number(numericMatch[0]) : null;
   const suffix = String(value).trim().endsWith("%") ? "%" : undefined;
 
@@ -178,13 +240,11 @@ function Kpi({ label, value, delta }: { label: string; value: string; delta: str
     <div className="glass rounded-2xl p-4">
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="text-2xl font-display font-semibold mt-1">
-        {numeric !== null ? (
-          <AnimatedNumber value={numeric} suffix={suffix} />
-        ) : (
-          value
-        )}
+        {numeric !== null ? <AnimatedNumber value={numeric} suffix={suffix} /> : value}
       </div>
-      <div className="text-[11px] text-success mt-0.5 flex items-center gap-1"><BarChart3 className="w-3 h-3" /> {delta}</div>
+      <div className="text-[11px] text-success mt-0.5 flex items-center gap-1">
+        <BarChart3 className="w-3 h-3" /> {delta}
+      </div>
     </div>
   );
 }
@@ -201,7 +261,16 @@ function MiniChart() {
         <XAxis dataKey="label" tickLine={false} axisLine={false} />
         <YAxis tickLine={false} axisLine={false} width={40} />
         <ChartTooltip content={<ChartTooltipContent />} />
-        <Area type="monotone" dataKey="value" stroke="var(--color-value)" fill="var(--color-value)" fillOpacity={0.22} strokeWidth={3} isAnimationActive={true} animationDuration={1200} />
+        <Area
+          type="monotone"
+          dataKey="value"
+          stroke="var(--color-value)"
+          fill="var(--color-value)"
+          fillOpacity={0.22}
+          strokeWidth={3}
+          isAnimationActive={true}
+          animationDuration={1200}
+        />
       </AreaChart>
     </ChartContainer>
   );

@@ -5,7 +5,7 @@ import { Wrench, ShieldCheck, CalendarDays, Building2 } from "lucide-react";
 export const Route = createFileRoute("/management")({
   head: () => ({
     meta: [
-      { title: "Management — RIGHTHOME" },
+      { title: "Management — RIGHTHOME_PROPTECH" },
       {
         name: "description",
         content: "Manage properties with smart operations, tenant workflows, and IoT monitoring for safer ownership.",
@@ -26,7 +26,8 @@ function ManagementPage() {
       <PageHeader
         eyebrow="MANAGEMENT"
         title="Smart property operations for owners and managers"
-        subtitle="Keep assets running smoothly with maintenance workflows, tenant support, and connected building intelligence." 
+        subtitle="Keep assets running smoothly with maintenance workflows, tenant support, and connected building intelligence."
+        highlightedWord="operations"
       />
 
       <section className="px-4 pb-20">

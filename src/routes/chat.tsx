@@ -10,7 +10,7 @@ import type { RightAIChart, RightAIMessage } from "@/lib/rightai";
 export const Route = createFileRoute("/chat")({
   head: () => ({
     meta: [
-      { title: "RightAI Chat - RIGHTHOME" },
+      { title: "RightAI Chat - RIGHTHOME_PROPTECH" },
       {
         name: "description",
         content:
@@ -193,6 +193,7 @@ function Chat() {
         eyebrow="RIGHTAI CHAT"
         title="Talk to our AI property concierge"
         subtitle="Ask questions, get instant market insights, and discover the RIGHTHOME path for your next property decision."
+        highlightedWord="AI"
       />
 
       <section className="px-4 pb-20">
@@ -276,7 +277,7 @@ function Chat() {
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span>{promptText}</span>
-                    <ArrowRight className="h-4 w-4 shrink-0 text-primary" />
+                    <ArrowRight className="h-4 w-4 shrink-0 animate-arrow-breathe text-primary" />
                   </div>
                 </button>
               ))}
