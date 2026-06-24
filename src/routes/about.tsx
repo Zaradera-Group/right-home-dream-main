@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageShell, PageHeader } from "@/components/PageShell";
-import { Roadmap } from "@/components/Roadmap";
 import { AnimatedNumber } from "@/components/ui/animated-number";
 import { Target, Heart, Zap, ShieldCheck, Sparkles, Activity } from "lucide-react";
 
@@ -16,17 +15,14 @@ function formatStatValue(value: number, prefix?: string, suffix?: string) {
   return `${prefix ?? ""}${formatted}${suffix ?? ""}`;
 }
 
-function CountStat({
-  label,
-  value,
-  prefix,
-  suffix,
-}: {
+type CountStatProps = Readonly<{
   label: string;
   value: number;
   prefix?: string;
   suffix?: string;
-}) {
+}>;
+
+function CountStat({ label, value, prefix, suffix }: CountStatProps) {
   return (
     <div>
       <div className="text-3xl md:text-5xl font-display font-bold text-gradient-primary">
@@ -183,7 +179,28 @@ function About() {
         </div>
       </section>
 
-      <Roadmap />
+      {/*
+        <Roadmap />
+      */}
+      <section id="roadmap" className="px-4 py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="text-xs text-primary font-mono tracking-wider">GROWTH OUTLOOK</div>
+            <h2 className="text-3xl md:text-5xl font-display font-bold mt-2">The road ahead</h2>
+          </div>
+          <div className="glass-strong rounded-3xl p-8">
+            <p className="text-base leading-7 text-muted-foreground">
+              We are focused on building a property platform that delivers simple, safe, and faster
+              outcomes for every customer. Expect more verified listings, smarter discovery tools,
+              and local support that helps you move forward with confidence.
+            </p>
+            <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
+              Our next phase is about making property decisions easier for people, not just
+              professionals — from first-time buyers to savvy tenants and busy landlords.
+            </p>
+          </div>
+        </div>
+      </section>
     </PageShell>
   );
 }
