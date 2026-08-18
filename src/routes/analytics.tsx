@@ -46,7 +46,7 @@ function AnalyticsPage() {
       />
 
       <section className="px-4 pb-10">
-        <div className="max-w-7xl mx-auto glass-strong rounded-3xl p-10">
+        <div className="max-w-7xl mx-auto min-w-0 glass-strong rounded-3xl p-5 sm:p-8 lg:p-10">
           <div className="grid gap-6 lg:grid-cols-3">
             {[
               {
@@ -69,7 +69,7 @@ function AnalyticsPage() {
                 desc: "Built from authenticated title, survey, and transaction data.",
               },
             ].map((item) => (
-              <div key={item.title} className="rounded-3xl border border-white/10 p-8">
+              <div key={item.title} className="min-w-0 rounded-2xl border border-white/10 p-5 sm:rounded-3xl sm:p-8">
                 <div className="text-4xl font-display font-bold text-gradient-primary">
                   <AnimatedNumber value={item.value} prefix={item.prefix} suffix={item.suffix} />
                 </div>
@@ -83,7 +83,7 @@ function AnalyticsPage() {
 
       <section className="px-4 pb-14">
         <div className="max-w-7xl mx-auto grid gap-8">
-          <div className="glass-strong rounded-3xl p-10">
+          <div className="min-w-0 glass-strong rounded-3xl p-5 sm:p-8 lg:p-10">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
                 <div className="text-xs text-primary font-mono tracking-wider">VALUATION TREND</div>
@@ -101,11 +101,11 @@ function AnalyticsPage() {
             </div>
 
             <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+              <div className="min-w-0 rounded-2xl border border-white/10 bg-white/5 p-3 sm:rounded-3xl sm:p-6">
                 <ValuationTrendChart />
               </div>
               <div className="grid gap-6">
-                <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+                <div className="min-w-0 rounded-2xl border border-white/10 bg-white/5 p-3 sm:rounded-3xl sm:p-6">
                   <div className="text-xs text-primary font-mono tracking-wider">
                     DEMAND PROFILE
                   </div>
@@ -113,7 +113,7 @@ function AnalyticsPage() {
                     <DemandBarChart />
                   </div>
                 </div>
-                <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+                <div className="min-w-0 rounded-2xl border border-white/10 bg-white/5 p-3 sm:rounded-3xl sm:p-6">
                   <div className="text-xs text-primary font-mono tracking-wider">
                     SALES VELOCITY
                   </div>
@@ -129,7 +129,7 @@ function AnalyticsPage() {
 
       <section className="px-4 pb-20">
         <div className="max-w-7xl mx-auto grid gap-10">
-          <div className="glass-strong rounded-3xl p-10 grid gap-6 lg:grid-cols-3">
+          <div className="glass-strong rounded-3xl p-5 sm:p-8 lg:p-10 grid gap-6 lg:grid-cols-3">
             {[
               {
                 icon: BarChart3,
@@ -147,7 +147,7 @@ function AnalyticsPage() {
                 desc: "View analytics backed by verified title, survey and on-chain property records.",
               },
             ].map((item) => (
-              <div key={item.title} className="rounded-3xl border border-white/10 p-8">
+              <div key={item.title} className="rounded-2xl border border-white/10 p-5 sm:rounded-3xl sm:p-8">
                 <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-[var(--gradient-primary)] text-white shadow-[var(--shadow-glow)] mb-5">
                   <item.icon className="w-6 h-6" />
                 </div>
@@ -157,7 +157,7 @@ function AnalyticsPage() {
             ))}
           </div>
 
-          <div className="glass-strong rounded-3xl p-10 grid gap-8 lg:grid-cols-2">
+          <div className="glass-strong rounded-3xl p-5 sm:p-8 lg:p-10 grid gap-8 lg:grid-cols-2">
             <div>
               <h3 className="text-2xl font-semibold">Neighborhood intelligence</h3>
               <p className="mt-4 text-muted-foreground leading-relaxed">
@@ -184,7 +184,7 @@ function AnalyticsPage() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-10">
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-8 lg:p-10">
             <div className="text-xs uppercase tracking-[0.2em] text-primary">WHAT YOU CAN DO</div>
             <div className="mt-6 grid gap-5 md:grid-cols-3">
               {[
@@ -231,7 +231,7 @@ function ValuationTrendChart() {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-4 pb-4">
+      <div className="flex flex-col items-start gap-3 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="text-sm uppercase tracking-[0.3em] text-primary">Average price / sqm</div>
           <div className="text-2xl font-semibold">₦128,000</div>
@@ -242,7 +242,7 @@ function ValuationTrendChart() {
       </div>
       <ChartContainer
         config={{ value: { label: "Price Index", color: "#F24C21" } }}
-        className="h-[320px] w-full"
+        className="h-[260px] min-w-0 w-full sm:h-[320px]"
       >
         <LineChart data={data} margin={{ top: 10, right: 8, left: -10, bottom: 0 }}>
           <CartesianGrid vertical={false} strokeDasharray="3 3" />

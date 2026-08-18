@@ -45,7 +45,8 @@ export function CtaFooter() {
               Property guidance, whenever you need it
             </div>
             <h2 className="mx-auto max-w-3xl text-4xl font-display font-bold leading-tight md:text-6xl">
-              Your next move starts with the right <span className="text-gradient-primary">details</span>.
+              Your next move starts with the right{" "}
+              <span className="text-gradient-primary">details</span>.
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-muted-foreground">
               Use RightAI anywhere on the site for quick answers, or speak with our team for a
@@ -56,14 +57,14 @@ export function CtaFooter() {
                 to="/chat"
                 className="inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition hover:scale-[1.02]"
               >
-                Ask RightAI
+                Chat with Ria
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 to="/contact"
                 className="rounded-full border border-white/10 bg-white/5 px-7 py-3.5 text-sm font-semibold transition hover:bg-[#f24c21]/15 hover:text-primary"
               >
-                Book a consultation
+                Book a tour
               </Link>
             </div>
           </div>
@@ -82,33 +83,31 @@ export function CtaFooter() {
             <p className="mt-3 max-w-xs text-xs text-muted-foreground">
               Africa's intelligent proptech platform - AI, blockchain, IoT.
             </p>
-            
             {/* Social Media Links */}
             <div className="mt-6 flex items-center gap-3">
               <a
                 href="https://facebook.com/righthome"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
+                className="hidden group relative items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
                 title="Follow us on Facebook"
               >
                 <Facebook className="h-4 w-4 text-muted-foreground group-hover:text-[#F24C21] transition-colors" />
                 <span className="absolute -inset-0.5 rounded-lg bg-[#F24C21]/0 group-hover:bg-[#F24C21]/10 transition-all duration-300" />
               </a>
-              
+
               <a
                 href="https://instagram.com/righthome"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
+                className="hidden group relative items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
                 title="Follow us on Instagram"
               >
                 <Instagram className="h-4 w-4 text-muted-foreground group-hover:text-[#F24C21] transition-colors" />
                 <span className="absolute -inset-0.5 rounded-lg bg-[#F24C21]/0 group-hover:bg-[#F24C21]/10 transition-all duration-300" />
               </a>
-              
               <a
-                href="https://linkedin.com/company/righthome"
+                href="https://www.linkedin.com/company/righthome-proptech/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
@@ -117,23 +116,21 @@ export function CtaFooter() {
                 <Linkedin className="h-4 w-4 text-muted-foreground group-hover:text-[#F24C21] transition-colors" />
                 <span className="absolute -inset-0.5 rounded-lg bg-[#F24C21]/0 group-hover:bg-[#F24C21]/10 transition-all duration-300" />
               </a>
-              
               <a
                 href="https://twitter.com/righthome"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
+                className="hidden group relative items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
                 title="Follow us on Twitter"
               >
                 <Twitter className="h-4 w-4 text-muted-foreground group-hover:text-[#F24C21] transition-colors" />
                 <span className="absolute -inset-0.5 rounded-lg bg-[#F24C21]/0 group-hover:bg-[#F24C21]/10 transition-all duration-300" />
               </a>
-              
               <a
                 href="https://tiktok.com/@righthome"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
+                className="hidden group relative items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-[#F24C21]/20 hover:border-[#F24C21]/50 hover:scale-110 hover:-translate-y-1"
                 title="Follow us on TikTok"
               >
                 <Music2 className="h-4 w-4 text-muted-foreground group-hover:text-[#F24C21] transition-colors" />

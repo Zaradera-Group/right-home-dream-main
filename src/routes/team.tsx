@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageShell, PageHeader } from "@/components/PageShell";
 import { Team } from "@/components/Team";
-import { Linkedin, Instagram } from "lucide-react";
+import { Linkedin } from "lucide-react";
 
 export const Route = createFileRoute("/team")({
   head: () => ({
@@ -9,12 +9,12 @@ export const Route = createFileRoute("/team")({
       { title: "Team — RIGHTHOME_PROPTECH" },
       {
         name: "description",
-        content: "Meet the RIGHTHOME team and connect with us on LinkedIn and Instagram.",
+        content: "Meet the person leading RIGHTHOME and connect on LinkedIn.",
       },
       { property: "og:title", content: "RIGHTHOME Team" },
       {
         property: "og:description",
-        content: "See the people behind RIGHTHOME and reach out via LinkedIn or Instagram.",
+        content: "Meet the leadership behind RIGHTHOME and reach out via LinkedIn.",
       },
     ],
   }),
@@ -26,8 +26,8 @@ function TeamPage() {
     <PageShell>
       <PageHeader
         eyebrow="OUR TEAM"
-        title="Meet the people building smarter property experiences"
-        subtitle="Connect with our leadership and reach out through LinkedIn or Instagram for partnership, media, or product inquiries."
+        title="Meet the person building smarter property experiences"
+        subtitle="Connect with our leadership through LinkedIn for partnership, media, or product inquiries."
         highlightedWord="smarter"
       />
 
@@ -42,7 +42,7 @@ function TeamPage() {
               conversations.
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex gap-3">
             <a
               href="https://www.linkedin.com/company/righthome"
               target="_blank"
@@ -51,15 +51,6 @@ function TeamPage() {
             >
               <Linkedin className="w-4 h-4" />
               LinkedIn
-            </a>
-            <a
-              href="https://www.instagram.com/righthome"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-white/10"
-            >
-              <Instagram className="w-4 h-4" />
-              Instagram
             </a>
           </div>
         </div>

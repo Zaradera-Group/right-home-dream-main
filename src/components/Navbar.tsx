@@ -16,8 +16,8 @@ const links = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-3 pt-3 md:px-4 md:pt-4">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/15 bg-background/95 px-4 py-3 shadow-[var(--shadow-card)] backdrop-blur-xl md:glass-strong md:px-6">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-background/85 px-3 py-3 shadow-[0_12px_36px_rgba(0,0,0,0.2)] backdrop-blur-xl md:px-4 md:py-4">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-1 md:px-2">
         <Link to="/" className="flex items-center gap-3 font-display font-bold text-lg">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
             <img src={logoUrl} alt="RIGHTHOME logo" className="h-8 w-8 object-contain" />
@@ -50,7 +50,7 @@ export function Navbar() {
         </div>
       </nav>
       {open && (
-        <div className="mx-auto mt-2 flex max-w-7xl flex-col gap-3 rounded-2xl border border-white/15 bg-background/95 p-4 text-sm shadow-[var(--shadow-card)] backdrop-blur-xl md:hidden">
+        <div className="mx-auto mt-3 flex max-w-7xl flex-col gap-3 rounded-2xl border border-white/15 bg-background/95 p-4 text-sm shadow-[var(--shadow-card)] backdrop-blur-xl md:hidden">
           {links.map((l) => (
             <Link
               key={l.to}

@@ -209,7 +209,7 @@ function RootComponent() {
       <div className="relative min-h-screen">
         <div
           className={`min-h-screen transition-[opacity,transform,filter] duration-700 ease-out ${
-            showSplash ? "opacity-0 scale-[0.985] blur-sm" : "opacity-100 scale-100 blur-0"
+            showSplash ? "opacity-0 scale-[0.985] blur-sm" : "opacity-100"
           }`}
           inert={showSplash ? true : undefined}
         >
@@ -220,7 +220,7 @@ function RootComponent() {
           className="fixed right-4 top-1/2 z-40 inline-flex max-w-[calc(100vw-2rem)] -translate-y-1/2 items-center gap-2 rounded-full border border-white/10 bg-[#060243]/90 px-3.5 py-3 text-xs font-semibold text-white shadow-[0_18px_48px_rgba(0,0,0,0.35)] backdrop-blur-xl transition hover:-translate-y-[calc(50%+2px)] hover:border-[#f24c21]/40 hover:bg-[#0d0a55]/95 hover:shadow-[0_0_0_1px_rgba(242,76,33,0.3),0_0_40px_rgba(242,76,33,0.25)] md:right-6 md:px-4 md:text-sm"
         >
           <MessageCircle className="h-4 w-4 text-primary" />
-          Ask RightAI
+          Chat with Ria
         </Link>
         {showSplash ? <SplashScreen /> : null}
       </div>

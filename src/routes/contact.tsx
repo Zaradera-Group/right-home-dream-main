@@ -117,6 +117,7 @@ function Contact() {
       widgetIdRef.current = turnstile.render(container, {
         sitekey: turnstileSiteKey,
         theme: "dark",
+        size: "flexible",
         callback: (token: string) => {
           setTurnstileToken(token);
           setTurnstileVerified(true);
@@ -288,13 +289,13 @@ function Contact() {
       <PageHeader
         eyebrow="GET IN TOUCH"
         title="Let's find your right home"
-        subtitle="Book a consultation, list a property, or partner with us. We respond within 24 hours."
+        subtitle="Book a tour, list a property, or partner with us. We respond within 24 hours."
         highlightedWord="right"
       />
 
       <section className="px-4 pb-20">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-5 lg:grid-cols-5">
-          <div className="space-y-4 lg:col-span-2">
+          <div className="min-w-0 space-y-4 lg:col-span-2">
             {[
               {
                 icon: Mail,
@@ -323,12 +324,12 @@ function Contact() {
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--gradient-primary)] shadow-[var(--shadow-glow)]">
                   <contact.icon className="h-5 w-5" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <div className="text-xs text-muted-foreground">{contact.label}</div>
                   {contact.href ? (
                     <a
                       href={contact.href}
-                      className="mt-0.5 inline-flex font-semibold transition hover:text-primary"
+                      className="mt-0.5 inline-flex max-w-full break-all font-semibold transition hover:text-primary"
                     >
                       {contact.value}
                     </a>
@@ -343,7 +344,7 @@ function Contact() {
           <form
             onSubmit={handleSubmit}
             noValidate
-            className="glass-strong relative isolate overflow-hidden rounded-3xl p-7 md:p-9 lg:col-span-3"
+            className="glass-strong relative isolate min-w-0 overflow-hidden rounded-3xl p-4 sm:p-6 md:p-9 lg:col-span-3"
           >
             <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_right,rgba(242,76,33,0.18),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.08),transparent_28%)]" />
             <div className="relative z-10">
@@ -419,8 +420,8 @@ function Contact() {
               </div>
 
               <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                <div className="glass rounded-3xl border border-white/15 bg-white/10 p-5 ring-2 ring-primary/20 shadow-[0_28px_80px_rgba(242,76,33,0.18)] transition duration-300 hover:-translate-y-1 w-full">
-                  <div className="flex items-center justify-between gap-3">
+                <div className="glass min-w-0 rounded-3xl border border-white/15 bg-white/10 p-4 sm:p-5 ring-2 ring-primary/20 shadow-[0_28px_80px_rgba(242,76,33,0.18)] transition duration-300 hover:-translate-y-1 w-full">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <div className="text-xs text-muted-foreground">Human verification</div>
                       <div className="mt-1 text-sm font-semibold text-foreground">
@@ -467,8 +468,8 @@ function Contact() {
                   </div>
                 </div>
 
-                <div className="glass rounded-3xl border border-white/15 bg-white/10 p-5 ring-2 ring-primary/20 shadow-[0_28px_80px_rgba(242,76,33,0.18)] transition duration-300 hover:-translate-y-1">
-                  <div className="flex items-center justify-between gap-3">
+                <div className="glass min-w-0 rounded-3xl border border-white/15 bg-white/10 p-4 sm:p-5 ring-2 ring-primary/20 shadow-[0_28px_80px_rgba(242,76,33,0.18)] transition duration-300 hover:-translate-y-1">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <div className="text-xs text-muted-foreground">Cloudflare verification</div>
                       <div className="mt-1 text-sm font-semibold text-foreground">
@@ -493,7 +494,7 @@ function Contact() {
                       <span>Cloudflare confirmed</span>
                     </div>
                   ) : null}
-                  <div className="mt-4 min-h-[140px] rounded-3xl border border-white/10 bg-white/5 p-4">
+                  <div className="mt-4 min-h-[140px] min-w-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-2 sm:p-4">
                     {turnstileSiteKey ? (
                       <div ref={turnstileContainerRef} className="turnstile-container min-h-[140px] w-full" />
                     ) : (

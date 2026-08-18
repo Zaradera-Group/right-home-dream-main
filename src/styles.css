@@ -65,13 +65,10 @@
   --shadow-card: 0 20px 60px -20px color-mix(in oklab, #000 60%, transparent);
   --shadow-soft: 0 8px 32px -8px color-mix(in oklab, #000 40%, transparent);
 
-  --gradient-primary: linear-gradient(135deg, #f24c21 0%, #ff7b4f 100%);
-  --gradient-dark: linear-gradient(135deg, #060243 0%, #0d0875 100%);
-  --gradient-hero: linear-gradient(135deg, #060243 0%, #1a0a6e 50%, #f24c21 200%);
-  --gradient-mesh:
-    radial-gradient(at 20% 30%, color-mix(in oklab, #f24c21 25%, transparent) 0px, transparent 50%),
-    radial-gradient(at 80% 20%, color-mix(in oklab, #4f3eff 30%, transparent) 0px, transparent 50%),
-    radial-gradient(at 50% 80%, color-mix(in oklab, #f24c21 15%, transparent) 0px, transparent 50%);
+  --gradient-primary: linear-gradient(135deg, #f24c21 0%, #f45b34 100%);
+  --gradient-dark: linear-gradient(135deg, #060243 0%, #090550 100%);
+  --gradient-hero: linear-gradient(135deg, #060243 0%, #0b0652 100%);
+  --gradient-mesh: radial-gradient(at 20% 20%, rgba(242, 76, 33, 0.08), transparent 42%);
 
   --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -157,10 +154,7 @@
 
 /* Gradient text from white to primary */
 .gradient-text-primary {
-  background: linear-gradient(180deg, #ffffff 0%, var(--color-primary) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--color-primary);
 }
 
 /* Arrow breathing animation used on small icons */
@@ -444,15 +438,15 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #ffffff 0%, #f24c21 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #ffffff;
 }
 
 .text-gradient-primary {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--color-primary);
+}
+
+@media (max-width: 639px) {
+  .turnstile-container {
+    align-items: flex-start;
+  }
 }
