@@ -18,17 +18,17 @@ import { BarChart3, Sparkles, ShieldCheck, TrendingUp } from "lucide-react";
 export const Route = createFileRoute("/analytics")({
   head: () => ({
     meta: [
-      { title: "Analytics — RIGHTHOME_PROPTECH" },
+      { title: "Analytics, RightHome Proptech" },
       {
         name: "description",
         content:
           "Unlock data-driven property insights, market forecasts, and investment analytics for smarter decisions.",
       },
-      { property: "og:title", content: "RIGHTHOME Analytics" },
+      { property: "og:title", content: "RightHome Proptech Analytics" },
       {
         property: "og:description",
         content:
-          "Use property trends, ROI forecasting, and neighborhood analytics to choose the best investments.",
+          "Use property trends, investment analysis and neighborhood analytics to choose the best opportunities.",
       },
     ],
   }),
@@ -41,7 +41,7 @@ function AnalyticsPage() {
       <PageHeader
         eyebrow="ANALYTICS"
         title="Data-powered insights for smarter property investments"
-        subtitle="Monitor market trends, compare neighborhoods, and forecast returns with RIGHTHOME analytics."
+        subtitle="Monitor market trends, compare neighborhoods, and assess opportunities with RightHome Proptech analytics."
         highlightedWord="smarter"
       />
 
@@ -138,8 +138,8 @@ function AnalyticsPage() {
               },
               {
                 icon: TrendingUp,
-                title: "ROI Forecasts",
-                desc: "Predict rental and resale performance using AI-driven investment scoring.",
+                title: "Investment Analysis",
+                desc: "Assess rental and resale potential using AI-driven property insights.",
               },
               {
                 icon: ShieldCheck,
@@ -265,11 +265,8 @@ function ValuationTrendChart() {
 
 function DemandBarChart() {
   const data = [
-    { label: "GRA", value: 32 },
-    { label: "Trans-Amadi", value: 28 },
-    { label: "Omagwa", value: 24 },
-    { label: "Rumuokoro", value: 20 },
-    { label: "Eliozu", value: 17 },
+    { label: "Ali School Rd", value: 32 },
+    { label: "Omagwa Station", value: 24 },
   ];
 
   return (

@@ -40,13 +40,13 @@ function createMathChallenge() {
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact - RIGHTHOME_PROPTECH" },
+      { title: "Contact, RightHome Proptech" },
       {
         name: "description",
         content:
-          "Talk to the RIGHTHOME team - book a property consultation, list your property or partner with us.",
+          "Talk to the RightHome Proptech team, book a property tour, list your property or partner with us.",
       },
-      { property: "og:title", content: "Contact RIGHTHOME" },
+      { property: "og:title", content: "Contact RightHome Proptech" },
       { property: "og:description", content: "We respond within 24 hours." },
     ],
   }),

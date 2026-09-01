@@ -1,6 +1,6 @@
 import { MapPin, Layers } from "lucide-react";
-import prop1 from "@/assets/property-1.jpg";
-import prop4 from "@/assets/property-4.jpg";
+import prop1 from "@/assets/development-site-1.jpeg";
+import prop4 from "@/assets/development-site-4.jpeg";
 
 export function NigeriaMap() {
   return (
@@ -9,7 +9,7 @@ export function NigeriaMap() {
         <div className="text-center mb-10">
           <div className="text-xs text-primary font-mono tracking-wider">PROPERTIES</div>
           <h2 className="text-3xl md:text-5xl font-display font-bold mt-2">On the ground in Nigeria</h2>
-          <p className="text-muted-foreground mt-3 max-w-xl mx-auto">Active plots in Igwurutali and Omagwa — explore aerial drone scans and live availability.</p>
+          <p className="text-muted-foreground mt-3 max-w-xl mx-auto">Active properties at Igwuruta Ali School Road and Omagwa Station — explore current site views and availability.</p>
         </div>
 
         <div className="glass-strong rounded-3xl p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -41,7 +41,7 @@ export function NigeriaMap() {
                   <animate attributeName="r" from="6" to="24" dur="2s" repeatCount="indefinite"/>
                   <animate attributeName="opacity" from="0.5" to="0" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <text x="535" y="318" fill="#fff" fontSize="12" fontFamily="Inter">Igwurutali</text>
+                <text x="535" y="318" fill="#fff" fontSize="12" fontFamily="Inter">Igwuruta Ali School Road</text>
               </g>
               <g>
                 <circle cx="470" cy="350" r="6" fill="#F24C21"/>
@@ -49,7 +49,7 @@ export function NigeriaMap() {
                   <animate attributeName="r" from="6" to="24" dur="2.5s" repeatCount="indefinite"/>
                   <animate attributeName="opacity" from="0.5" to="0" dur="2.5s" repeatCount="indefinite"/>
                 </circle>
-                <text x="380" y="375" fill="#fff" fontSize="12" fontFamily="Inter">Omagwa</text>
+                <text x="380" y="375" fill="#fff" fontSize="12" fontFamily="Inter">Omagwa Station</text>
               </g>
             </svg>
             <div className="absolute top-3 right-3 glass-strong rounded-full px-3 py-1.5 text-xs flex items-center gap-2">
@@ -60,12 +60,12 @@ export function NigeriaMap() {
           {/* location cards */}
           <div className="flex flex-col gap-4">
             {[
-              { img: prop1, name: "Igwurutali Estate", units: "24 plots", price: "from ₦18M" },
-              { img: prop4, name: "Omagwa Plots", units: "48 plots", price: "from ₦12M" },
+              { img: prop1, name: "Igwuruta Ali School Road", units: "24 plots", price: "from ₦18M" },
+              { img: prop4, name: "Omagwa Station", units: "48 plots", price: "from ₦12M" },
             ].map((l) => (
               <div key={l.name} className="glass rounded-2xl overflow-hidden group hover:bg-white/10 transition cursor-pointer">
                 <div className="aspect-[16/9] overflow-hidden">
-                  <img src={l.img} alt={l.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+                  <img src={l.img} alt={l.name} loading="lazy" decoding="async" className="media-polished w-full h-full object-cover group-hover:scale-110 transition duration-700" />
                 </div>
                 <div className="p-4">
                   <div className="flex items-center gap-2 text-primary text-xs"><MapPin className="w-3 h-3" /> Rivers State</div>

@@ -36,7 +36,7 @@ function PropertyDetail() {
               <img
                 src={property.img}
                 alt={property.loc}
-                className="h-[320px] w-full object-cover md:h-[520px]"
+                className="media-polished h-[320px] w-full object-cover md:h-[520px]"
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-[#05031f] via-transparent to-transparent" />
               <div className="absolute left-4 top-4 rounded-full glass-strong px-3 py-1.5 text-xs flex items-center gap-2">

@@ -3,7 +3,7 @@ import { Users, Key, TrendingUp, Building2, Briefcase } from "lucide-react";
 const personas = [
   { icon: Users, title: "Buyers", desc: "Find verified homes with AI-matched listings and side-by-side comparisons.", features: ["AI matching", "Virtual tours", "Title checks"] },
   { icon: Key, title: "Renters", desc: "Lease faster with digital KYC, secure deposits, and in-app maintenance.", features: ["Digital lease", "Escrow", "Tenant chat"] },
-  { icon: TrendingUp, title: "Property Seekers", desc: "Find your next home faster with smart search, verified homes, and guided support for confident decisions.", features: ["ROI forecast", "Fractional", "Heatmaps"] },
+  { icon: TrendingUp, title: "Property Seekers", desc: "Find your next home faster with smart search, verified homes, and guided support for confident decisions.", features: ["Investment insight", "Property access", "Market heatmaps"] },
   { icon: Building2, title: "Developers", desc: "List, market, and sell new builds with built-in CRM and on-chain titles.", features: ["Project CRM", "Off-plan tools", "Smart contracts"] },
   { icon: Briefcase, title: "Corporates", desc: "Workspaces, staff housing and portfolio dashboards in one place.", features: ["Workspaces", "Portfolio", "Reports"] },
 ];

@@ -18,14 +18,14 @@ import { Personas } from "@/components/Personas";
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Services - RIGHTHOME_PROPTECH" },
+      { title: "Services, RightHome Proptech" },
       {
         name: "description",
         content:
-          "AI matching, virtual tours, smart investments, verified listings, blockchain transactions and IoT property management.",
+          "AI property location, virtual tours, smart property investment, verified listings, blockchain transactions and property development.",
       },
-      { property: "og:title", content: "RIGHTHOME Services" },
-      { property: "og:description", content: "The full proptech stack - AI, Blockchain, IoT." },
+      { property: "og:title", content: "RightHome Proptech Services" },
+      { property: "og:description", content: "The full proptech stack, AI, blockchain and property intelligence." },
     ],
   }),
   component: Services,
@@ -34,12 +34,12 @@ export const Route = createFileRoute("/services")({
 const services = [
   {
     icon: Sparkles,
-    title: "AI Property Match",
-    desc: "Personalized listings based on browsing, budget and lifestyle. Our model learns what you actually want.",
+    title: "AI Property Location",
+    desc: "Location-focused property discovery based on budget, goals and preferred surroundings.",
     details:
       "We combine search behavior, saved homes and budget signals to surface properties that feel curated instead of generic.",
     proof: ["Behavior-aware ranking", "Budget and lifestyle filters", "Daily curated picks"],
-    outcome: "Shorter search cycles and better-fit property suggestions.",
+    outcome: "Shorter search cycles and better location-based property suggestions.",
   },
   {
     icon: Eye,
@@ -52,11 +52,11 @@ const services = [
   },
   {
     icon: TrendingUp,
-    title: "Smart Investments",
-    desc: "Predictive ROI heatmaps and fractional ownership for high-yield assets.",
+    title: "Smart Property Investment",
+    desc: "Market insights and property comparisons for informed investment decisions.",
     details:
-      "Use trend overlays, ROI snapshots and demand estimates to understand where a property may perform before you commit.",
-    proof: ["ROI forecasting", "Fractional ownership", "Market heatmaps"],
+      "Use trend overlays, performance snapshots and demand estimates to understand a property's potential before you commit.",
+    proof: ["Investment analysis", "Property comparisons", "Market heatmaps"],
     outcome: "Clearer investment decisions with better context.",
   },
   {
@@ -79,12 +79,12 @@ const services = [
   },
   {
     icon: Boxes,
-    title: "Property Management",
-    desc: "Dashboards for landlords: rent, maintenance, tenant chat plus live IoT.",
+    title: "Property Development",
+    desc: "Practical support for land assessment, planning, construction progress and project delivery.",
     details:
-      "Track rent, handle maintenance requests and monitor connected devices from a single operational view.",
-    proof: ["Rent collection", "Maintenance tickets", "IoT monitoring"],
-    outcome: "Less manual admin and faster response times.",
+      "Follow property development from site assessment and planning through construction milestones and completion.",
+    proof: ["Site assessment", "Development planning", "Progress visibility"],
+    outcome: "Clearer development decisions and better project visibility.",
   },
 ] as const;
 
@@ -98,7 +98,7 @@ function Services() {
       <PageHeader
         eyebrow="OUR SERVICES"
         title="The full proptech stack, in one platform"
-        subtitle="Six services that cover the entire property lifecycle - from discovery to ownership to ongoing management."
+        subtitle="Six services that cover the property journey, from location discovery to ownership and development."
         highlightedWord="platform"
       />
       <section className="px-4 pb-12">

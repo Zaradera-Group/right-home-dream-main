@@ -1,11 +1,11 @@
 import { Fragment } from "react";
-import { Brain, Link2, Wifi, ArrowRight } from "lucide-react";
+import { Brain, Link2, MapPinned, ArrowRight } from "lucide-react";
 
 export function AdvantageFlow() {
   const nodes = [
     { icon: Brain, label: "AI", desc: "Predictive valuation & recommendations" },
     { icon: Link2, label: "Blockchain", desc: "Tamper-proof, on-chain transactions" },
-    { icon: Wifi, label: "IoT", desc: "Live utilities, security & smart access" },
+    { icon: MapPinned, label: "Property Insight", desc: "Location, market & development guidance" },
   ];
   return (
     <section className="px-4 py-20">

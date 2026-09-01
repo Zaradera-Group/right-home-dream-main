@@ -6,7 +6,7 @@ const teamMembers = [
     name: "Wisdom Chukwunonso Ndubuisi",
     role: "Founder & CEO",
     photo: wisdomPhoto,
-    bio: "Leading RIGHTHOME's mission to make property ownership across Africa smarter, more secure, and more accessible.",
+    bio: "Leading RightHome Proptech's mission to make property ownership across Africa smarter, more secure, and more accessible.",
     linkedin:
       "https://www.linkedin.com/in/wisdom-chukwunonso-ndubuisi-mba-mnim-mcilrm-mcib-92a11487/",
   },
@@ -23,7 +23,7 @@ export function Team() {
                 <img
                   src={member.photo}
                   alt={member.name}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="media-polished h-full w-full object-cover transition duration-500 group-hover:scale-105"
                 />
               </div>
               <div className="flex flex-1 flex-col p-6">

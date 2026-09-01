@@ -75,14 +75,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "RIGHTHOME_PROPTECH - AI property, blockchain title security" },
+      { title: "RightHome Proptech, AI property and blockchain title security" },
       {
         name: "description",
         content:
-          "RIGHTHOME is Africa's intelligent proptech platform for verified listings, investment insights, and smart ownership.",
+          "RightHome Proptech is Africa's intelligent property platform for verified listings, investment insights, and smart ownership.",
       },
-      { name: "author", content: "RIGHTHOME" },
-      { property: "og:title", content: "RIGHTHOME" },
+      { name: "author", content: "RightHome Proptech" },
+      { property: "og:title", content: "RightHome Proptech" },
       {
         property: "og:description",
         content:
@@ -217,7 +217,7 @@ function RootComponent() {
         </div>
         <Link
           to="/chat"
-          className="fixed right-4 top-1/2 z-40 inline-flex max-w-[calc(100vw-2rem)] -translate-y-1/2 items-center gap-2 rounded-full border border-white/10 bg-[#060243]/90 px-3.5 py-3 text-xs font-semibold text-white shadow-[0_18px_48px_rgba(0,0,0,0.35)] backdrop-blur-xl transition hover:-translate-y-[calc(50%+2px)] hover:border-[#f24c21]/40 hover:bg-[#0d0a55]/95 hover:shadow-[0_0_0_1px_rgba(242,76,33,0.3),0_0_40px_rgba(242,76,33,0.25)] md:right-6 md:px-4 md:text-sm"
+          className="fixed bottom-4 right-4 z-40 inline-flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-white/10 bg-[#060243]/90 px-3.5 py-3 text-xs font-semibold text-white shadow-[0_18px_48px_rgba(0,0,0,0.35)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-[#f24c21]/40 hover:bg-[#0d0a55]/95 hover:shadow-[0_0_0_1px_rgba(242,76,33,0.3),0_0_40px_rgba(242,76,33,0.25)] md:bottom-6 md:right-6 md:px-4 md:text-sm"
         >
           <MessageCircle className="h-4 w-4 text-primary" />
           Chat with Ria
@@ -237,10 +237,10 @@ function SplashScreen() {
       <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.04)_46%,transparent_54%)] opacity-0 animate-splash-sheen" />
       <div className="relative space-y-8 text-center">
         <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_0_80px_rgba(242,76,33,0.35)] backdrop-blur-xl">
-          <img src={logoUrl} alt="RIGHTHOME" className="h-14 w-14 animate-splash-logo" />
+          <img src={logoUrl} alt="RightHome Proptech" className="h-14 w-14 animate-splash-logo" />
         </div>
         <div className="space-y-4">
-          <div className="text-3xl font-semibold tracking-tight text-white">RIGHTHOME</div>
+          <div className="text-3xl font-semibold tracking-tight text-white">RightHome Proptech</div>
           <div className="mx-auto max-w-sm text-sm leading-relaxed text-white/70">
             Loading a faster, cleaner property experience.
           </div>

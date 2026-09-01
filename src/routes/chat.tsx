@@ -10,14 +10,14 @@ import type { RightAIChart, RightAIMessage } from "@/lib/rightai";
 export const Route = createFileRoute("/chat")({
   head: () => ({
     meta: [
-      { title: "RightAI Chat - RIGHTHOME_PROPTECH" },
+      { title: "RightAI Chat, RightHome Proptech" },
       {
         name: "description",
         content:
           "Chat with RightAI to ask questions about property listings, investment, verification, and market intelligence.",
       },
       { property: "og:title", content: "RightAI Chat" },
-      { property: "og:description", content: "Talk to the RIGHTHOME AI concierge." },
+      { property: "og:description", content: "Talk to the RightHome Proptech AI concierge." },
     ],
   }),
   component: Chat,
@@ -33,7 +33,7 @@ const initialMessages: Message[] = [
     id: "welcome",
     role: "assistant",
     content:
-      "Hi there - I'm RightAI. Ask me about verified listings, Port Harcourt investment zones, property verification, or how to get started with RIGHTHOME.",
+      "Hi there, I'm RightAI. Ask me about verified listings at Igwuruta Ali School Road and Omagwa Station, property verification, or how to get started with RightHome Proptech.",
     chart: null,
   },
 ];
@@ -181,10 +181,10 @@ function Chat() {
   };
 
   const quickPrompts = [
-    "What are the best investment zones in Port Harcourt right now?",
-    "How do I verify a property title on RIGHTHOME?",
+    "Compare Igwuruta Ali School Road and Omagwa Station for investment.",
+    "How do I verify a property title on RightHome Proptech?",
     "Show me affordable 3-bedroom homes under NGN 80M.",
-    "Compare ROI across top Port Harcourt growth zones with a chart.",
+    "Compare ROI for our two property locations with a chart.",
   ];
 
   return (
@@ -192,7 +192,7 @@ function Chat() {
       <PageHeader
         eyebrow="RIGHTAI CHAT"
         title="Talk to our AI property concierge"
-        subtitle="Ask questions, get instant market insights, and discover the RIGHTHOME path for your next property decision."
+        subtitle="Ask questions, get instant market insights, and discover the RightHome Proptech path for your next property decision."
         highlightedWord="AI"
       />
 

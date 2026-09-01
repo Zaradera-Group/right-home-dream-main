@@ -4,10 +4,10 @@ import { PageShell, PageHeader } from "@/components/PageShell";
 export const Route = createFileRoute("/press")({
   head: () => ({
     meta: [
-      { title: "Press — RIGHTHOME_PROPTECH" },
-      { name: "description", content: "Media and press information for RIGHTHOME." },
-      { property: "og:title", content: "RIGHTHOME Press" },
-      { property: "og:description", content: "Find the latest RIGHTHOME news and media contacts." },
+      { title: "Press, RightHome Proptech" },
+      { name: "description", content: "Media and press information for RightHome Proptech." },
+      { property: "og:title", content: "RightHome Proptech Press" },
+      { property: "og:description", content: "Find the latest RightHome Proptech news and media contacts." },
     ],
   }),
   component: Press,
@@ -18,7 +18,7 @@ function Press() {
     <PageShell>
       <PageHeader
         eyebrow="PRESS"
-        title="RIGHTHOME in the news"
+        title="RightHome Proptech in the news"
         subtitle="Get the latest announcements, media resources, and press contacts for our proptech platform."
         highlightedWord="news"
       />

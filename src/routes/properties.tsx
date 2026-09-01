@@ -9,13 +9,13 @@ import { propertyListings, type PropertyCategory } from "@/lib/property-listings
 export const Route = createFileRoute("/properties")({
   head: () => ({
     meta: [
-      { title: "Properties - RIGHTHOME_PROPTECH" },
+      { title: "Properties, RightHome Proptech" },
       {
         name: "description",
         content:
-          "Browse verified properties across Nigeria - Igwurutali, Omagwa and beyond. Homes, apartments, workspaces and plots.",
+          "Browse verified properties at Igwuruta Ali School Road and Omagwa Station.",
       },
-      { property: "og:title", content: "RIGHTHOME Properties" },
+      { property: "og:title", content: "RightHome Proptech Properties" },
       { property: "og:description", content: "Verified listings with title-backed details." },
     ],
   }),
@@ -96,7 +96,8 @@ function Properties() {
                     src={property.img}
                     alt={property.loc}
                     loading="lazy"
-                    className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                    decoding="async"
+                    className="media-polished h-full w-full object-cover transition duration-700 group-hover:scale-110"
                   />
                   <div className="absolute left-3 top-3 rounded-full glass-strong px-2.5 py-1 text-[11px] flex items-center gap-1">
                     <ShieldCheck className="h-3 w-3 text-success" /> Verified

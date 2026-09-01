@@ -4,10 +4,10 @@ import { PageShell, PageHeader } from "@/components/PageShell";
 export const Route = createFileRoute("/careers")({
   head: () => ({
     meta: [
-      { title: "Careers — RIGHTHOME_PROPTECH" },
-      { name: "description", content: "Explore career opportunities at RIGHTHOME." },
-      { property: "og:title", content: "RIGHTHOME Careers" },
-      { property: "og:description", content: "Join the RIGHTHOME team and help build Africa's smartest proptech platform." },
+      { title: "Careers, RightHome Proptech" },
+      { name: "description", content: "Explore career opportunities at RightHome Proptech." },
+      { property: "og:title", content: "RightHome Proptech Careers" },
+      { property: "og:description", content: "Join the RightHome Proptech team and help build Africa's smartest property platform." },
     ],
   }),
   component: Careers,
@@ -18,7 +18,7 @@ function Careers() {
     <PageShell>
       <PageHeader
         eyebrow="CAREERS"
-        title="Grow with RIGHTHOME"
+        title="Grow with RightHome Proptech"
         subtitle="We are hiring builders, operators, and product thinkers for property, AI, blockchain, and real estate experiences."
         highlightedWord="Grow"
       />

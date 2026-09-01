@@ -9,13 +9,13 @@ import { Activity, TrendingUp, BarChart3, DollarSign } from "lucide-react";
 export const Route = createFileRoute("/insights")({
   head: () => ({
     meta: [
-      { title: "Market Insights — RIGHTHOME_PROPTECH" },
+      { title: "Market Insights, RightHome Proptech" },
       {
         name: "description",
         content:
           "Live property intelligence, AI-driven valuations, ROI heatmaps and market volatility for Nigerian real estate.",
       },
-      { property: "og:title", content: "RIGHTHOME Market Insights" },
+      { property: "og:title", content: "RightHome Proptech Market Insights" },
       { property: "og:description", content: "Predictive analytics for property investors." },
     ],
   }),
@@ -84,12 +84,8 @@ function Insights() {
               <h3 className="text-xl font-display font-semibold mt-1 mb-5">By zone</h3>
               <div className="space-y-3">
                 {[
-                  { z: "Igwurutali", v: 21 },
-                  { z: "Omagwa", v: 18 },
-                  { z: "GRA Phase II", v: 14 },
-                  { z: "Trans-Amadi", v: 19 },
-                  { z: "Eliozu", v: 12 },
-                  { z: "Rumuokoro", v: 9 },
+                  { z: "Igwuruta Ali School Road", v: 21 },
+                  { z: "Omagwa Station", v: 18 },
                 ].map((z) => (
                   <div key={z.z}>
                     <div className="flex justify-between text-xs mb-1.5">

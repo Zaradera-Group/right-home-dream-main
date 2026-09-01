@@ -3,6 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Eye, MapPin, MessageCircle, Play, Video } from "lucide-react";
 
 import { PageHeader, PageShell } from "@/components/PageShell";
+import developmentHero from "@/assets/development-hero.jpeg";
+import developmentPoster from "@/assets/development-site-2.jpeg";
+import developmentPortrait from "@/assets/development-tour-portrait.jpeg";
+import developmentVideo from "@/assets/development-walkthrough.mp4";
 
 type TourItem = {
   title: string;
@@ -18,51 +22,48 @@ type TourItem = {
 
 const featuredTours: TourItem[] = [
   {
-    title: "Abijo Luxury Villa",
-    caption: "High-resolution photo tour with exterior and living space highlights.",
-    image:
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
+    title: "Igwuruta Ali School Road Progress",
+    caption: "A current photo view of active boundary and drainage construction.",
+    image: developmentHero,
     kind: "image",
     details:
-      "A polished walkthrough of the villa's frontage, lounge, dining space, and landscaped outdoor areas.",
-    location: "Abijo, Lagos",
-    status: "Photo tour",
+      "A clear on-site look at the ongoing blockwork, drainage alignment, and surrounding development area.",
+    location: "Igwuruta Ali School Road",
+    status: "Progress photos",
   },
   {
-    title: "City Penthouse Video Tour",
-    caption: "A guided walkthrough of a premium penthouse with city views.",
-    video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-    poster:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80",
+    title: "Development Video Walkthrough",
+    caption: "A real on-site walkthrough showing the current stage of construction.",
+    video: developmentVideo,
+    poster: developmentPoster,
     kind: "video",
     details:
-      "A full-screen walkthrough with motion, room transitions, and a guided look at the skyline-facing rooms.",
-    location: "Victoria Island, Lagos",
-    status: "Video tour",
+      "A full-screen progress walkthrough showing the drainage route, boundary works, and active site conditions.",
+    location: "Omagwa Station",
+    status: "Site video",
   },
   {
-    title: "Riverside Duplex Gallery",
-    caption: "A curated image preview of architect-designed indoor and outdoor spaces.",
-    image:
-      "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80",
+    title: "Drainage and Boundary Works",
+    caption: "A close progress view of the blockwork and drainage channel.",
+    image: developmentPortrait,
     kind: "image",
     details:
-      "A gallery-style preview of the duplex, including shared spaces, bedrooms, and the surrounding environment.",
-    location: "Riverside, Port Harcourt",
-    status: "Image gallery",
+      "A documentary view of the constructed channel, boundary alignment, and materials currently on site.",
+    location: "Igwuruta Ali School Road",
+    status: "Progress gallery",
   },
 ];
 
 export const Route = createFileRoute("/virtual-tours")({
   head: () => ({
     meta: [
-      { title: "Virtual Tours - RIGHTHOME_PROPTECH" },
+      { title: "Virtual Tours, RightHome Proptech" },
       {
         name: "description",
         content:
           "Explore properties remotely with immersive virtual tours, live walkthroughs, and 3D previews.",
       },
-      { property: "og:title", content: "RIGHTHOME Virtual Tours" },
+      { property: "og:title", content: "RightHome Proptech Virtual Tours" },
       {
         property: "og:description",
         content:
@@ -159,7 +160,7 @@ function VirtualToursPage() {
               {
                 icon: Play,
                 title: "VR and Mobile Ready",
-                desc: "Use any device - desktop, phone, or VR headset - to experience the property as if you were there.",
+                desc: "Use any device, desktop, phone or VR headset, to experience the property as if you were there.",
               },
             ].map((item) => (
               <div key={item.title} className="glass-strong rounded-3xl p-8">
@@ -216,13 +217,13 @@ function VirtualToursPage() {
                         <img
                           src={item.poster}
                           alt={item.title}
-                          className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                          className="media-polished h-full w-full object-cover transition duration-700 group-hover:scale-110"
                         />
                       ) : (
                         <img
                           src={item.image}
                           alt={item.title}
-                          className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                          className="media-polished h-full w-full object-cover transition duration-700 group-hover:scale-110"
                         />
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
@@ -360,7 +361,7 @@ function VirtualToursPage() {
                       muted
                       playsInline
                       poster={selectedTour.poster}
-                      className="h-[320px] w-full object-cover md:h-[460px]"
+                      className="media-polished h-[320px] w-full object-cover md:h-[460px]"
                     >
                       <source src={selectedTour.video} type="video/mp4" />
                       Your browser does not support video playback.
@@ -369,7 +370,7 @@ function VirtualToursPage() {
                     <img
                       src={selectedTour.image}
                       alt={selectedTour.title}
-                      className="h-[320px] w-full object-cover md:h-[460px]"
+                      className="media-polished h-[320px] w-full object-cover md:h-[460px]"
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-tr from-[#05031f] via-transparent to-transparent" />

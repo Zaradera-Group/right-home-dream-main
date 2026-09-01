@@ -36,13 +36,13 @@ function CountStat({ label, value, prefix, suffix }: CountStatProps) {
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — RIGHTHOME" },
+      { title: "About RightHome Proptech" },
       {
         name: "description",
         content:
-          "RIGHTHOME is Africa's intelligent proptech platform — built to make property transactions transparent, secure and smart.",
+          "RightHome Proptech is Africa's intelligent property platform, built to make property transactions transparent, secure and smart.",
       },
-      { property: "og:title", content: "About RIGHTHOME" },
+      { property: "og:title", content: "About RightHome Proptech" },
       {
         property: "og:description",
         content:
@@ -79,7 +79,7 @@ function About() {
             {
               icon: Zap,
               title: "Our Edge",
-              desc: "We're the only platform fusing AI matching, blockchain titles and IoT monitoring into one experience.",
+              desc: "We bring together AI property discovery, blockchain title security and real estate intelligence in one experience.",
             },
           ].map((c) => (
             <div key={c.title} className="glass-strong rounded-2xl p-7">
@@ -107,7 +107,7 @@ function About() {
             <ul className="mt-8 space-y-3 text-sm text-muted-foreground">
               <li>• AI-powered discovery tailored to your budget, location, and goals.</li>
               <li>• Blockchain-secured title checks and transaction transparency.</li>
-              <li>• Digital leasing, management, and IoT monitoring for long-term ownership.</li>
+              <li>• Property development guidance and long-term ownership support.</li>
             </ul>
           </div>
 
@@ -164,7 +164,7 @@ function About() {
             },
             {
               title: "Regulatory alignment",
-              desc: "RIGHTHOME works with local title experts, surveyors, and legal partners to make each transaction compliant and clear.",
+              desc: "RightHome Proptech works with local title experts, surveyors, and legal partners to make each transaction compliant and clear.",
             },
             {
               title: "Accessible innovation",

@@ -4,10 +4,10 @@ import { PageShell, PageHeader } from "@/components/PageShell";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy — RIGHTHOME_PROPTECH" },
-      { name: "description", content: "Privacy policy for RIGHTHOME users." },
-      { property: "og:title", content: "RIGHTHOME Privacy" },
-      { property: "og:description", content: "How RIGHTHOME protects your personal data." },
+      { title: "Privacy, RightHome Proptech" },
+      { name: "description", content: "Privacy policy for RightHome Proptech users." },
+      { property: "og:title", content: "RightHome Proptech Privacy" },
+      { property: "og:description", content: "How RightHome Proptech protects your personal data." },
     ],
   }),
   component: Privacy,
@@ -19,7 +19,7 @@ function Privacy() {
       <PageHeader
         eyebrow="PRIVACY"
         title="How we protect your data"
-        subtitle="RIGHTHOME is committed to keeping your information safe, private, and secure while you explore property opportunities."
+        subtitle="RightHome Proptech is committed to keeping your information safe, private, and secure while you explore property opportunities."
         highlightedWord="protect"
       />
       <section className="px-4 pb-20">

@@ -10,7 +10,7 @@ const footerLinks = [
       { label: "Listings", to: "/properties" },
       { label: "Virtual Tours", to: "/virtual-tours" },
       { label: "Analytics", to: "/analytics" },
-      { label: "Management", to: "/management" },
+      { label: "Property Development", to: "/management" },
     ],
   },
   {
@@ -72,16 +72,23 @@ export function CtaFooter() {
 
         <footer className="mt-16 grid grid-cols-2 gap-8 text-sm md:grid-cols-5">
           <div className="col-span-2">
-            <div className="flex items-center gap-3 text-lg font-display font-bold">
-              <img
-                src={logoUrl}
-                alt="RIGHTHOME logo"
-                className="h-8 w-8 rounded-2xl border border-white/10 bg-white/5 object-contain"
-              />
-              RIGHT<span className="text-primary">HOME</span>
-            </div>
+            <Link
+              to="/"
+              className="flex items-center gap-3 whitespace-nowrap font-display text-lg font-bold"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
+                <img
+                  src={logoUrl}
+                  alt="RightHome Proptech logo"
+                  className="h-8 w-8 object-contain"
+                />
+              </div>
+              <span>
+                Right<span className="text-primary">Home</span> Proptech
+              </span>
+            </Link>
             <p className="mt-3 max-w-xs text-xs text-muted-foreground">
-              Africa's intelligent proptech platform - AI, blockchain, IoT.
+              Africa's intelligent proptech platform, AI, blockchain and property intelligence.
             </p>
             {/* Social Media Links */}
             <div className="mt-6 flex items-center gap-3">
@@ -161,8 +168,8 @@ export function CtaFooter() {
         </footer>
 
         <div className="mt-10 flex flex-wrap justify-between gap-2 border-t border-white/10 pt-6 text-xs text-muted-foreground">
-          <span>&copy; 2026 RightHome. Built in Nigeria.</span>
-          <span>Powered by AI - Secured by Blockchain</span>
+          <span>&copy; 2026 RightHome Proptech. Built in Nigeria.</span>
+          <span>Powered by AI, secured by blockchain</span>
         </div>
       </div>
     </section>

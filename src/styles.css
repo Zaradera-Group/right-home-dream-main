@@ -117,7 +117,7 @@
   }
 }
 
-/* Global interactive styles for RIGHTHOME_PROPTECH brand */
+/* Global interactive styles for the RightHome Proptech brand */
 .link-primary {
   color: var(--color-primary);
   transition: color 280ms var(--transition-smooth), text-shadow 280ms var(--transition-smooth), transform 280ms var(--transition-smooth);
@@ -435,6 +435,14 @@ body {
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+/* Gentle presentation polish for real property media without altering site details. */
+.media-polished {
+  filter: contrast(1.06) saturate(1.04) brightness(1.01);
+  image-rendering: auto;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .text-gradient {

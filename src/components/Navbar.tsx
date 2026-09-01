@@ -18,15 +18,15 @@ export function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-background/85 px-3 py-3 shadow-[0_12px_36px_rgba(0,0,0,0.2)] backdrop-blur-xl md:px-4 md:py-4">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-1 md:px-2">
-        <Link to="/" className="flex items-center gap-3 font-display font-bold text-lg">
+        <Link to="/" className="flex items-center gap-3 whitespace-nowrap font-display font-bold text-lg">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
-            <img src={logoUrl} alt="RIGHTHOME logo" className="h-8 w-8 object-contain" />
+            <img src={logoUrl} alt="RightHome Proptech logo" className="h-8 w-8 object-contain" />
           </div>
           <span>
-            RIGHT<span className="text-primary">HOME</span>
+            Right<span className="text-primary">Home</span> Proptech
           </span>
         </Link>
-        <div className="hidden md:flex items-center gap-7 text-sm">
+        <div className="hidden lg:flex items-center gap-7 text-sm">
           {links.slice(1).map((l) => (
             <Link
               key={l.to}
@@ -43,14 +43,14 @@ export function Navbar() {
           <button
             onClick={() => setOpen(!open)}
             aria-label="Toggle navigation menu"
-            className="rounded-xl border border-white/10 bg-white/10 p-2 text-foreground shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-md transition hover:bg-white/15 md:hidden"
+            className="rounded-xl border border-white/10 bg-white/10 p-2 text-foreground shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-md transition hover:bg-white/15 lg:hidden"
           >
             <Menu className="w-5 h-5" />
           </button>
         </div>
       </nav>
       {open && (
-        <div className="mx-auto mt-3 flex max-w-7xl flex-col gap-3 rounded-2xl border border-white/15 bg-background/95 p-4 text-sm shadow-[var(--shadow-card)] backdrop-blur-xl md:hidden">
+        <div className="mx-auto mt-3 flex max-w-7xl flex-col gap-3 rounded-2xl border border-white/15 bg-background/95 p-4 text-sm shadow-[var(--shadow-card)] backdrop-blur-xl lg:hidden">
           {links.map((l) => (
             <Link
               key={l.to}

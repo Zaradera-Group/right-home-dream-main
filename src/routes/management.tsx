@@ -1,19 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageShell, PageHeader } from "@/components/PageShell";
-import { Wrench, ShieldCheck, CalendarDays, Building2 } from "lucide-react";
+import { MapPinned, Ruler, HardHat } from "lucide-react";
 
 export const Route = createFileRoute("/management")({
   head: () => ({
     meta: [
-      { title: "Management — RIGHTHOME_PROPTECH" },
+      { title: "Property Development, RightHome Proptech" },
       {
         name: "description",
-        content: "Manage properties with smart operations, tenant workflows, and IoT monitoring for safer ownership.",
+        content: "Move from land assessment to project completion with practical property development guidance.",
       },
-      { property: "og:title", content: "RIGHTHOME Property Management" },
+      { property: "og:title", content: "RightHome Proptech Property Development" },
       {
         property: "og:description",
-        content: "Simplify maintenance, leases, and asset management with intelligent property operations tools.",
+        content: "Plan, monitor and understand property development with clearer project information.",
       },
     ],
   }),
@@ -24,10 +24,10 @@ function ManagementPage() {
   return (
     <PageShell>
       <PageHeader
-        eyebrow="MANAGEMENT"
-        title="Smart property operations for owners and managers"
-        subtitle="Keep assets running smoothly with maintenance workflows, tenant support, and connected building intelligence."
-        highlightedWord="operations"
+        eyebrow="PROPERTY DEVELOPMENT"
+        title="Clear property development from land to completion"
+        subtitle="Understand the site, follow construction progress and make better-informed development decisions."
+        highlightedWord="development"
       />
 
       <section className="px-4 pb-20">
@@ -35,19 +35,19 @@ function ManagementPage() {
           <div className="grid gap-6 lg:grid-cols-3">
             {[
               {
-                icon: Wrench,
-                title: "Maintenance workflows",
-                desc: "Track repairs, schedule vendors, and approve work with transparent status updates.",
+                icon: MapPinned,
+                title: "Land and site assessment",
+                desc: "Review location, access, documentation and development suitability before work begins.",
               },
               {
-                icon: CalendarDays,
-                title: "Lease and rent management",
-                desc: "Manage contracts, rent schedules, and digital payments all in one dashboard.",
+                icon: Ruler,
+                title: "Development planning",
+                desc: "Organize project requirements, milestones and professional input around a clear plan.",
               },
               {
-                icon: Building2,
-                title: "IoT property monitoring",
-                desc: "Stay on top of utilities, security, and asset health with live sensor data.",
+                icon: HardHat,
+                title: "Construction progress",
+                desc: "Follow visible site progress and key development stages from groundwork to completion.",
               },
             ].map((item) => (
               <div key={item.title} className="glass-strong rounded-3xl p-8">
@@ -62,25 +62,25 @@ function ManagementPage() {
 
           <div className="glass-strong rounded-3xl p-10 grid gap-8 lg:grid-cols-2">
             <div>
-              <h3 className="text-2xl font-semibold">Tenant and owner collaboration</h3>
+              <h3 className="text-2xl font-semibold">Owner and project collaboration</h3>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                Communicate with renters, receive maintenance requests, and share documents in one secure place.
+                Keep owners, consultants and project teams aligned with clear information and shared documents.
               </p>
               <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                <li>• Automated tenant notifications and repair updates</li>
-                <li>• Digital lease signing and document storage</li>
-                <li>• Transparent billing for services and utilities</li>
+                <li>• Project milestone and progress updates</li>
+                <li>• Development document organization</li>
+                <li>• Clear communication across project teams</li>
               </ul>
             </div>
             <div>
-              <h3 className="text-2xl font-semibold">Operational visibility</h3>
+              <h3 className="text-2xl font-semibold">Development visibility</h3>
               <p className="mt-4 text-muted-foreground leading-relaxed">
-                Monitor portfolios, track occupancy, and benchmark expenses so your assets perform at scale.
+                Follow active projects, review progress and understand the next development priorities.
               </p>
               <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                <li>• Asset-level dashboards for every building</li>
-                <li>• Maintenance spend and vendor performance analytics</li>
-                <li>• Alerts for lease expiries and compliance reviews</li>
+                <li>• Site-level views for each development</li>
+                <li>• Construction milestone tracking</li>
+                <li>• Documentation and review reminders</li>
               </ul>
             </div>
           </div>
@@ -89,9 +89,9 @@ function ManagementPage() {
             <div className="text-xs uppercase tracking-[0.2em] text-primary">WHY IT MATTERS</div>
             <div className="mt-6 grid gap-5 md:grid-cols-3">
               {[
-                { title: "Reduce downtime", detail: "Keep units rented and repairs resolved faster." },
-                { title: "Protect value", detail: "Preserve property condition with proactive monitoring." },
-                { title: "Streamline operations", detail: "Centralize tasks for owners, managers, and service teams." },
+                { title: "Plan clearly", detail: "Understand the site and development requirements before committing." },
+                { title: "Protect value", detail: "Make informed choices throughout each stage of development." },
+                { title: "Track progress", detail: "Keep project information and milestones visible in one place." },
               ].map((card) => (
                 <div key={card.title} className="rounded-3xl bg-slate-950/80 p-6">
                   <div className="font-semibold text-lg">{card.title}</div>

@@ -2,8 +2,8 @@ import { Rocket, Brain, Home, Globe } from "lucide-react";
 
 const steps = [
   { q: "Q1 2026", icon: Rocket, title: "Platform Launch", desc: "Listings, virtual tours, verified titles." },
-  { q: "Q3 2026", icon: Brain, title: "AI Valuation Engine", desc: "ML-driven pricing and ROI forecasts." },
-  { q: "Q1 2027", icon: Home, title: "Smart Home Services", desc: "IoT bundle for tenants & landlords." },
+  { q: "Q3 2026", icon: Brain, title: "AI Valuation Engine", desc: "Market-led pricing and investment insights." },
+  { q: "Q1 2027", icon: Home, title: "Property Development Hub", desc: "Development guidance for buyers and landowners." },
   { q: "Q3 2027", icon: Globe, title: "Pan-African Expansion", desc: "Ghana, Kenya, Rwanda partnerships." },
 ];
 

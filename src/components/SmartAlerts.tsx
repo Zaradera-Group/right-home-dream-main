@@ -10,7 +10,7 @@ export function SmartAlerts() {
             Smart alerts, before you commit
           </h2>
           <p className="mt-4 text-sm text-muted-foreground">
-            We surface what brokers won't tell you - title status, market volatility and physical
+            We surface what brokers won't tell you, title status, market volatility and physical
             security checks.
           </p>
         </div>
@@ -43,7 +43,7 @@ export function SmartAlerts() {
             <div className="text-sm font-semibold">Security score</div>
             <div className="mt-3 text-4xl font-display font-bold text-gradient-primary">A+</div>
             <div className="mt-2 text-xs text-muted-foreground">
-              Gated compound - 24/7 patrol - CCTV
+              Gated compound, 24/7 patrol, CCTV
             </div>
           </div>
         </div>

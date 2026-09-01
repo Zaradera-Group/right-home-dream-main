@@ -4,10 +4,10 @@ import { PageShell, PageHeader } from "@/components/PageShell";
 export const Route = createFileRoute("/security")({
   head: () => ({
     meta: [
-      { title: "Security — RIGHTHOME_PROPTECH" },
-      { name: "description", content: "RIGHTHOME security and platform protection info." },
-      { property: "og:title", content: "RIGHTHOME Security" },
-      { property: "og:description", content: "Security measures for RIGHTHOME users." },
+      { title: "Security, RightHome Proptech" },
+      { name: "description", content: "RightHome Proptech security and platform protection information." },
+      { property: "og:title", content: "RightHome Proptech Security" },
+      { property: "og:description", content: "Security measures for RightHome Proptech users." },
     ],
   }),
   component: Security,
@@ -19,7 +19,7 @@ function Security() {
       <PageHeader
         eyebrow="SECURITY"
         title="Secure property search and ownership"
-        subtitle="RIGHTHOME combines encryption, verification, and monitoring so your transaction journey is safe from end to end."
+        subtitle="RightHome Proptech combines encryption, verification, and monitoring so your transaction journey is safe from end to end."
         highlightedWord="Secure"
       />
       <section className="px-4 pb-20">

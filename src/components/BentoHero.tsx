@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import heroImg from "@/assets/hero-property.jpg";
+import heroImg from "@/assets/development-hero.jpeg";
 import logoUrl from "@/assets/Logo.png";
-import prop1 from "@/assets/property-1.jpg";
-import prop2 from "@/assets/property-2.jpg";
-import prop3 from "@/assets/property-3.jpg";
-import prop4 from "@/assets/property-4.jpg";
+import prop1 from "@/assets/development-site-1.jpeg";
+import prop2 from "@/assets/development-site-2.jpeg";
+import prop3 from "@/assets/development-site-3.jpeg";
+import prop4 from "@/assets/development-site-4.jpeg";
 import {
   Search,
   Sparkles,
@@ -31,27 +31,27 @@ export function BentoHero() {
         <div className="col-span-12 lg:col-span-8 row-span-1 relative overflow-hidden rounded-3xl glass-strong p-8 md:p-12 min-h-[560px] flex flex-col justify-between">
           <img
             src={heroImg}
-            alt="Luxury Nigerian real estate at twilight"
-            className="absolute inset-0 w-full h-full object-cover opacity-50"
+            alt="Active RightHome Proptech property development site"
+            className="media-polished absolute inset-0 w-full h-full object-cover opacity-50"
           />
           <div className="absolute inset-0 bg-gradient-to-tr from-[#060243] via-[#060243]/70 to-transparent" />
           <div className="relative">
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-white p-2 shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
-                <img src={logoUrl} alt="RIGHTHOME logo" className="h-8 w-8 object-contain" />
+                <img src={logoUrl} alt="RightHome Proptech logo" className="h-8 w-8 object-contain" />
               </div>
               <div>
                 <div className="text-sm font-semibold tracking-[0.28em] uppercase text-primary">
-                  RIGHTHOME
+                  RightHome Proptech
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  AI · Blockchain · IoT property platform
+                  AI · Blockchain · Property intelligence
                 </p>
               </div>
             </div>
             <div className="inline-flex items-center gap-2 glass px-3 py-1.5 rounded-full text-xs">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" /> Powered by AI ·
-              Blockchain · IoT
+              Blockchain · Real estate insight
             </div>
             <h1 className="mt-6 text-4xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.05] max-w-3xl">
               Seamless, Secure, <span className="text-gradient-primary">Smart</span> Property
@@ -70,7 +70,7 @@ export function BentoHero() {
                 <Search className="w-4 h-4 text-primary" />
                 <input
                   className="bg-transparent outline-none text-sm flex-1 placeholder:text-muted-foreground py-3"
-                  placeholder="Try ‘3BR duplex in Igwurutali under ₦80M’"
+                  placeholder="Try ‘property at Igwuruta Ali School Road’"
                 />
                 <Sparkles className="w-4 h-4 text-primary/70" />
               </div>
@@ -115,12 +115,12 @@ export function BentoHero() {
           className="col-span-12 lg:col-span-4 grid grid-cols-2 gap-4 md:gap-5 content-stretch"
         >
           {[
-            { icon: Sparkles, label: "AI Property Match", sub: "Personalized for you" },
+            { icon: Sparkles, label: "AI Property Location", sub: "Find the right area" },
             { icon: Eye, label: "Virtual Tours", sub: "360° + VR ready" },
-            { icon: TrendingUp, label: "Smart Investments", sub: "ROI forecasts" },
+            { icon: TrendingUp, label: "Smart Property Investment", sub: "Market-led opportunities" },
             { icon: ShieldCheck, label: "Verified Listings", sub: "Title-checked" },
             { icon: Link2, label: "Blockchain Txns", sub: "On-chain ledger" },
-            { icon: Boxes, label: "Property Mgmt", sub: "IoT + dashboards" },
+            { icon: Boxes, label: "Property Development", sub: "From land to completion" },
           ].map(({ icon: Icon, label, sub }) => (
             <Link
               key={label}
@@ -157,7 +157,7 @@ export function BentoHero() {
             {/* Chart */}
             <div className="md:col-span-3 glass rounded-2xl p-5 h-64 relative overflow-hidden">
               <div className="flex items-center justify-between text-xs mb-3">
-                <span className="text-muted-foreground">Avg. price / sqm — Port Harcourt</span>
+                <span className="text-muted-foreground">Avg. price / sqm — our locations</span>
                 <span className="text-success font-mono">+12.4%</span>
               </div>
               <MiniChart />
@@ -190,10 +190,10 @@ export function BentoHero() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { img: prop1, price: "₦125M", loc: "Igwurutali", roi: "21%" },
-              { img: prop2, price: "₦68M", loc: "Omagwa", roi: "17%" },
-              { img: prop3, price: "₦240K/mo", loc: "GRA Phase II", roi: "Lease" },
-              { img: prop4, price: "₦42M", loc: "Omagwa Plots", roi: "Land" },
+              { img: prop1, price: "₦125M", loc: "Igwuruta Ali School Road", roi: "21%" },
+              { img: prop2, price: "₦68M", loc: "Omagwa Station", roi: "17%" },
+              { img: prop3, price: "₦240K/mo", loc: "Igwuruta Ali School Road", roi: "Lease" },
+              { img: prop4, price: "₦42M", loc: "Omagwa Station", roi: "Land" },
             ].map((p, i) => (
               <Link
                 key={i}
@@ -205,7 +205,7 @@ export function BentoHero() {
                     src={p.img}
                     alt={p.loc}
                     loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                    className="media-polished w-full h-full object-cover group-hover:scale-110 transition duration-700"
                   />
                 </div>
                 <div className="absolute top-2 left-2 glass-strong rounded-full px-2 py-1 text-[10px] flex items-center gap-1">

@@ -1,7 +1,7 @@
-import prop1 from "@/assets/property-1.jpg";
-import prop2 from "@/assets/property-2.jpg";
-import prop3 from "@/assets/property-3.jpg";
-import prop4 from "@/assets/property-4.jpg";
+import prop1 from "@/assets/development-site-1.jpeg";
+import prop2 from "@/assets/development-site-2.jpeg";
+import prop3 from "@/assets/development-site-3.jpeg";
+import prop4 from "@/assets/development-site-4.jpeg";
 
 export type PropertyCategory = "buy" | "invest" | "rent" | "workspace" | "land";
 
@@ -26,10 +26,10 @@ export type PropertyListing = {
 
 export const propertyListings: PropertyListing[] = [
   {
-    slug: "igwurutali-estate-duplex",
+    slug: "igwuruta-ali-school-road-duplex",
     img: prop1,
     price: "NGN 125M",
-    loc: "Igwurutali Estate",
+    loc: "Igwuruta Ali School Road",
     type: "4BR Duplex",
     roi: "21%",
     category: "buy",
@@ -45,17 +45,17 @@ export const propertyListings: PropertyListing[] = [
     status: "Available for inspection",
   },
   {
-    slug: "omagwa-heights-apartment",
+    slug: "omagwa-station-apartment",
     img: prop2,
     price: "NGN 68M",
-    loc: "Omagwa Heights",
+    loc: "Omagwa Station",
     type: "3BR Apartment",
     roi: "17%",
     category: "buy",
     beds: 3,
     baths: 3,
     area: "180 sqm",
-    landmark: "Close to the Omagwa commercial stretch and transport links",
+    landmark: "Close to Omagwa Station and its surrounding transport links",
     neighborhood: "High-demand area for short and long-stay tenants",
     description:
       "A clean, efficient apartment with strong rental potential and a practical floor plan for young families and professionals.",
@@ -64,18 +64,18 @@ export const propertyListings: PropertyListing[] = [
     status: "Viewing by appointment",
   },
   {
-    slug: "gra-phase-two-workspace",
+    slug: "igwuruta-ali-school-road-workspace",
     img: prop3,
     price: "NGN 240K/mo",
-    loc: "GRA Phase II",
+    loc: "Igwuruta Ali School Road",
     type: "Workspace",
     roi: "Lease",
     category: "workspace",
     beds: 0,
     baths: 4,
     area: "1200 sqft",
-    landmark: "Along the business and administrative district axis",
-    neighborhood: "Best for teams needing prestige, access and a professional setting",
+    landmark: "Along the Ali School Road development corridor",
+    neighborhood: "An emerging area with improving access and active development",
     description:
       "A flexible workspace with a corporate feel, ideal for firms needing visibility, convenience and a central business location.",
     highlights: [
@@ -88,10 +88,10 @@ export const propertyListings: PropertyListing[] = [
     status: "Lease available",
   },
   {
-    slug: "omagwa-development-plots",
+    slug: "omagwa-station-development-plots",
     img: prop4,
     price: "NGN 42M",
-    loc: "Omagwa Plots",
+    loc: "Omagwa Station",
     type: "Land",
     roi: "Land",
     category: "land",
@@ -107,18 +107,18 @@ export const propertyListings: PropertyListing[] = [
     status: "Ready for offer",
   },
   {
-    slug: "trans-amadi-villa",
+    slug: "igwuruta-ali-school-road-villa",
     img: prop1,
     price: "NGN 95M",
-    loc: "Trans-Amadi",
+    loc: "Igwuruta Ali School Road",
     type: "3BR Villa",
     roi: "19%",
     category: "invest",
     beds: 3,
     baths: 4,
     area: "320 sqm",
-    landmark: "Business district with strong corporate demand",
-    neighborhood: "Popular with executives and high-income tenants",
+    landmark: "Within the Ali School Road development corridor",
+    neighborhood: "A growing residential area with long-term investment potential",
     description:
       "A premium villa with strong aesthetics, a well-balanced floor plan and great liveability for owners or premium tenants.",
     highlights: ["Executive finish", "Garden space", "Secure environment", "High rental appeal"],
@@ -126,10 +126,10 @@ export const propertyListings: PropertyListing[] = [
     status: "Inspection open",
   },
   {
-    slug: "eliozu-compact-flat",
+    slug: "omagwa-station-compact-flat",
     img: prop2,
     price: "NGN 52M",
-    loc: "Eliozu",
+    loc: "Omagwa Station",
     type: "2BR Flat",
     roi: "15%",
     category: "rent",
@@ -145,18 +145,18 @@ export const propertyListings: PropertyListing[] = [
     status: "Available now",
   },
   {
-    slug: "rumuola-crest-terrace",
+    slug: "igwuruta-ali-school-road-terrace",
     img: prop3,
     price: "NGN 78M",
-    loc: "Rumuola Crest",
+    loc: "Igwuruta Ali School Road",
     type: "4BR Terrace",
     roi: "18%",
     category: "buy",
     beds: 4,
     baths: 4,
     area: "260 sqm",
-    landmark: "Near the busy Rumuola commercial spine",
-    neighborhood: "Balanced for owners and premium tenants",
+    landmark: "Near Ali School Road and surrounding community access routes",
+    neighborhood: "Balanced for homeowners and long-term investors",
     description:
       "A modern terrace home with a practical footprint, premium finishes and strong appeal for buyers who want comfort and solid resale potential.",
     highlights: ["Secure compound", "Modern finish", "High resale appeal", "Family-friendly"],
@@ -164,18 +164,18 @@ export const propertyListings: PropertyListing[] = [
     status: "Available for inspection",
   },
   {
-    slug: "ada-george-maisonette",
+    slug: "omagwa-station-maisonette",
     img: prop4,
     price: "NGN 110M",
-    loc: "Ada George Avenue",
+    loc: "Omagwa Station",
     type: "5BR Maisonette",
     roi: "20%",
     category: "invest",
     beds: 5,
     baths: 5,
     area: "510 sqm",
-    landmark: "Close to major arterial access and lifestyle amenities",
-    neighborhood: "High-value corridor for long-term capital growth",
+    landmark: "Close to Omagwa Station and major connecting routes",
+    neighborhood: "A strategic corridor for long-term capital growth",
     description:
       "A larger maisonette with strong rental and resale potential in one of the city's more active growth corridors.",
     highlights: ["Premium zone", "Large footprint", "Strong appreciation", "Investment-grade"],
@@ -183,18 +183,18 @@ export const propertyListings: PropertyListing[] = [
     status: "Viewing by appointment",
   },
   {
-    slug: "airport-road-plot",
+    slug: "igwuruta-ali-school-road-plot",
     img: prop1,
     price: "NGN 36M",
-    loc: "Airport Road Axis",
+    loc: "Igwuruta Ali School Road",
     type: "Land",
     roi: "Land",
     category: "land",
     beds: 0,
     baths: 0,
     area: "500 sqm",
-    landmark: "Near the airport corridor and expanding development pockets",
-    neighborhood: "Great for land banking and future build plans",
+    landmark: "Along Ali School Road near expanding development pockets",
+    neighborhood: "Suitable for land banking and future build plans",
     description:
       "A strategic plot for investors who want a lower entry point with long-term upside in a fast-evolving corridor.",
     highlights: ["Title verified", "Road access", "Future growth", "Plot ready"],
@@ -202,17 +202,17 @@ export const propertyListings: PropertyListing[] = [
     status: "Ready for offer",
   },
   {
-    slug: "mile-one-extension-flat",
+    slug: "omagwa-station-flat",
     img: prop2,
     price: "NGN 185K/mo",
-    loc: "Mile 1 Extension",
+    loc: "Omagwa Station",
     type: "2BR Flat",
     roi: "Lease",
     category: "rent",
     beds: 2,
     baths: 2,
     area: "130 sqm",
-    landmark: "Popular access corridor with steady foot traffic",
+    landmark: "Close to Omagwa Station and everyday transport access",
     neighborhood: "Practical for professionals and small households",
     description:
       "An affordable rental unit with easy mobility, making it attractive to tenants who value convenience and lower upkeep.",

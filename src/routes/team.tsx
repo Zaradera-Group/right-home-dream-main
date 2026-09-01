@@ -6,15 +6,15 @@ import { Linkedin } from "lucide-react";
 export const Route = createFileRoute("/team")({
   head: () => ({
     meta: [
-      { title: "Team — RIGHTHOME_PROPTECH" },
+      { title: "Team, RightHome Proptech" },
       {
         name: "description",
-        content: "Meet the person leading RIGHTHOME and connect on LinkedIn.",
+        content: "Meet the person leading RightHome Proptech and connect on LinkedIn.",
       },
-      { property: "og:title", content: "RIGHTHOME Team" },
+      { property: "og:title", content: "RightHome Proptech Team" },
       {
         property: "og:description",
-        content: "Meet the leadership behind RIGHTHOME and reach out via LinkedIn.",
+        content: "Meet the leadership behind RightHome Proptech and reach out via LinkedIn.",
       },
     ],
   }),
@@ -38,13 +38,13 @@ function TeamPage() {
           <div>
             <h2 className="text-2xl font-display font-semibold">Contact the team</h2>
             <p className="mt-2 text-muted-foreground leading-relaxed max-w-2xl">
-              Reach RIGHTHOME through our professional networks for business, media, or partnership
+              Reach RightHome Proptech through our professional networks for business, media, or partnership
               conversations.
             </p>
           </div>
           <div className="flex gap-3">
             <a
-              href="https://www.linkedin.com/company/righthome"
+              href="https://www.linkedin.com/company/righthome-proptech/"
               target="_blank"
               rel="noreferrer noopener"
               className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-white/10"
