@@ -18,7 +18,10 @@ export function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-background/85 px-3 py-3 shadow-[0_12px_36px_rgba(0,0,0,0.2)] backdrop-blur-xl md:px-4 md:py-4">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-1 md:px-2">
-        <Link to="/" className="flex items-center gap-3 whitespace-nowrap font-display font-bold text-lg">
+        <Link
+          to="/"
+          className="flex items-center gap-3 whitespace-nowrap font-display font-bold text-lg"
+        >
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
             <img src={logoUrl} alt="RightHome Proptech logo" className="h-8 w-8 object-contain" />
           </div>

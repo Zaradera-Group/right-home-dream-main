@@ -69,7 +69,7 @@ function About() {
             {
               icon: Target,
               title: "Our Mission",
-              desc: "Make every property transaction in Africa transparent, secure and intelligent — from listing to title transfer.",
+              desc: "Make every property transaction in Africa transparent, secure and intelligent, from listing to title transfer.",
             },
             {
               icon: Heart,
@@ -196,7 +196,7 @@ function About() {
             </p>
             <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
               Our next phase is about making property decisions easier for people, not just
-              professionals — from first-time buyers to savvy tenants and busy landlords.
+              professionals, from first-time buyers to savvy tenants and busy landlords.
             </p>
           </div>
         </div>

@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Eye, MapPin, MessageCircle, Play, Video } from "lucide-react";
 
 import { PageHeader, PageShell } from "@/components/PageShell";
-import developmentHero from "@/assets/development-hero.jpeg";
-import developmentPoster from "@/assets/development-site-2.jpeg";
-import developmentPortrait from "@/assets/development-tour-portrait.jpeg";
+import propertyOne from "@/assets/property-1.jpg";
+import propertyTwo from "@/assets/property-2.jpg";
+import propertyThree from "@/assets/property-3.jpg";
 import developmentVideo from "@/assets/development-walkthrough.mp4";
 
 type TourItem = {
@@ -22,20 +22,20 @@ type TourItem = {
 
 const featuredTours: TourItem[] = [
   {
-    title: "Igwuruta Ali School Road Progress",
-    caption: "A current photo view of active boundary and drainage construction.",
-    image: developmentHero,
+    title: "Igwuruta Ali School Road Property",
+    caption: "A polished property preview with exterior and living-space highlights.",
+    image: propertyOne,
     kind: "image",
     details:
-      "A clear on-site look at the ongoing blockwork, drainage alignment, and surrounding development area.",
+      "A gallery-style look at the property's design, key spaces and surrounding environment.",
     location: "Igwuruta Ali School Road",
-    status: "Progress photos",
+    status: "Photo tour",
   },
   {
     title: "Development Video Walkthrough",
     caption: "A real on-site walkthrough showing the current stage of construction.",
     video: developmentVideo,
-    poster: developmentPoster,
+    poster: propertyTwo,
     kind: "video",
     details:
       "A full-screen progress walkthrough showing the drainage route, boundary works, and active site conditions.",
@@ -43,14 +43,14 @@ const featuredTours: TourItem[] = [
     status: "Site video",
   },
   {
-    title: "Drainage and Boundary Works",
-    caption: "A close progress view of the blockwork and drainage channel.",
-    image: developmentPortrait,
+    title: "Omagwa Station Property",
+    caption: "A curated property preview featuring indoor and outdoor spaces.",
+    image: propertyThree,
     kind: "image",
     details:
-      "A documentary view of the constructed channel, boundary alignment, and materials currently on site.",
-    location: "Igwuruta Ali School Road",
-    status: "Progress gallery",
+      "A gallery-style preview of the property, including shared spaces and the surrounding environment.",
+    location: "Omagwa Station",
+    status: "Image gallery",
   },
 ];
 

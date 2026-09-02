@@ -4,6 +4,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   Boxes,
+  Download,
   Eye,
   Link2,
   ShieldCheck,
@@ -25,7 +26,10 @@ export const Route = createFileRoute("/services")({
           "AI property location, virtual tours, smart property investment, verified listings, blockchain transactions and property development.",
       },
       { property: "og:title", content: "RightHome Proptech Services" },
-      { property: "og:description", content: "The full proptech stack, AI, blockchain and property intelligence." },
+      {
+        property: "og:description",
+        content: "The full proptech stack, AI, blockchain and property intelligence.",
+      },
     ],
   }),
   component: Services,
@@ -166,13 +170,15 @@ function Services() {
                     Chat with Ria
                     <ArrowRight className="h-3.5 w-3.5 animate-arrow-breathe" />
                   </Link>
-                  <Link
-                    to="/insights"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-semibold transition hover:bg-[#f24c21]/12 hover:text-primary"
+                  <button
+                    type="button"
+                    disabled
+                    title="The RightHome Proptech app is coming soon"
+                    className="inline-flex cursor-not-allowed items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-semibold text-muted-foreground opacity-60"
                   >
-                    View insights
-                    <ArrowUpRight className="h-3.5 w-3.5 animate-arrow-breathe" />
-                  </Link>
+                    Download App, Coming Soon
+                    <Download className="h-3.5 w-3.5" />
+                  </button>
                 </div>
 
                 <button

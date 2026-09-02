@@ -42,18 +42,8 @@ function PropertyDetail() {
               <div className="absolute left-4 top-4 rounded-full glass-strong px-3 py-1.5 text-xs flex items-center gap-2">
                 <ShieldCheck className="h-3.5 w-3.5 text-success" /> Verified listing
               </div>
-              <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-end justify-between gap-4">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.2em] text-white/70">
-                    {property.type}
-                  </div>
-                  <div className="text-3xl font-display font-bold text-white md:text-5xl">
-                    {property.price}
-                  </div>
-                </div>
-                <div className="rounded-full bg-black/40 px-4 py-2 text-sm backdrop-blur-md">
-                  ROI {property.roi}
-                </div>
+              <div className="absolute bottom-4 left-4 rounded-full bg-black/40 px-4 py-2 text-xs uppercase tracking-[0.2em] text-white/80 backdrop-blur-md">
+                {property.type}
               </div>
             </div>
 
@@ -66,7 +56,9 @@ function PropertyDetail() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <Panel title="About" tone="text-primary">
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">{property.description}</p>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {property.description}
+                </p>
               </Panel>
               <Panel title="Highlights" tone="text-primary">
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -86,7 +78,9 @@ function PropertyDetail() {
           <aside className="space-y-4">
             <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-5 md:p-6">
               <div className="text-[10px] uppercase tracking-[0.2em] text-primary">Location</div>
-              <h1 className="mt-2 text-3xl font-display font-semibold md:text-4xl">{property.loc}</h1>
+              <h1 className="mt-2 text-3xl font-display font-semibold md:text-4xl">
+                {property.loc}
+              </h1>
               <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4 text-primary" />
                 {property.neighborhood}
@@ -100,7 +94,6 @@ function PropertyDetail() {
                 <DetailRow label="Transit" value={property.transit} />
                 <DetailRow label="Status" value={property.status} />
                 <DetailRow label="Area" value={property.area} />
-                <DetailRow label="ROI" value={property.roi} />
               </div>
             </div>
 
@@ -123,8 +116,8 @@ function PropertyDetail() {
                 </Link>
               </div>
               <p className="mt-4 text-[11px] leading-5 text-muted-foreground">
-                This page keeps the property details visible on both desktop and mobile for a cleaner
-                review flow.
+                This page keeps the property details visible on both desktop and mobile for a
+                cleaner review flow.
               </p>
             </div>
           </aside>
@@ -143,15 +136,7 @@ function Metric({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Panel({
-  title,
-  tone,
-  children,
-}: {
-  title: string;
-  tone: string;
-  children: ReactNode;
-}) {
+function Panel({ title, tone, children }: { title: string; tone: string; children: ReactNode }) {
   return (
     <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
       <div className={`text-[10px] uppercase tracking-[0.22em] ${tone}`}>{title}</div>

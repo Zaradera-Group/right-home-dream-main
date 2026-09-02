@@ -9,7 +9,7 @@ export const Route = createFileRoute("/team")({
       { title: "Team, RightHome Proptech" },
       {
         name: "description",
-        content: "Meet the person leading RightHome Proptech and connect on LinkedIn.",
+        content: "Meet the people leading RightHome Proptech and connect on LinkedIn.",
       },
       { property: "og:title", content: "RightHome Proptech Team" },
       {
@@ -26,7 +26,7 @@ function TeamPage() {
     <PageShell>
       <PageHeader
         eyebrow="OUR TEAM"
-        title="Meet the person building smarter property experiences"
+        title="Meet the people building smarter property experiences"
         subtitle="Connect with our leadership through LinkedIn for partnership, media, or product inquiries."
         highlightedWord="smarter"
       />
@@ -38,8 +38,8 @@ function TeamPage() {
           <div>
             <h2 className="text-2xl font-display font-semibold">Contact the team</h2>
             <p className="mt-2 text-muted-foreground leading-relaxed max-w-2xl">
-              Reach RightHome Proptech through our professional networks for business, media, or partnership
-              conversations.
+              Reach RightHome Proptech through our professional networks for business, media, or
+              partnership conversations.
             </p>
           </div>
           <div className="flex gap-3">

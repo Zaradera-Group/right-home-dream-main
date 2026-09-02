@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import heroImg from "@/assets/development-hero.jpeg";
+import heroImg from "@/assets/hero-property.jpg";
 import logoUrl from "@/assets/Logo.png";
-import prop1 from "@/assets/development-site-1.jpeg";
-import prop2 from "@/assets/development-site-2.jpeg";
-import prop3 from "@/assets/development-site-3.jpeg";
-import prop4 from "@/assets/development-site-4.jpeg";
+import prop1 from "@/assets/property-1.jpg";
+import prop2 from "@/assets/property-2.jpg";
+import prop3 from "@/assets/property-3.jpg";
+import prop4 from "@/assets/property-4.jpg";
 import {
   Search,
   Sparkles,
@@ -31,14 +31,18 @@ export function BentoHero() {
         <div className="col-span-12 lg:col-span-8 row-span-1 relative overflow-hidden rounded-3xl glass-strong p-8 md:p-12 min-h-[560px] flex flex-col justify-between">
           <img
             src={heroImg}
-            alt="Active RightHome Proptech property development site"
+            alt="Modern Nigerian property at twilight"
             className="media-polished absolute inset-0 w-full h-full object-cover opacity-50"
           />
           <div className="absolute inset-0 bg-gradient-to-tr from-[#060243] via-[#060243]/70 to-transparent" />
           <div className="relative">
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-white p-2 shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
-                <img src={logoUrl} alt="RightHome Proptech logo" className="h-8 w-8 object-contain" />
+                <img
+                  src={logoUrl}
+                  alt="RightHome Proptech logo"
+                  className="h-8 w-8 object-contain"
+                />
               </div>
               <div>
                 <div className="text-sm font-semibold tracking-[0.28em] uppercase text-primary">
@@ -49,16 +53,12 @@ export function BentoHero() {
                 </p>
               </div>
             </div>
-            <div className="inline-flex items-center gap-2 glass px-3 py-1.5 rounded-full text-xs">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" /> Powered by AI ·
-              Blockchain · Real estate insight
-            </div>
             <h1 className="mt-6 text-4xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.05] max-w-3xl">
               Seamless, Secure, <span className="text-gradient-primary">Smart</span> Property
               Transactions
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-xl">
-              Africa's most intelligent proptech platform — discover, verify and own property with
+              Africa's most intelligent proptech platform, discover, verify and own property with
               confidence, from anywhere.
             </p>
           </div>
@@ -117,7 +117,11 @@ export function BentoHero() {
           {[
             { icon: Sparkles, label: "AI Property Location", sub: "Find the right area" },
             { icon: Eye, label: "Virtual Tours", sub: "360° + VR ready" },
-            { icon: TrendingUp, label: "Smart Property Investment", sub: "Market-led opportunities" },
+            {
+              icon: TrendingUp,
+              label: "Smart Property Investment",
+              sub: "Market-led opportunities",
+            },
             { icon: ShieldCheck, label: "Verified Listings", sub: "Title-checked" },
             { icon: Link2, label: "Blockchain Txns", sub: "On-chain ledger" },
             { icon: Boxes, label: "Property Development", sub: "From land to completion" },

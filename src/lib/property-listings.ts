@@ -1,7 +1,7 @@
-import prop1 from "@/assets/development-site-1.jpeg";
-import prop2 from "@/assets/development-site-2.jpeg";
-import prop3 from "@/assets/development-site-3.jpeg";
-import prop4 from "@/assets/development-site-4.jpeg";
+import prop1 from "@/assets/property-1.jpg";
+import prop2 from "@/assets/property-2.jpg";
+import prop3 from "@/assets/property-3.jpg";
+import prop4 from "@/assets/property-4.jpg";
 
 export type PropertyCategory = "buy" | "invest" | "rent" | "workspace" | "land";
 
@@ -102,7 +102,12 @@ export const propertyListings: PropertyListing[] = [
     neighborhood: "Strong hold for long-term development or resale strategy",
     description:
       "A clean plot with excellent upside for developers or long-term investors looking for a strategic land bank.",
-    highlights: ["Survey-ready", "Development potential", "Good road access", "Verified documentation"],
+    highlights: [
+      "Survey-ready",
+      "Development potential",
+      "Good road access",
+      "Verified documentation",
+    ],
     transit: "Close to expanding residential and commercial pockets",
     status: "Ready for offer",
   },

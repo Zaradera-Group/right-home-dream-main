@@ -309,7 +309,7 @@ function Contact() {
                 value: SUPPORT_PHONE,
                 href: "tel:+2347017683590",
               },
-              { icon: MapPin, label: "Office", value: "Port Harcourt, Rivers State" },
+              { icon: MapPin, label: "Headquarters", value: "Port Harcourt, Rivers State" },
               {
                 icon: MessageCircle,
                 label: "Live chat",
@@ -496,7 +496,10 @@ function Contact() {
                   ) : null}
                   <div className="mt-4 min-h-[140px] min-w-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-2 sm:p-4">
                     {turnstileSiteKey ? (
-                      <div ref={turnstileContainerRef} className="turnstile-container min-h-[140px] w-full" />
+                      <div
+                        ref={turnstileContainerRef}
+                        className="turnstile-container min-h-[140px] w-full"
+                      />
                     ) : (
                       <div className="rounded-3xl border border-white/10 bg-[#0d0c30] p-4 text-sm text-muted-foreground">
                         Turnstile is not configured. Please set VITE_TURNSTILE_SITE_KEY.
