@@ -12,7 +12,6 @@ import {
   Boxes,
   Eye,
   TrendingUp,
-  Link2,
   ArrowUpRight,
   MapPin,
   Activity,
@@ -48,9 +47,7 @@ export function BentoHero() {
                 <div className="text-sm font-semibold tracking-[0.28em] uppercase text-primary">
                   RightHome Proptech
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  AI · Blockchain · Property intelligence
-                </p>
+                <p className="text-xs text-muted-foreground">Property intelligence</p>
               </div>
             </div>
             <h1 className="mt-6 text-4xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.05] max-w-3xl">
@@ -123,7 +120,7 @@ export function BentoHero() {
               sub: "Market-led opportunities",
             },
             { icon: ShieldCheck, label: "Verified Listings", sub: "Title-checked" },
-            { icon: Link2, label: "Blockchain Txns", sub: "On-chain ledger" },
+            { icon: BarChart3, label: "Property Valuation", sub: "Know the market value" },
             { icon: Boxes, label: "Property Development", sub: "From land to completion" },
           ].map(({ icon: Icon, label, sub }) => (
             <Link
