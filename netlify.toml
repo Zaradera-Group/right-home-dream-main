@@ -2,6 +2,10 @@
   command = "npm run build"
   publish = "dist"
 
+[build.environment]
+  # These are public delivery settings, not credentials. Real API keys remain scanned.
+  SECRETS_SCAN_OMIT_KEYS = "CONTACT_DELIVERY_MODE,CONTACT_FROM_EMAIL,CONTACT_TO_EMAIL"
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/server"
