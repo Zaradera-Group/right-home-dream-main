@@ -4,19 +4,8 @@ import prop4 from "@/assets/property-4.jpg";
 
 export function NigeriaMap() {
   return (
-    <section id="map" className="px-4 py-20">
+    <section id="map" aria-label="Property area view" className="px-4 pb-4">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-10">
-          <div className="text-xs text-primary font-mono tracking-wider">PROPERTIES</div>
-          <h2 className="text-3xl md:text-5xl font-display font-bold mt-2">
-            On the ground in Nigeria
-          </h2>
-          <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
-            Active properties at Igwuruta Ali School Road and Omagwa Station — explore current site
-            views and availability.
-          </p>
-        </div>
-
         <div className="glass-strong rounded-3xl p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* stylised map */}
           <div className="lg:col-span-2 relative rounded-2xl overflow-hidden aspect-[16/10] glass">

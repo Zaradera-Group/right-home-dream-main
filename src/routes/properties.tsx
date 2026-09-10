@@ -69,6 +69,8 @@ function Properties() {
         </div>
       </section>
 
+      <NigeriaMap />
+
       <section className="px-4 pb-8">
         <div className="mx-auto grid max-w-7xl gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {filteredProperties.map((property, index) => (
@@ -141,8 +143,6 @@ function Properties() {
           ))}
         </div>
       </section>
-
-      <NigeriaMap />
     </PageShell>
   );
 }
