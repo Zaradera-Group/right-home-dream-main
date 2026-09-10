@@ -254,6 +254,14 @@ function Contact() {
           data.error ||
             `We could not send your message right now. Please email ${SUPPORT_EMAIL} directly.`,
         );
+        if (data.error?.includes("Cloudflare verification")) {
+          setTurnstileVerified(false);
+          setTurnstileToken("");
+          const turnstile = window.turnstile;
+          if (turnstile && widgetIdRef.current !== null) {
+            turnstile.reset(widgetIdRef.current);
+          }
+        }
         return;
       }
 

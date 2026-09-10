@@ -249,7 +249,7 @@ function parseContactPayload(body: unknown) {
     interest: clampText(payload?.interest, 80),
     message: clampText(payload?.message, 2000),
     company: clampText(payload?.company, 120),
-    turnstileToken: clampText(payload?.turnstileToken, 500),
+    turnstileToken: clampText(payload?.turnstileToken, 2048),
     honeypot: clampText(payload?.website, 120) || clampText(payload?.companyWebsite, 120),
   };
 }
@@ -416,8 +416,7 @@ async function handleContactRequest(request: Request, env: unknown): Promise<Res
     return withCorsHeaders(
       jsonSecureResponse(
         {
-          error:
-            "Cloudflare verification failed. Please complete the widget and try again.",
+          error: "Cloudflare verification failed. Please complete the widget and try again.",
         },
         400,
       ),
@@ -532,49 +531,47 @@ async function createRightAIChart(
   apiKey: string,
   messages: RightAIMessage[],
 ): Promise<RightAIChart | null> {
-  const response = await fetchWithTimeout(
-    "https://api.openai.com/v1/responses",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: RIGHTAI_MODEL,
-        instructions: `${RIGHTAI_SYSTEM_PROMPT}\n\n${RIGHTAI_CHART_PROMPT}`,
-        input: messages,
-        max_output_tokens: 350,
-        text: {
-          format: {
-            type: "json_schema",
-            name: "rightai_chart",
-            strict: true,
-            schema: {
-              type: "object",
-              additionalProperties: false,
-              properties: {
-                shouldRender: { type: "boolean" },
-                title: { type: "string" },
-                description: { type: "string" },
-                chartType: { type: "string", enum: ["area", "bar", "line", "pie"] },
-                yAxisLabel: { type: "string" },
-                data: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    additionalProperties: false,
-                    properties: {
-                      label: { type: "string" },
-                      value: { type: "number" },
-                    },
-                    required: ["label", "value"],
+  const response = await fetchWithTimeout("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: RIGHTAI_MODEL,
+      instructions: `${RIGHTAI_SYSTEM_PROMPT}\n\n${RIGHTAI_CHART_PROMPT}`,
+      input: messages,
+      max_output_tokens: 350,
+      text: {
+        format: {
+          type: "json_schema",
+          name: "rightai_chart",
+          strict: true,
+          schema: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              shouldRender: { type: "boolean" },
+              title: { type: "string" },
+              description: { type: "string" },
+              chartType: { type: "string", enum: ["area", "bar", "line", "pie"] },
+              yAxisLabel: { type: "string" },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  additionalProperties: false,
+                  properties: {
+                    label: { type: "string" },
+                    value: { type: "number" },
                   },
+                  required: ["label", "value"],
                 },
               },
-              required: ["shouldRender", "title", "description", "chartType", "yAxisLabel", "data"],
             },
+            required: ["shouldRender", "title", "description", "chartType", "yAxisLabel", "data"],
           },
+        },
       },
       store: false,
     }),

@@ -398,6 +398,12 @@ async function verifyTurnstileToken(token, env, request) {
   }
 
   const data = await response.json();
+  if (data.success !== true) {
+    console.error("Cloudflare Turnstile validation failed", {
+      errorCodes: data["error-codes"] || [],
+      hostname: data.hostname || "unknown",
+    });
+  }
   return data.success === true;
 }
 
@@ -537,7 +543,7 @@ function parseContactPayload(body) {
     interest: clampText(payload.interest, 80),
     message: clampText(payload.message, 2000),
     company: clampText(payload.company, 120),
-    turnstileToken: clampText(payload.turnstileToken, 500),
+    turnstileToken: clampText(payload.turnstileToken, 2048),
     honeypot: clampText(payload.website, 120) || clampText(payload.companyWebsite, 120),
   };
 }
