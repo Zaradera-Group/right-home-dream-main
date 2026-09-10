@@ -25,7 +25,6 @@ export const Route = createFileRoute("/properties")({
 const filters: Array<{ key: "all" | PropertyCategory; label: string }> = [
   { key: "all", label: "All" },
   { key: "buy", label: "Buy" },
-  { key: "invest", label: "Invest" },
   { key: "rent", label: "Rent" },
   { key: "workspace", label: "Workspace" },
   { key: "land", label: "Land" },
@@ -101,9 +100,6 @@ function Properties() {
                   />
                   <div className="absolute left-3 top-3 rounded-full glass-strong px-2.5 py-1 text-[11px] flex items-center gap-1">
                     <ShieldCheck className="h-3 w-3 text-success" /> Verified
-                  </div>
-                  <div className="absolute right-3 top-3 rounded-full glass-strong px-2.5 py-1 text-[11px] font-semibold text-primary">
-                    ROI {property.roi}
                   </div>
                   <div className="absolute bottom-3 right-3 rounded-full bg-black/40 px-3 py-1.5 text-[11px] text-white/90 backdrop-blur-sm">
                     View details

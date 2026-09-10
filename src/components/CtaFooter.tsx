@@ -169,7 +169,7 @@ export function CtaFooter() {
 
         <div className="mt-10 flex flex-wrap justify-between gap-2 border-t border-white/10 pt-6 text-xs text-muted-foreground">
           <span>&copy; 2026 RightHome Proptech. Built in Nigeria.</span>
-          <span>Powered by AI, secured by blockchain</span>
+          <span>Making property discovery simple and reliable</span>
         </div>
       </div>
     </section>
