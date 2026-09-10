@@ -463,7 +463,6 @@ async function sendContactEmail(env, payload, request) {
     body: JSON.stringify({
       from: fromEmail,
       to: [payload.email],
-      reply_to: toEmail,
       subject: "Thank you for contacting RightHome Proptech",
       text: [
         `Dear ${customerName},`,
@@ -477,7 +476,7 @@ async function sendContactEmail(env, payload, request) {
         "• The appropriate property specialist will follow up with you.",
         "• You can expect a response within 24 hours.",
         "",
-        "If your enquiry is urgent, you may reply directly to this email.",
+        "For urgent enquiries, please contact our team at hello@zaraderagroup.com.",
         "",
         "We greatly appreciate your interest in RightHome Proptech and look forward to assisting you with your property needs.",
         "",
@@ -500,11 +499,11 @@ async function sendContactEmail(env, payload, request) {
                 <div style="margin-bottom:10px;font-size:14px;font-weight:700;color:#060243">What happens next</div>
                 <div style="font-size:14px;line-height:1.8;color:#44445a">Our team will review your information, connect your enquiry with the appropriate property specialist, and respond within 24 hours.</div>
               </div>
-              <p style="margin:0 0 18px;font-size:15px;line-height:1.7">If your enquiry is urgent, simply reply to this email.</p>
+              <p style="margin:0 0 18px;font-size:15px;line-height:1.7">For urgent enquiries, please contact our team at hello@zaraderagroup.com.</p>
               <p style="margin:0 0 26px;font-size:15px;line-height:1.7">We greatly appreciate your interest in RightHome Proptech and look forward to assisting you with your property needs.</p>
               <p style="margin:0;font-size:15px;line-height:1.7"><strong>Warm regards,</strong><br />The RightHome Proptech Team</p>
             </div>
-            <div style="border-top:1px solid #eeeeF3;padding:18px 32px;font-size:12px;line-height:1.6;color:#6b6b7c">This acknowledgement was sent because a contact request was submitted using your email address. You can reply directly to reach our team at hello@zaraderagroup.com.</div>
+            <div style="border-top:1px solid #eeeeF3;padding:18px 32px;font-size:12px;line-height:1.6;color:#6b6b7c">Thank you for contacting RightHome Proptech. We appreciate your trust and look forward to assisting you.</div>
           </div>
         </div>
       `,
