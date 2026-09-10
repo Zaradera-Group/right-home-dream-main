@@ -46,10 +46,7 @@ function loadDotEnv(filePath) {
 loadDotEnv(dotenvPath);
 
 function validateRequiredServerEnv(context) {
-  const requiredKeys =
-    process.env.CONTACT_DELIVERY_MODE?.trim() === "log"
-      ? REQUIRED_SERVER_KEYS
-      : [...REQUIRED_SERVER_KEYS, "RESEND_API_KEY"];
+  const requiredKeys = [...REQUIRED_SERVER_KEYS, "RESEND_API_KEY"];
   const missingKeys = requiredKeys.filter((key) => !process.env[key]?.trim());
   if (missingKeys.length === 0) {
     return;
@@ -367,20 +364,6 @@ async function createRightAIChart(apiKey, messages) {
 }
 
 async function sendContactEmail(payload, request) {
-  const deliveryMode = (process.env.CONTACT_DELIVERY_MODE || "send").trim();
-  if (deliveryMode === "log") {
-    console.info("Contact form captured in temporary log mode", {
-      name: payload.name || "Not provided",
-      email: payload.email || "Not provided",
-      phone: payload.phone || "Not provided",
-      interest: payload.interest || "Not provided",
-      company: payload.company || "Not provided",
-      message: payload.message || "Not provided",
-      origin: request.headers.origin || "unknown",
-    });
-    return "log";
-  }
-
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     throw new Error("RESEND_API_KEY is not configured");
@@ -645,13 +628,10 @@ async function handleContactRequest(request, response) {
       });
     }
 
-    const deliveryMode = await sendContactEmail(payload, request);
+    await sendContactEmail(payload, request);
     return sendJsonWithCors(request, response, 200, {
       ok: true,
-      message:
-        deliveryMode === "log"
-          ? "Thanks. Your message was received in temporary test mode."
-          : `Thanks. Your message has been sent to ${supportEmail} and our team will respond soon.`,
+      message: `Thank you for contacting RightHome Proptech. Your message has been received successfully, and our team will respond within 24 hours.`,
     });
   } catch (error) {
     console.error("Contact submission failed", error);

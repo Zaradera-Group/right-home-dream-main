@@ -402,24 +402,6 @@ async function verifyTurnstileToken(token, env, request) {
 }
 
 async function sendContactEmail(env, payload, request) {
-  const deliveryMode = (
-    env?.CONTACT_DELIVERY_MODE ||
-    process.env.CONTACT_DELIVERY_MODE ||
-    "send"
-  ).trim();
-  if (deliveryMode === "log") {
-    console.info("Contact form captured in temporary log mode", {
-      name: payload.name || "Not provided",
-      email: payload.email || "Not provided",
-      phone: payload.phone || "Not provided",
-      interest: payload.interest || "Not provided",
-      company: payload.company || "Not provided",
-      message: payload.message || "Not provided",
-      origin: request.headers.get("origin") || "unknown",
-    });
-    return "log";
-  }
-
   const apiKey = env?.RESEND_API_KEY || process.env.RESEND_API_KEY;
   const toEmail = getContactToEmail(env);
   const fromEmail = getContactFromEmail(env);
@@ -622,14 +604,12 @@ async function handleContactRequest(request, env) {
   }
 
   try {
-    const deliveryMode = await sendContactEmail(env, payload, request);
+    await sendContactEmail(env, payload, request);
     return withCorsHeaders(
       jsonResponse({
         ok: true,
         message:
-          deliveryMode === "log"
-            ? "Thanks. Your message was received in temporary test mode."
-            : "Thanks. Your message has been sent to hello@zaraderagroup.com and our team will respond soon.",
+          "Thank you for contacting RightHome Proptech. Your message has been received successfully, and our team will respond within 24 hours.",
       }),
       request,
     );
