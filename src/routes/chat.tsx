@@ -234,7 +234,7 @@ function Chat() {
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
               <label className="sr-only" htmlFor="rightai-prompt">
-                Chat with Ria
+                Chat with Rai
               </label>
               <input
                 id="rightai-prompt"

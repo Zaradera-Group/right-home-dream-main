@@ -104,7 +104,7 @@ function PropertyDetail() {
                   to="/chat"
                   className="inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-4 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition hover:scale-[1.03]"
                 >
-                  Chat with Ria
+                  Chat with Rai
                   <ArrowRight className="h-4 w-4 animate-arrow-breathe" />
                 </Link>
                 <Link

@@ -167,7 +167,7 @@ function Services() {
                     to="/chat"
                     className="inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition hover:scale-[1.03]"
                   >
-                    Chat with Ria
+                    Chat with Rai
                     <ArrowRight className="h-3.5 w-3.5 animate-arrow-breathe" />
                   </Link>
                   <button

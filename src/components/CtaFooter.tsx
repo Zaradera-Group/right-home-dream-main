@@ -57,7 +57,7 @@ export function CtaFooter() {
                 to="/chat"
                 className="inline-flex items-center gap-2 rounded-full bg-[var(--gradient-primary)] px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition hover:scale-[1.02]"
               >
-                Chat with Ria
+                Chat with Rai
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link

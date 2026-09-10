@@ -104,7 +104,7 @@ function Insights() {
             <div className="glass-strong rounded-3xl p-5 border border-white/10">
               <div className="text-xs text-primary font-mono tracking-wider">RIGHTAI</div>
               <h3 className="text-xl font-display font-semibold mt-2">
-                Chat with Ria about this chart
+                Chat with Rai about this chart
               </h3>
               <p className="text-sm text-muted-foreground mt-3">
                 RightAI can interpret market data, identify high-ROI zones, and answer questions
