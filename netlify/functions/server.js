@@ -1,7 +1,6 @@
 import { Buffer } from "node:buffer";
 
 const SUPPORT_EMAIL = "hello@zaraderagroup.com";
-const DEFAULT_CONTACT_FROM_EMAIL = "onboarding@resend.dev";
 const RIGHTAI_MODEL = "gpt-5.4-mini";
 
 const RIGHTAI_SYSTEM_PROMPT =
@@ -76,6 +75,15 @@ function isRateLimited(key, maxRequests, windowMs) {
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function normalizeHeaders(headers = {}) {
@@ -394,7 +402,11 @@ async function verifyTurnstileToken(token, env, request) {
 }
 
 async function sendContactEmail(env, payload, request) {
-  const deliveryMode = (env?.CONTACT_DELIVERY_MODE || process.env.CONTACT_DELIVERY_MODE || "send").trim();
+  const deliveryMode = (
+    env?.CONTACT_DELIVERY_MODE ||
+    process.env.CONTACT_DELIVERY_MODE ||
+    "send"
+  ).trim();
   if (deliveryMode === "log") {
     console.info("Contact form captured in temporary log mode", {
       name: payload.name || "Not provided",
@@ -410,10 +422,14 @@ async function sendContactEmail(env, payload, request) {
 
   const apiKey = env?.RESEND_API_KEY || process.env.RESEND_API_KEY;
   const toEmail = getContactToEmail(env);
-  const fromEmail = getContactFromEmail(env) || `Zara Dera Group <${DEFAULT_CONTACT_FROM_EMAIL}>`;
+  const fromEmail = getContactFromEmail(env);
 
   if (!apiKey) {
     throw new Error("RESEND_API_KEY is missing.");
+  }
+
+  if (!fromEmail) {
+    throw new Error("CONTACT_FROM_EMAIL is missing.");
   }
 
   const response = await fetch("https://api.resend.com/emails", {
@@ -448,6 +464,71 @@ async function sendContactEmail(env, payload, request) {
     throw new Error(`Contact email delivery failed: ${response.status} ${errorText}`);
   }
 
+  const customerName = payload.name || "there";
+  const safeCustomerName = escapeHtml(customerName);
+  const acknowledgementResponse = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      from: fromEmail,
+      to: [payload.email],
+      reply_to: toEmail,
+      subject: "Thank you for contacting RightHome Proptech",
+      text: [
+        `Dear ${customerName},`,
+        "",
+        "Thank you for contacting RightHome Proptech. We sincerely appreciate you taking the time to reach out to us.",
+        "",
+        "We have received your message, and a member of our team will review your enquiry carefully and get back to you as soon as possible.",
+        "",
+        "What happens next:",
+        "• Our team will review the information you provided.",
+        "• The appropriate property specialist will follow up with you.",
+        "• You can expect a response within 24 hours.",
+        "",
+        "If your enquiry is urgent, you may reply directly to this email.",
+        "",
+        "We greatly appreciate your interest in RightHome Proptech and look forward to assisting you with your property needs.",
+        "",
+        "Warm regards,",
+        "The RightHome Proptech Team",
+        "hello@zaraderagroup.com",
+      ].join("\n"),
+      html: `
+        <div style="margin:0;background:#f5f5f7;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;color:#17172f">
+          <div style="max-width:620px;margin:0 auto;overflow:hidden;border-radius:18px;background:#ffffff;border:1px solid #e9e9ef">
+            <div style="background:#060243;padding:28px 32px">
+              <div style="font-size:22px;font-weight:700;color:#ffffff">Right<span style="color:#f24c21">Home</span> Proptech</div>
+              <div style="margin-top:6px;font-size:13px;color:#d6d4ee">Professional property guidance you can trust</div>
+            </div>
+            <div style="padding:32px">
+              <p style="margin:0 0 20px;font-size:16px;line-height:1.7">Dear ${safeCustomerName},</p>
+              <p style="margin:0 0 18px;font-size:15px;line-height:1.7">Thank you for contacting RightHome Proptech. We sincerely appreciate you taking the time to reach out to us.</p>
+              <p style="margin:0 0 24px;font-size:15px;line-height:1.7">We have received your message, and a member of our team will review your enquiry carefully and get back to you as soon as possible.</p>
+              <div style="margin:0 0 24px;border-left:4px solid #f24c21;border-radius:8px;background:#f8f7fc;padding:18px 20px">
+                <div style="margin-bottom:10px;font-size:14px;font-weight:700;color:#060243">What happens next</div>
+                <div style="font-size:14px;line-height:1.8;color:#44445a">Our team will review your information, connect your enquiry with the appropriate property specialist, and respond within 24 hours.</div>
+              </div>
+              <p style="margin:0 0 18px;font-size:15px;line-height:1.7">If your enquiry is urgent, simply reply to this email.</p>
+              <p style="margin:0 0 26px;font-size:15px;line-height:1.7">We greatly appreciate your interest in RightHome Proptech and look forward to assisting you with your property needs.</p>
+              <p style="margin:0;font-size:15px;line-height:1.7"><strong>Warm regards,</strong><br />The RightHome Proptech Team</p>
+            </div>
+            <div style="border-top:1px solid #eeeeF3;padding:18px 32px;font-size:12px;line-height:1.6;color:#6b6b7c">This acknowledgement was sent because a contact request was submitted using your email address. You can reply directly to reach our team at hello@zaraderagroup.com.</div>
+          </div>
+        </div>
+      `,
+    }),
+  });
+
+  if (!acknowledgementResponse.ok) {
+    console.error(
+      `Customer acknowledgement delivery failed: ${acknowledgementResponse.status} ${await acknowledgementResponse.text()}`,
+    );
+  }
+
   return "send";
 }
 
@@ -456,6 +537,7 @@ function describeContactError(error) {
 
   if (
     message.includes("RESEND_API_KEY is missing") ||
+    message.includes("CONTACT_FROM_EMAIL is missing") ||
     message.includes("Contact email delivery failed")
   ) {
     return message;
@@ -473,6 +555,7 @@ function parseContactPayload(body) {
     interest: clampText(payload.interest, 80),
     message: clampText(payload.message, 2000),
     company: clampText(payload.company, 120),
+    turnstileToken: clampText(payload.turnstileToken, 500),
     honeypot: clampText(payload.website, 120) || clampText(payload.companyWebsite, 120),
   };
 }
@@ -523,6 +606,17 @@ async function handleContactRequest(request, env) {
   if (!isValidEmail(payload.email)) {
     return withCorsHeaders(
       jsonResponse({ error: "Please enter a valid email address." }, 400),
+      request,
+    );
+  }
+
+  const turnstileSuccess = await verifyTurnstileToken(payload.turnstileToken, env, request);
+  if (!turnstileSuccess) {
+    return withCorsHeaders(
+      jsonResponse(
+        { error: "Cloudflare verification failed. Please complete the widget and try again." },
+        400,
+      ),
       request,
     );
   }

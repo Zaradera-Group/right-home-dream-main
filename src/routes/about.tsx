@@ -59,7 +59,7 @@ function About() {
       <PageHeader
         eyebrow="ABOUT US"
         title="Built for the next generation of African real estate"
-        subtitle="We exist to remove friction, fraud and guesswork from property — for buyers, renters, investors and developers."
+        subtitle="We exist to remove friction, fraud and guesswork from property, for buyers, renters, investors and developers."
         highlightedWord="generation"
       />
 
