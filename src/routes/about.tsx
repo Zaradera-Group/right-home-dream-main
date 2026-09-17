@@ -36,13 +36,13 @@ function CountStat({ label, value, prefix, suffix }: CountStatProps) {
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About RightHome Proptech" },
+      { title: "About Us, RightHome Proptech" },
       {
         name: "description",
         content:
           "RightHome Proptech is Africa's intelligent property platform, built to make property transactions transparent, secure and smart.",
       },
-      { property: "og:title", content: "About RightHome Proptech" },
+      { property: "og:title", content: "About Us, RightHome Proptech" },
       {
         property: "og:description",
         content:
