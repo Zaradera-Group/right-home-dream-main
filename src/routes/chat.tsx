@@ -6,6 +6,7 @@ import { RightAIChartCard } from "@/components/RightAIChartCard";
 import { apiUrl } from "@/lib/api-base";
 import { PageHeader, PageShell } from "@/components/PageShell";
 import type { RightAIChart, RightAIMessage } from "@/lib/rightai";
+import { chatPromptSchema } from "@/lib/form-validation";
 
 export const Route = createFileRoute("/chat")({
   head: () => ({
@@ -41,6 +42,7 @@ const initialMessages: Message[] = [
 function Chat() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [prompt, setPrompt] = useState("");
+  const [promptError, setPromptError] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -49,9 +51,14 @@ function Chat() {
   }, [messages]);
 
   const sendMessage = async (question: string) => {
-    if (!question.trim()) return;
+    const validation = chatPromptSchema.safeParse(question);
+    if (!validation.success) {
+      setPromptError(validation.error.issues[0]?.message || "Please enter a valid question.");
+      return;
+    }
 
-    const trimmedQuestion = question.trim();
+    const trimmedQuestion = validation.data;
+    setPromptError("");
     const stamp = Date.now();
     const userMessage: Message = {
       id: `user-${stamp}`,
@@ -239,10 +246,20 @@ function Chat() {
               <input
                 id="rightai-prompt"
                 value={prompt}
-                onChange={(event) => setPrompt(event.target.value)}
+                onChange={(event) => {
+                  setPrompt(event.target.value);
+                  if (promptError) setPromptError("");
+                }}
                 placeholder="Ask about listings, pricing, ROI, or verification..."
-                className="w-full rounded-2xl border border-white/10 bg-transparent px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                aria-invalid={Boolean(promptError)}
+                aria-describedby={promptError ? "rightai-prompt-error" : undefined}
+                className={`w-full rounded-2xl border bg-transparent px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 ${promptError ? "border-red-400/70" : "border-white/10 focus:border-primary"}`}
               />
+              {promptError ? (
+                <p id="rightai-prompt-error" role="alert" className="text-xs text-red-200">
+                  {promptError}
+                </p>
+              ) : null}
               <button
                 type="submit"
                 disabled={loading || !prompt.trim()}

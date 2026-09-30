@@ -1,4 +1,5 @@
 import { Buffer } from "node:buffer";
+import { z } from "zod";
 
 const SUPPORT_EMAIL = "hello@zaraderagroup.com";
 const RIGHTAI_MODEL = "gpt-5.4-mini";
@@ -17,6 +18,27 @@ const sseHeaders = {
 };
 
 const rateLimitBuckets = new Map();
+
+const contactPayloadSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+  email: z.string().trim().email().max(120),
+  phone: z
+    .string()
+    .trim()
+    .max(40)
+    .refine((value) => !value || /^\d{7,20}$/.test(value)),
+  interest: z.enum([
+    "Buying property",
+    "Renting",
+    "Investing",
+    "Listing a property",
+    "Partnership",
+  ]),
+  message: z.string().trim().min(10).max(2000),
+  company: z.string().max(120),
+  turnstileToken: z.string().max(2048),
+  honeypot: z.string().max(120),
+});
 
 function clampText(value, maxLength) {
   if (typeof value !== "string") {
@@ -583,21 +605,35 @@ async function handleContactRequest(request, env) {
     return withCorsHeaders(jsonResponse({ ok: true }), request);
   }
 
-  if (!payload.name || !payload.email || !payload.message) {
+  const validation = contactPayloadSchema.safeParse(payload);
+  if (!validation.success) {
+    const invalidField = validation.error.issues[0]?.path[0];
+    const validationMessages = {
+      name: "Please enter a valid name.",
+      email: "Please enter a valid email address.",
+      phone: "Please enter a valid phone number.",
+      interest: "Please select a valid area of interest.",
+      message: "Please enter a message of at least 10 characters.",
+    };
     return withCorsHeaders(
-      jsonResponse({ error: "Please complete the required fields." }, 400),
+      jsonResponse(
+        {
+          error:
+            validationMessages[invalidField] || "Please review your information and try again.",
+        },
+        400,
+      ),
       request,
     );
   }
 
-  if (!isValidEmail(payload.email)) {
-    return withCorsHeaders(
-      jsonResponse({ error: "Please enter a valid email address." }, 400),
-      request,
-    );
-  }
+  const validatedPayload = validation.data;
 
-  const turnstileSuccess = await verifyTurnstileToken(payload.turnstileToken, env, request);
+  const turnstileSuccess = await verifyTurnstileToken(
+    validatedPayload.turnstileToken,
+    env,
+    request,
+  );
   if (!turnstileSuccess) {
     return withCorsHeaders(
       jsonResponse(
@@ -609,7 +645,7 @@ async function handleContactRequest(request, env) {
   }
 
   try {
-    await sendContactEmail(env, payload, request);
+    await sendContactEmail(env, validatedPayload, request);
     return withCorsHeaders(
       jsonResponse({
         ok: true,

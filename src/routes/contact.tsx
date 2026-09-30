@@ -1,12 +1,19 @@
 "use client";
 
 import { createFileRoute } from "@tanstack/react-router";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useRef, useState } from "react";
+import { useForm, type FieldErrors, type UseFormRegisterReturn } from "react-hook-form";
 import { CheckCircle2, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck } from "lucide-react";
 
 import { apiUrl } from "@/lib/api-base";
 import { PageHeader, PageShell } from "@/components/PageShell";
 import { SUPPORT_EMAIL, SUPPORT_PHONE } from "@/lib/runtime-config";
+import {
+  contactFormSchema,
+  contactInterestValues,
+  type ContactFormValues,
+} from "@/lib/form-validation";
 
 type TurnstileRenderOptions = {
   sitekey: string;
@@ -67,6 +74,24 @@ function Contact() {
   const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
   const widgetIdRef = useRef<number | null>(null);
   const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
+  const {
+    register,
+    handleSubmit,
+    reset: resetForm,
+    formState: { errors },
+  } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      interest: initialInterest,
+      message: "",
+      website: "",
+    },
+  });
 
   const requiresTurnstile = Boolean(turnstileSiteKey);
   const verificationComplete = mathVerified && (!requiresTurnstile || turnstileVerified);
@@ -166,56 +191,16 @@ function Contact() {
     setNotice("The maths answer is incorrect. Please try again.");
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formElement = event.currentTarget;
-    const nameInput = formElement.elements.namedItem("name") as HTMLInputElement | null;
-    const emailInput = formElement.elements.namedItem("email") as HTMLInputElement | null;
-    const messageInput = formElement.elements.namedItem("message") as HTMLTextAreaElement | null;
-
-    nameInput?.setCustomValidity("");
-    emailInput?.setCustomValidity("");
-    messageInput?.setCustomValidity("");
-
-    const formData = new FormData(formElement);
+  const submitContact = async (values: ContactFormValues) => {
     const payload = {
-      name: String(formData.get("name") || "").trim(),
-      email: String(formData.get("email") || "").trim(),
-      phone: String(formData.get("phone") || "")
-        .replace(/\D/g, "")
-        .trim(),
-      interest: String(formData.get("interest") || initialInterest).trim(),
-      message: String(formData.get("message") || "").trim(),
-      website: String(formData.get("website") || "").trim(),
+      name: values.name.trim(),
+      email: values.email.trim().toLowerCase(),
+      phone: values.phone.replace(/\D/g, "").trim(),
+      interest: values.interest,
+      message: values.message.trim(),
+      website: values.website?.trim() || "",
       turnstileToken,
     };
-
-    let hasClientValidationError = false;
-
-    if (!payload.name) {
-      nameInput?.setCustomValidity("Please enter your name.");
-      hasClientValidationError = true;
-    }
-
-    if (!payload.email) {
-      emailInput?.setCustomValidity("Please enter your email address.");
-      hasClientValidationError = true;
-    } else if (emailInput && !emailInput.checkValidity()) {
-      emailInput.setCustomValidity("Please enter a valid email address.");
-      hasClientValidationError = true;
-    }
-
-    if (!payload.message) {
-      messageInput?.setCustomValidity("Please enter a message.");
-      hasClientValidationError = true;
-    }
-
-    if (!formElement.checkValidity()) {
-      formElement.reportValidity();
-      setStatus("error");
-      setNotice("Please complete the required fields.");
-      return;
-    }
 
     if (requiresTurnstile && !turnstileVerified) {
       setStatus("error");
@@ -226,13 +211,6 @@ function Contact() {
     if (!mathVerified) {
       setStatus("error");
       setNotice("Please complete the maths challenge before sending.");
-      return;
-    }
-
-    if (hasClientValidationError) {
-      formElement.reportValidity();
-      setStatus("error");
-      setNotice("Please complete the required fields.");
       return;
     }
 
@@ -270,7 +248,7 @@ function Contact() {
         data.message ||
           `Thanks. Your message has been sent to ${SUPPORT_EMAIL} and our team will reply soon.`,
       );
-      formElement.reset();
+      resetForm();
       setMathInput("");
       setMathVerified(false);
       setMathChallenge(createMathChallenge());
@@ -288,6 +266,11 @@ function Contact() {
         `We could not send your message right now. Please email ${SUPPORT_EMAIL} directly.`,
       );
     }
+  };
+
+  const handleInvalid = (_errors: FieldErrors<ContactFormValues>) => {
+    setStatus("error");
+    setNotice("Please correct the highlighted fields before sending your message.");
   };
 
   return (
@@ -348,7 +331,7 @@ function Contact() {
           </div>
 
           <form
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(submitContact, handleInvalid)}
             noValidate
             className="glass-strong relative isolate min-w-0 overflow-hidden rounded-3xl p-4 sm:p-6 md:p-9 lg:col-span-3"
           >
@@ -374,20 +357,20 @@ function Contact() {
               <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
                 <Field
                   label="Full name"
-                  name="name"
-                  defaultValue=""
+                  id="contact-name"
                   placeholder="Your name"
                   autoComplete="name"
-                  required
+                  registration={register("name")}
+                  error={errors.name?.message}
                 />
                 <Field
                   label="Email"
-                  name="email"
+                  id="contact-email"
                   type="email"
-                  defaultValue=""
                   placeholder="you@email.com"
                   autoComplete="email"
-                  required
+                  registration={register("email")}
+                  error={errors.email?.message}
                 />
                 <div>
                   <label htmlFor="contact-phone" className="text-xs text-muted-foreground">
@@ -395,16 +378,18 @@ function Contact() {
                   </label>
                   <input
                     id="contact-phone"
-                    name="phone"
                     type="tel"
                     inputMode="tel"
-                    defaultValue=""
                     placeholder="+234..."
                     autoComplete="tel"
+                    {...register("phone")}
                     onKeyDown={handlePhoneKeyDown}
                     onPaste={handlePhonePaste}
-                    className="relative z-10 mt-1.5 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+                    aria-invalid={Boolean(errors.phone)}
+                    aria-describedby={errors.phone ? "contact-phone-error" : undefined}
+                    className={`relative z-10 mt-1.5 w-full rounded-xl border bg-white/5 px-4 py-3 text-sm outline-none transition focus:ring-2 focus:ring-primary/30 ${errors.phone ? "border-red-400/70" : "border-white/10 focus:border-primary"}`}
                   />
+                  <FieldError id="contact-phone-error" message={errors.phone?.message} />
                 </div>
                 <div>
                   <label htmlFor="contact-interest" className="text-xs text-muted-foreground">
@@ -412,16 +397,17 @@ function Contact() {
                   </label>
                   <select
                     id="contact-interest"
-                    name="interest"
-                    defaultValue={initialInterest}
+                    {...register("interest")}
+                    aria-invalid={Boolean(errors.interest)}
                     className="relative z-10 mt-1.5 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
                   >
-                    <option className="bg-[#060243]">Buying property</option>
-                    <option className="bg-[#060243]">Renting</option>
-                    <option className="bg-[#060243]">Investing</option>
-                    <option className="bg-[#060243]">Listing a property</option>
-                    <option className="bg-[#060243]">Partnership</option>
+                    {contactInterestValues.map((interest) => (
+                      <option key={interest} value={interest} className="bg-[#060243]">
+                        {interest}
+                      </option>
+                    ))}
                   </select>
+                  <FieldError id="contact-interest-error" message={errors.interest?.message} />
                 </div>
               </div>
 
@@ -528,23 +514,23 @@ function Contact() {
                 </label>
                 <textarea
                   id="contact-message"
-                  name="message"
                   rows={6}
-                  defaultValue=""
                   placeholder="Tell us a bit more..."
-                  required
-                  className="advanced-scrollbar relative z-10 mt-1.5 w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+                  {...register("message")}
+                  aria-invalid={Boolean(errors.message)}
+                  aria-describedby={errors.message ? "contact-message-error" : undefined}
+                  className={`advanced-scrollbar relative z-10 mt-1.5 w-full resize-none rounded-xl border bg-white/5 px-4 py-3 text-sm outline-none transition focus:ring-2 focus:ring-primary/30 ${errors.message ? "border-red-400/70" : "border-white/10 focus:border-primary"}`}
                 />
+                <FieldError id="contact-message-error" message={errors.message?.message} />
               </div>
 
               <input
-                name="website"
                 type="text"
                 tabIndex={-1}
                 autoComplete="off"
                 aria-hidden="true"
                 className="hidden"
-                defaultValue=""
+                {...register("website")}
               />
               {status === "sending" ? (
                 <button
@@ -576,17 +562,38 @@ function Contact() {
 
 function Field({
   label,
+  registration,
+  error,
+  id,
   ...props
 }: {
   label: string;
-} & React.InputHTMLAttributes<HTMLInputElement>) {
+  registration: UseFormRegisterReturn;
+  error?: string;
+  id: string;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "name" | "defaultValue">) {
   return (
     <div>
-      <label className="text-xs text-muted-foreground">{label}</label>
+      <label htmlFor={id} className="text-xs text-muted-foreground">
+        {label}
+      </label>
       <input
+        id={id}
+        {...registration}
         {...props}
-        className="relative z-10 mt-1.5 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? `${id}-error` : undefined}
+        className={`relative z-10 mt-1.5 w-full rounded-xl border bg-white/5 px-4 py-3 text-sm outline-none transition focus:ring-2 focus:ring-primary/30 ${error ? "border-red-400/70" : "border-white/10 focus:border-primary"}`}
       />
+      <FieldError id={`${id}-error`} message={error} />
     </div>
   );
+}
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  return message ? (
+    <p id={id} role="alert" className="mt-1.5 text-xs text-red-200">
+      {message}
+    </p>
+  ) : null;
 }
