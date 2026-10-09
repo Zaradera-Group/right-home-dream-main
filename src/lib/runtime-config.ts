@@ -11,7 +11,7 @@ export const ENV_KEYS = {
   smtpPort: "SMTP_PORT",
   smtpSecure: "SMTP_SECURE",
   smtpUser: "SMTP_USER",
-  smtpPass: "SMTP_PASS",
+  smtpPassword: "SMTP_PASSWORD",
   contactToEmail: "CONTACT_TO_EMAIL",
   contactFromEmail: "CONTACT_FROM_EMAIL",
   turnstileSecretKey: "TURNSTILE_SECRET_KEY",

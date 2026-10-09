@@ -363,7 +363,8 @@ async function storeAndDeliverContact(
   const fromEmail = getContactFromEmail(env) ?? `Zara Dera Group <${DEFAULT_CONTACT_FROM_EMAIL}>`;
   const host = getServerSetting(env, "SMTP_HOST");
   const user = getServerSetting(env, "SMTP_USER");
-  const pass = getServerSetting(env, "SMTP_PASS");
+  const pass =
+    getServerSetting(env, "SMTP_PASSWORD") || getServerSetting(env, "SMTP_PASS");
   const port = Number(getServerSetting(env, "SMTP_PORT") || "587");
   if (!host || !user || !pass || !Number.isInteger(port)) {
     throw new Error("SMTP configuration is incomplete.");

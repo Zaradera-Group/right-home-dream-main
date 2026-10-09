@@ -70,8 +70,12 @@ export function bootstrapLocalServerEnv(context: string): void {
       "MONGODB_URI",
       "SMTP_HOST",
       "SMTP_USER",
-      "SMTP_PASS",
     ];
     validateRequiredServerEnv(context, requiredKeys);
+    if (!process.env.SMTP_PASSWORD?.trim() && !process.env.SMTP_PASS?.trim()) {
+      throw new Error(
+        `${context}: missing required environment variable: SMTP_PASSWORD. Set it in your local .env file or as a deployment secret before starting the app.`,
+      );
+    }
   }
 }

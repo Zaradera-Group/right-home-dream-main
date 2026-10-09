@@ -489,7 +489,8 @@ function getMailTransporter(env) {
   const host = getServerSetting(env, "SMTP_HOST");
   const portValue = getServerSetting(env, "SMTP_PORT") || "587";
   const user = getServerSetting(env, "SMTP_USER");
-  const pass = getServerSetting(env, "SMTP_PASS");
+  const pass =
+    getServerSetting(env, "SMTP_PASSWORD") || getServerSetting(env, "SMTP_PASS");
   const port = Number(portValue);
 
   if (!host || !user || !pass || !Number.isInteger(port)) {

@@ -55,9 +55,11 @@ function validateRequiredServerEnv(context) {
     "MONGODB_URI",
     "SMTP_HOST",
     "SMTP_USER",
-    "SMTP_PASS",
   ];
   const missingKeys = requiredKeys.filter((key) => !process.env[key]?.trim());
+  if (!process.env.SMTP_PASSWORD?.trim() && !process.env.SMTP_PASS?.trim()) {
+    missingKeys.push("SMTP_PASSWORD");
+  }
   if (missingKeys.length === 0) {
     return;
   }
@@ -427,7 +429,10 @@ async function storeAndDeliverContact(payload, request) {
       secure: process.env.SMTP_SECURE
         ? process.env.SMTP_SECURE === "true"
         : port === 465,
-      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD || process.env.SMTP_PASS,
+      },
       connectionTimeout: 10000,
       greetingTimeout: 10000,
       socketTimeout: 15000,
