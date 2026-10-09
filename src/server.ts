@@ -1,5 +1,7 @@
 import "./lib/error-capture";
 
+import { MongoClient, ServerApiVersion, type Collection, type ObjectId } from "mongodb";
+import nodemailer, { type Transporter } from "nodemailer";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { bootstrapLocalServerEnv } from "./server/env";
 import { renderErrorPage } from "./lib/error-page";
@@ -95,6 +97,8 @@ const sseHeaders = {
   "cache-control": "no-cache, no-transform",
   connection: "keep-alive",
 };
+let mongoClientPromise: Promise<MongoClient> | undefined;
+let mailTransporter: Transporter | undefined;
 
 bootstrapLocalServerEnv("TanStack Start server startup");
 
@@ -206,6 +210,10 @@ function getContactFromEmail(env: unknown): string | undefined {
   );
 }
 
+function getServerSetting(env: unknown, key: string): string | undefined {
+  return (env as Record<string, string | undefined>)?.[key] ?? process.env[key];
+}
+
 function getTurnstileSecret(env: unknown): string | undefined {
   return (
     (env as { TURNSTILE_SECRET_KEY?: string })?.TURNSTILE_SECRET_KEY ??
@@ -293,31 +301,91 @@ async function verifyTurnstileToken(
   return data.success === true;
 }
 
-async function sendContactEmail(
+async function updateDelivery(
+  collection: Collection,
+  submissionId: ObjectId,
+  channel: "team" | "acknowledgement",
+  status: "sent" | "failed",
+  error?: unknown,
+): Promise<void> {
+  const fields: Record<string, unknown> = {
+    [`delivery.${channel}.status`]: status,
+    [`delivery.${channel}.updatedAt`]: new Date(),
+    updatedAt: new Date(),
+  };
+  if (error) fields[`delivery.${channel}.error`] = String(error).slice(0, 500);
+  await collection.updateOne({ _id: submissionId }, { $set: fields });
+}
+
+async function storeAndDeliverContact(
   env: unknown,
   payload: ReturnType<typeof parseContactPayload>,
   request: Request,
-): Promise<"send"> {
-  const apiKey = (env as { RESEND_API_KEY?: string })?.RESEND_API_KEY ?? process.env.RESEND_API_KEY;
+): Promise<void> {
+  const mongoUri = getServerSetting(env, "MONGODB_URI");
+  if (!mongoUri) throw new Error("MONGODB_URI is missing.");
+  if (!mongoClientPromise) {
+    const client = new MongoClient(mongoUri, {
+      maxPoolSize: 5,
+      serverSelectionTimeoutMS: 8000,
+      serverApi: { version: ServerApiVersion.v1, strict: true, deprecationErrors: true },
+    });
+    mongoClientPromise = client.connect().catch((error) => {
+      mongoClientPromise = undefined;
+      throw error;
+    });
+  }
+  const client = await mongoClientPromise;
+  const collection = client
+    .db(getServerSetting(env, "MONGODB_DB_NAME") || "righthome_proptech")
+    .collection("contact_submissions");
+  const now = new Date();
+  const stored = await collection.insertOne({
+    name: payload.name,
+    email: payload.email.toLowerCase(),
+    phone: payload.phone || null,
+    interest: payload.interest,
+    message: payload.message,
+    company: payload.company || null,
+    status: "received",
+    delivery: { team: { status: "pending" }, acknowledgement: { status: "pending" } },
+    source: {
+      channel: "website-contact-form",
+      ip: getClientIp(request),
+      origin: request.headers.get("origin"),
+      userAgent: request.headers.get("user-agent"),
+    },
+    createdAt: now,
+    updatedAt: now,
+  });
+
   const toEmail = getContactToEmail(env);
   const fromEmail = getContactFromEmail(env) ?? `Zara Dera Group <${DEFAULT_CONTACT_FROM_EMAIL}>`;
-
-  if (!apiKey) {
-    const message =
-      "RESEND_API_KEY is missing. Set it as a deployment secret or in your local .env file.";
-    console.error(message);
-    throw new Error(message);
+  const host = getServerSetting(env, "SMTP_HOST");
+  const user = getServerSetting(env, "SMTP_USER");
+  const pass = getServerSetting(env, "SMTP_PASS");
+  const port = Number(getServerSetting(env, "SMTP_PORT") || "587");
+  if (!host || !user || !pass || !Number.isInteger(port)) {
+    throw new Error("SMTP configuration is incomplete.");
+  }
+  if (!mailTransporter) {
+    mailTransporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: getServerSetting(env, "SMTP_SECURE")
+        ? getServerSetting(env, "SMTP_SECURE") === "true"
+        : port === 465,
+      auth: { user, pass },
+      connectionTimeout: 10000,
+      socketTimeout: 15000,
+    });
   }
 
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
+  try {
+    await mailTransporter.sendMail({
       from: fromEmail,
-      to: [toEmail],
+      to: toEmail,
+      replyTo: payload.email,
       subject: `New website enquiry from ${payload.name || "Anonymous visitor"}`,
       text: [
         `Name: ${payload.name || "Not provided"}`,
@@ -333,23 +401,34 @@ async function sendContactEmail(
         `Origin: ${request.headers.get("origin") || "unknown"}`,
         `User-Agent: ${request.headers.get("user-agent") || "unknown"}`,
       ].join("\n"),
-    }),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Contact email delivery failed: ${response.status} ${errorText}`);
+    });
+    await updateDelivery(collection, stored.insertedId, "team", "sent");
+  } catch (error) {
+    await updateDelivery(collection, stored.insertedId, "team", "failed", error);
+    throw new Error("Team email delivery failed.", { cause: error });
   }
 
-  return "send";
+  try {
+    await mailTransporter.sendMail({
+      from: fromEmail,
+      to: payload.email,
+      subject: "Thank you for contacting RightHome Proptech",
+      text: `Dear ${payload.name},\n\nThank you for contacting RightHome Proptech. We have received your message, and a member of our team will get back to you as soon as possible.\n\nWarm regards,\nThe RightHome Proptech Team`,
+    });
+    await updateDelivery(collection, stored.insertedId, "acknowledgement", "sent");
+  } catch (error) {
+    console.error("Customer acknowledgement delivery failed", error);
+    await updateDelivery(collection, stored.insertedId, "acknowledgement", "failed", error);
+  }
 }
 
 function describeContactError(error: unknown): string | null {
   const message = error instanceof Error ? error.message : "";
 
   if (
-    message.includes("RESEND_API_KEY is missing") ||
-    message.includes("Contact email delivery failed")
+    message.includes("MONGODB_URI is missing") ||
+    message.includes("SMTP configuration") ||
+    message.includes("Team email delivery failed")
   ) {
     return message;
   }
@@ -425,7 +504,7 @@ async function handleContactRequest(request: Request, env: unknown): Promise<Res
   }
 
   try {
-    await sendContactEmail(env, payload, request);
+    await storeAndDeliverContact(env, payload, request);
     return withCorsHeaders(
       jsonSecureResponse({
         ok: true,

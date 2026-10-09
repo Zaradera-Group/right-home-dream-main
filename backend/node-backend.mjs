@@ -1,6 +1,8 @@
 import { createServer } from "node:http";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { MongoClient, ServerApiVersion } from "mongodb";
+import nodemailer from "nodemailer";
 
 const REQUIRED_SERVER_KEYS = ["OPENAI_API_KEY"];
 
@@ -8,7 +10,7 @@ const projectRoot = process.cwd();
 const dotenvPath = resolve(projectRoot, ".env");
 const supportEmail = "hello@zaraderagroup.com";
 const supportPhone = "+234 7017683590";
-const defaultFromEmail = "onboarding@resend.dev";
+const defaultFromEmail = "RightHome Proptech <no-reply@righthomeproptech.com>";
 
 function loadDotEnv(filePath) {
   if (!existsSync(filePath)) {
@@ -46,7 +48,13 @@ function loadDotEnv(filePath) {
 loadDotEnv(dotenvPath);
 
 function validateRequiredServerEnv(context) {
-  const requiredKeys = [...REQUIRED_SERVER_KEYS, "RESEND_API_KEY"];
+  const requiredKeys = [
+    ...REQUIRED_SERVER_KEYS,
+    "MONGODB_URI",
+    "SMTP_HOST",
+    "SMTP_USER",
+    "SMTP_PASS",
+  ];
   const missingKeys = requiredKeys.filter((key) => !process.env[key]?.trim());
   if (missingKeys.length === 0) {
     return;
@@ -60,6 +68,8 @@ function validateRequiredServerEnv(context) {
 validateRequiredServerEnv("Node backend startup");
 
 const rateLimitBuckets = new Map();
+let mongoClientPromise;
+let mailTransporter;
 
 function clampText(value, maxLength) {
   if (typeof value !== "string") return "";
@@ -363,24 +373,72 @@ async function createRightAIChart(apiKey, messages) {
   };
 }
 
-async function sendContactEmail(payload, request) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    throw new Error("RESEND_API_KEY is not configured");
+async function storeAndDeliverContact(payload, request) {
+  if (!mongoClientPromise) {
+    const client = new MongoClient(process.env.MONGODB_URI, {
+      maxPoolSize: 5,
+      serverSelectionTimeoutMS: 8000,
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+      },
+    });
+    mongoClientPromise = client.connect().catch((error) => {
+      mongoClientPromise = undefined;
+      throw error;
+    });
+  }
+
+  const client = await mongoClientPromise;
+  const collection = client
+    .db(process.env.MONGODB_DB_NAME || "righthome_proptech")
+    .collection("contact_submissions");
+  const now = new Date();
+  const result = await collection.insertOne({
+    name: payload.name,
+    email: payload.email.toLowerCase(),
+    phone: payload.phone || null,
+    interest: payload.interest || null,
+    message: payload.message,
+    company: payload.company || null,
+    status: "received",
+    delivery: {
+      team: { status: "pending" },
+      acknowledgement: { status: "pending" },
+    },
+    source: {
+      channel: "website-contact-form",
+      ip: getClientIp(request),
+      origin: request.headers.origin || null,
+      userAgent: request.headers["user-agent"] || null,
+    },
+    createdAt: now,
+    updatedAt: now,
+  });
+
+  if (!mailTransporter) {
+    const port = Number(process.env.SMTP_PORT || "587");
+    mailTransporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port,
+      secure: process.env.SMTP_SECURE
+        ? process.env.SMTP_SECURE === "true"
+        : port === 465,
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+    });
   }
 
   const toEmail = process.env.CONTACT_TO_EMAIL || supportEmail;
   const fromEmail = process.env.CONTACT_FROM_EMAIL || defaultFromEmail;
-
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      from: `Zara Dera Group <${fromEmail}>`,
-      to: [toEmail],
+  try {
+    await mailTransporter.sendMail({
+      from: fromEmail,
+      to: toEmail,
+      replyTo: payload.email,
       subject: `New website enquiry from ${payload.name || "Anonymous visitor"}`,
       text: [
         `Name: ${payload.name || "Not provided"}`,
@@ -396,24 +454,63 @@ async function sendContactEmail(payload, request) {
         `Origin: ${request.headers.origin || "unknown"}`,
         `User-Agent: ${request.headers["user-agent"] || "unknown"}`,
       ].join("\n"),
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Resend error ${response.status}: ${await response.text()}`);
+    });
+    await collection.updateOne(
+      { _id: result.insertedId },
+      { $set: { "delivery.team.status": "sent", "delivery.team.updatedAt": new Date() } },
+    );
+  } catch (error) {
+    await collection.updateOne(
+      { _id: result.insertedId },
+      {
+        $set: {
+          "delivery.team.status": "failed",
+          "delivery.team.updatedAt": new Date(),
+          "delivery.team.error": String(error).slice(0, 500),
+        },
+      },
+    );
+    throw new Error("Team email delivery failed.", { cause: error });
   }
 
-  return "send";
-}
-
-function describeContactError(error) {
-  const message = error instanceof Error ? error.message : "";
-
-  if (message.includes("RESEND_API_KEY is not configured") || message.includes("Resend error")) {
-    return message;
+  try {
+    await mailTransporter.sendMail({
+      from: fromEmail,
+      to: payload.email,
+      subject: "Thank you for contacting RightHome Proptech",
+      text: [
+        `Dear ${payload.name},`,
+        "",
+        "Thank you for contacting RightHome Proptech. We sincerely appreciate you taking the time to reach out to us.",
+        "",
+        "We have received your message, and a member of our team will review your enquiry carefully and get back to you as soon as possible.",
+        "",
+        "Warm regards,",
+        "The RightHome Proptech Team",
+      ].join("\n"),
+    });
+    await collection.updateOne(
+      { _id: result.insertedId },
+      {
+        $set: {
+          "delivery.acknowledgement.status": "sent",
+          "delivery.acknowledgement.updatedAt": new Date(),
+        },
+      },
+    );
+  } catch (error) {
+    console.error("Customer acknowledgement delivery failed", error);
+    await collection.updateOne(
+      { _id: result.insertedId },
+      {
+        $set: {
+          "delivery.acknowledgement.status": "failed",
+          "delivery.acknowledgement.updatedAt": new Date(),
+          "delivery.acknowledgement.error": String(error).slice(0, 500),
+        },
+      },
+    );
   }
-
-  return null;
 }
 
 async function streamSse(response, write) {
@@ -628,16 +725,17 @@ async function handleContactRequest(request, response) {
       });
     }
 
-    await sendContactEmail(payload, request);
+    await storeAndDeliverContact(payload, request);
     return sendJsonWithCors(request, response, 200, {
       ok: true,
       message: `Thank you for contacting RightHome Proptech. Your message has been received successfully, and our team will respond within 24 hours.`,
     });
   } catch (error) {
     console.error("Contact submission failed", error);
-    const contactError = describeContactError(error);
-    if (contactError) {
-      return sendJsonWithCors(request, response, 502, { error: contactError });
+    if (error instanceof Error && error.message.includes("Team email delivery failed")) {
+      return sendJsonWithCors(request, response, 502, {
+        error: `Your enquiry was saved, but the notification email could not be delivered. Please email ${supportEmail} directly for urgent assistance.`,
+      });
     }
     return sendJsonWithCors(request, response, 503, {
       error: `We could not send your message right now. Please email ${supportEmail} directly.`,

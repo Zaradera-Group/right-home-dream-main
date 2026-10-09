@@ -1,4 +1,6 @@
 import { Buffer } from "node:buffer";
+import { MongoClient, ServerApiVersion } from "mongodb";
+import nodemailer from "nodemailer";
 import { z } from "zod";
 
 const SUPPORT_EMAIL = "hello@zaraderagroup.com";
@@ -18,6 +20,10 @@ const sseHeaders = {
 };
 
 const rateLimitBuckets = new Map();
+let mongoClientPromise;
+let mongoIndexesPromise;
+let mailTransporter;
+let mailTransporterKey;
 
 const contactPayloadSchema = z.object({
   name: z.string().trim().min(2).max(80),
@@ -229,6 +235,10 @@ function getContactFromEmail(env) {
   return env?.CONTACT_FROM_EMAIL || process.env.CONTACT_FROM_EMAIL;
 }
 
+function getServerSetting(env, key) {
+  return env?.[key] || process.env[key];
+}
+
 function getTurnstileSecret(env) {
   return env?.TURNSTILE_SECRET_KEY || process.env.TURNSTILE_SECRET_KEY;
 }
@@ -429,29 +439,137 @@ async function verifyTurnstileToken(token, env, request) {
   return data.success === true;
 }
 
-async function sendContactEmail(env, payload, request) {
-  const apiKey = env?.RESEND_API_KEY || process.env.RESEND_API_KEY;
+function getMongoClient(env) {
+  const uri = getServerSetting(env, "MONGODB_URI");
+  if (!uri) {
+    throw new Error("MONGODB_URI is missing.");
+  }
+
+  if (!mongoClientPromise) {
+    const client = new MongoClient(uri, {
+      maxPoolSize: 5,
+      minPoolSize: 0,
+      serverSelectionTimeoutMS: 8000,
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+      },
+    });
+    mongoClientPromise = client.connect().catch((error) => {
+      mongoClientPromise = undefined;
+      throw error;
+    });
+  }
+
+  return mongoClientPromise;
+}
+
+async function getContactCollection(env) {
+  const client = await getMongoClient(env);
+  const databaseName = getServerSetting(env, "MONGODB_DB_NAME") || "righthome_proptech";
+  const collection = client.db(databaseName).collection("contact_submissions");
+
+  if (!mongoIndexesPromise) {
+    mongoIndexesPromise = collection
+      .createIndexes([
+        { key: { createdAt: -1 }, name: "createdAt_desc" },
+        { key: { email: 1, createdAt: -1 }, name: "email_createdAt" },
+      ])
+      .catch((error) => {
+        mongoIndexesPromise = undefined;
+        throw error;
+      });
+  }
+  await mongoIndexesPromise;
+  return collection;
+}
+
+function getMailTransporter(env) {
+  const host = getServerSetting(env, "SMTP_HOST");
+  const portValue = getServerSetting(env, "SMTP_PORT") || "587";
+  const user = getServerSetting(env, "SMTP_USER");
+  const pass = getServerSetting(env, "SMTP_PASS");
+  const port = Number(portValue);
+
+  if (!host || !user || !pass || !Number.isInteger(port)) {
+    throw new Error("SMTP configuration is incomplete.");
+  }
+
+  const secureSetting = getServerSetting(env, "SMTP_SECURE");
+  const secure = secureSetting ? secureSetting === "true" : port === 465;
+  const transporterKey = `${host}:${port}:${secure}:${user}`;
+  if (!mailTransporter || mailTransporterKey !== transporterKey) {
+    mailTransporter = nodemailer.createTransport({
+      host,
+      port,
+      secure,
+      auth: { user, pass },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+    });
+    mailTransporterKey = transporterKey;
+  }
+
+  return mailTransporter;
+}
+
+async function storeContactSubmission(env, payload, request) {
+  const collection = await getContactCollection(env);
+  const now = new Date();
+  const result = await collection.insertOne({
+    name: payload.name,
+    email: payload.email.toLowerCase(),
+    phone: payload.phone || null,
+    interest: payload.interest,
+    message: payload.message,
+    company: payload.company || null,
+    status: "received",
+    delivery: {
+      team: { status: "pending" },
+      acknowledgement: { status: "pending" },
+    },
+    source: {
+      channel: "website-contact-form",
+      ip: getClientIp(request),
+      origin: request.headers.get("origin") || null,
+      userAgent: request.headers.get("user-agent") || null,
+    },
+    createdAt: now,
+    updatedAt: now,
+  });
+  return { collection, submissionId: result.insertedId };
+}
+
+async function setDeliveryStatus(collection, submissionId, channel, status, error) {
+  const update = {
+    [`delivery.${channel}.status`]: status,
+    [`delivery.${channel}.updatedAt`]: new Date(),
+    updatedAt: new Date(),
+  };
+  if (error) {
+    update[`delivery.${channel}.error`] = String(error).slice(0, 500);
+  }
+  await collection.updateOne({ _id: submissionId }, { $set: update });
+}
+
+async function deliverContactEmails(env, payload, request, collection, submissionId) {
   const toEmail = getContactToEmail(env);
   const fromEmail = getContactFromEmail(env);
-
-  if (!apiKey) {
-    throw new Error("RESEND_API_KEY is missing.");
-  }
 
   if (!fromEmail) {
     throw new Error("CONTACT_FROM_EMAIL is missing.");
   }
 
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
+  let transporter;
+  try {
+    transporter = getMailTransporter(env);
+    await transporter.sendMail({
       from: fromEmail,
-      to: [toEmail],
-      subject: `New website enquiry from ${payload.name || "Anonymous visitor"}`,
+      to: toEmail,
+      replyTo: payload.email,
+      subject: `New website enquiry from ${payload.name}`,
       text: [
         `Name: ${payload.name || "Not provided"}`,
         `Email: ${payload.email}`,
@@ -466,25 +584,19 @@ async function sendContactEmail(env, payload, request) {
         `Origin: ${request.headers.get("origin") || "unknown"}`,
         `User-Agent: ${request.headers.get("user-agent") || "unknown"}`,
       ].join("\n"),
-    }),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Contact email delivery failed: ${response.status} ${errorText}`);
+    });
+    await setDeliveryStatus(collection, submissionId, "team", "sent");
+  } catch (error) {
+    await setDeliveryStatus(collection, submissionId, "team", "failed", error);
+    throw new Error("Team email delivery failed.", { cause: error });
   }
 
   const customerName = payload.name || "there";
   const safeCustomerName = escapeHtml(customerName);
-  const acknowledgementResponse = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
+  try {
+    await transporter.sendMail({
       from: fromEmail,
-      to: [payload.email],
+      to: payload.email,
       subject: "Thank you for contacting RightHome Proptech",
       text: [
         `Dear ${customerName},`,
@@ -529,27 +641,22 @@ async function sendContactEmail(env, payload, request) {
           </div>
         </div>
       `,
-    }),
-  });
-
-  if (!acknowledgementResponse.ok) {
-    console.error(
-      `Customer acknowledgement delivery failed: ${acknowledgementResponse.status} ${await acknowledgementResponse.text()}`,
-    );
+    });
+    await setDeliveryStatus(collection, submissionId, "acknowledgement", "sent");
+  } catch (error) {
+    console.error("Customer acknowledgement delivery failed", error);
+    await setDeliveryStatus(collection, submissionId, "acknowledgement", "failed", error);
   }
-
-  return "send";
 }
 
 function describeContactError(error) {
   const message = error instanceof Error ? error.message : "";
 
-  if (
-    message.includes("RESEND_API_KEY is missing") ||
-    message.includes("CONTACT_FROM_EMAIL is missing") ||
-    message.includes("Contact email delivery failed")
-  ) {
-    return message;
+  if (message.includes("MONGODB_URI is missing") || message.includes("SMTP configuration")) {
+    return "The contact service is not fully configured. Please email hello@zaraderagroup.com directly.";
+  }
+  if (message.includes("Team email delivery failed")) {
+    return "Your enquiry was saved, but the notification email could not be delivered. Please email hello@zaraderagroup.com directly for urgent assistance.";
   }
 
   return null;
@@ -645,7 +752,18 @@ async function handleContactRequest(request, env) {
   }
 
   try {
-    await sendContactEmail(env, validatedPayload, request);
+    const { collection, submissionId } = await storeContactSubmission(
+      env,
+      validatedPayload,
+      request,
+    );
+    await deliverContactEmails(
+      env,
+      validatedPayload,
+      request,
+      collection,
+      submissionId,
+    );
     return withCorsHeaders(
       jsonResponse({
         ok: true,

@@ -65,10 +65,13 @@ export function validateRequiredServerEnv(context: string, keys: readonly string
 export function bootstrapLocalServerEnv(context: string): void {
   const loadedKeys = loadDotEnvFile();
   if (loadedKeys.length > 0 || existsSync(resolve(process.cwd(), ".env"))) {
-    const requiredKeys =
-      process.env.CONTACT_DELIVERY_MODE?.trim() === "log"
-        ? REQUIRED_SERVER_KEYS
-        : [...REQUIRED_SERVER_KEYS, "RESEND_API_KEY"];
+    const requiredKeys = [
+      ...REQUIRED_SERVER_KEYS,
+      "MONGODB_URI",
+      "SMTP_HOST",
+      "SMTP_USER",
+      "SMTP_PASS",
+    ];
     validateRequiredServerEnv(context, requiredKeys);
   }
 }
