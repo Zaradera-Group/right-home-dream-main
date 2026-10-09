@@ -8,8 +8,9 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/server"
+  to = "https://right-home-dream-main.onrender.com/api/:splat"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/*"
