@@ -16,7 +16,7 @@ import {
   MapPin,
   Activity,
   BarChart3,
-  Play,
+  
 } from "lucide-react";
 import { AnimatedNumber } from "@/components/ui/animated-number";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
