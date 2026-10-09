@@ -1,12 +1,14 @@
 import { createServer } from "node:http";
 import { existsSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import nodemailer from "nodemailer";
 
 const REQUIRED_SERVER_KEYS = ["OPENAI_API_KEY"];
 
-const projectRoot = process.cwd();
+const backendDirectory = resolve(fileURLToPath(new URL(".", import.meta.url)));
+const projectRoot = resolve(backendDirectory, "..");
 const dotenvPath = resolve(projectRoot, ".env");
 const supportEmail = "hello@zaraderagroup.com";
 const supportPhone = "+234 7017683590";
