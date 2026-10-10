@@ -546,6 +546,9 @@ async function storeContactSubmission(env, payload, request) {
 }
 
 async function setDeliveryStatus(collection, submissionId, channel, status, error) {
+  if (!collection || !submissionId) {
+    return;
+  }
   const update = {
     [`delivery.${channel}.status`]: status,
     [`delivery.${channel}.updatedAt`]: new Date(),
@@ -739,27 +742,16 @@ async function handleContactRequest(request, env) {
 
   const validatedPayload = validation.data;
 
-  const turnstileSuccess = await verifyTurnstileToken(
-    validatedPayload.turnstileToken,
-    env,
-    request,
-  );
-  if (!turnstileSuccess) {
-    return withCorsHeaders(
-      jsonResponse(
-        { error: "Cloudflare verification failed. Please complete the widget and try again." },
-        400,
-      ),
-      request,
-    );
-  }
-
   try {
-    const { collection, submissionId } = await storeContactSubmission(
-      env,
-      validatedPayload,
-      request,
-    );
+    let collection = null;
+    let submissionId = null;
+    try {
+      const storedSubmission = await storeContactSubmission(env, validatedPayload, request);
+      collection = storedSubmission.collection;
+      submissionId = storedSubmission.submissionId;
+    } catch (error) {
+      console.error("MongoDB contact persistence failed; continuing with email delivery", error);
+    }
     await deliverContactEmails(
       env,
       validatedPayload,

@@ -7,6 +7,12 @@
   SECRETS_SCAN_OMIT_KEYS = "CONTACT_FROM_EMAIL,CONTACT_TO_EMAIL"
 
 [[redirects]]
+  from = "/api/contact"
+  to = "/.netlify/functions/server"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/*"
   to = "https://right-home-dream-main.onrender.com/api/:splat"
   status = 200
