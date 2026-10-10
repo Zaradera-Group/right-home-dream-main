@@ -11,7 +11,7 @@ const localDevConnectSrc = import.meta.env.DEV
 
 export const SECURITY_HEADERS: Record<string, string> = {
   "content-security-policy":
-    `default-src 'self'; trusted-types goog#html twKxV6 default; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; connect-src 'self' https://api.openai.com https://api.resend.com https://challenges.cloudflare.com${localDevConnectSrc}; frame-src https://challenges.cloudflare.com; object-src 'none'; upgrade-insecure-requests`,
+    `default-src 'self'; trusted-types goog#html twKxV6 default; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; connect-src 'self' https://right-home-dream-main.onrender.com https://api.openai.com https://challenges.cloudflare.com${localDevConnectSrc}; frame-src https://challenges.cloudflare.com; object-src 'none'; upgrade-insecure-requests`,
   "cross-origin-opener-policy": "same-origin",
   "cross-origin-resource-policy": "same-origin",
   "strict-transport-security": "max-age=31536000; includeSubDomains; preload",

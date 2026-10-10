@@ -95,7 +95,11 @@ function isAllowedOrigin(request) {
 
   try {
     const parsed = new URL(origin);
-    return ["http:", "https:"].includes(parsed.protocol);
+    return (
+      parsed.origin === "https://righthomeproptech.com" ||
+      parsed.origin === "https://www.righthomeproptech.com" ||
+      (parsed.protocol === "http:" && ["localhost", "127.0.0.1"].includes(parsed.hostname))
+    );
   } catch {
     return false;
   }
@@ -713,6 +717,7 @@ async function handleContactRequest(request, response) {
       interest: clampText(body?.interest, 80),
       message: clampText(body?.message, 2000),
       company: clampText(body?.company, 120),
+      turnstileToken: clampText(body?.turnstileToken, 2048),
       honeypot: clampText(body?.website, 120) || clampText(body?.companyWebsite, 120),
     };
 
@@ -729,6 +734,13 @@ async function handleContactRequest(request, response) {
     if (!isValidEmail(payload.email)) {
       return sendJsonWithCors(request, response, 400, {
         error: "Please enter a valid email address.",
+      });
+    }
+
+    const turnstileSuccess = await verifyTurnstileToken(payload.turnstileToken, request);
+    if (!turnstileSuccess) {
+      return sendJsonWithCors(request, response, 400, {
+        error: "Cloudflare verification failed. Please complete the widget and try again.",
       });
     }
 
@@ -758,6 +770,9 @@ const server = createServer(async (request, response) => {
   const url = new URL(request.url, "http://127.0.0.1:8787");
 
   if (request.method === "OPTIONS") {
+    if (!isAllowedOrigin(request)) {
+      return sendJsonWithCors(request, response, 403, { error: "Invalid origin" });
+    }
     response.writeHead(204, {
       "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
