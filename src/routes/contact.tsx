@@ -18,6 +18,8 @@ import {
 type TurnstileRenderOptions = {
   sitekey: string;
   theme?: "light" | "dark" | "auto";
+  size?: "normal" | "flexible" | "compact";
+  action?: string;
   callback?: (token: string) => void;
   "error-callback"?: () => void;
   "expired-callback"?: () => void;
@@ -25,7 +27,9 @@ type TurnstileRenderOptions = {
 
 type TurnstileInstance = {
   render: (container: HTMLElement, options: TurnstileRenderOptions) => number;
+  ready: (callback: () => void) => void;
   reset: (widgetId?: number) => void;
+  remove: (widgetId: number) => void;
 };
 
 declare global {
@@ -131,51 +135,74 @@ function Contact() {
       return;
     }
 
+    let cancelled = false;
+    let script: HTMLScriptElement | null = null;
+
     const renderTurnstile = () => {
       const turnstile = window.turnstile;
-      const container = turnstileContainerRef.current;
-      if (!turnstile || !container || widgetIdRef.current !== null) {
+      if (!turnstile || cancelled) {
         return;
       }
 
-      widgetIdRef.current = turnstile.render(container, {
-        sitekey: turnstileSiteKey,
-        theme: "dark",
-        callback: (token: string) => {
-          setTurnstileToken(token);
-          setTurnstileVerified(true);
-          setTurnstileError("");
-        },
-        "error-callback": () => {
-          setTurnstileError("Cloudflare verification failed. Please retry.");
-          setTurnstileVerified(false);
-          setTurnstileToken("");
-        },
-        "expired-callback": () => {
-          setTurnstileVerified(false);
-          setTurnstileToken("");
-        },
+      turnstile.ready(() => {
+        const container = turnstileContainerRef.current;
+        if (cancelled || !container || widgetIdRef.current !== null) {
+          return;
+        }
+
+        widgetIdRef.current = turnstile.render(container, {
+          sitekey: turnstileSiteKey,
+          theme: "dark",
+          size: "flexible",
+          action: "contact_form",
+          callback: (token: string) => {
+            setTurnstileToken(token);
+            setTurnstileVerified(true);
+            setTurnstileError("");
+          },
+          "error-callback": () => {
+            setTurnstileError("Cloudflare verification failed. Please retry.");
+            setTurnstileVerified(false);
+            setTurnstileToken("");
+          },
+          "expired-callback": () => {
+            setTurnstileVerified(false);
+            setTurnstileToken("");
+          },
+        });
       });
+    };
+
+    const handleScriptError = () => {
+      if (!cancelled) {
+        setTurnstileError("Unable to load Cloudflare verification. Please refresh the page.");
+      }
     };
 
     if (window.turnstile) {
       renderTurnstile();
-      return;
+    } else {
+      script = document.querySelector<HTMLScriptElement>("script[data-righthome-turnstile]");
+      if (!script) {
+        script = document.createElement("script");
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        script.async = true;
+        script.defer = true;
+        script.dataset.righthomeTurnstile = "true";
+        document.head.appendChild(script);
+      }
+      script.addEventListener("load", renderTurnstile);
+      script.addEventListener("error", handleScriptError);
     }
 
-    const script = document.createElement("script");
-    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-    script.async = true;
-    script.defer = true;
-    script.onload = renderTurnstile;
-    script.onerror = () => {
-      setTurnstileError("Unable to load Cloudflare verification. Please refresh the page.");
-    };
-
-    document.body.appendChild(script);
     return () => {
-      script.onload = null;
-      script.onerror = null;
+      cancelled = true;
+      script?.removeEventListener("load", renderTurnstile);
+      script?.removeEventListener("error", handleScriptError);
+      if (widgetIdRef.current !== null && window.turnstile) {
+        window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
+      }
     };
   }, [turnstileSiteKey]);
 
