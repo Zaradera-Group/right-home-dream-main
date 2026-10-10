@@ -369,10 +369,10 @@ async function storeAndDeliverContact(
     mailTransporter = nodemailer.createTransport({
       host,
       port,
-      secure: getServerSetting(env, "SMTP_SECURE")
-        ? getServerSetting(env, "SMTP_SECURE") === "true"
-        : port === 465,
+      secure: port === 465 || getServerSetting(env, "SMTP_SECURE")?.toLowerCase() === "true",
+      requireTLS: port === 587,
       auth: { user, pass },
+      tls: { minVersion: "TLSv1.2" },
       connectionTimeout: 10000,
       socketTimeout: 15000,
     });

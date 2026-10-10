@@ -75,6 +75,33 @@ const rateLimitBuckets = new Map();
 let mongoClientPromise;
 let mailTransporter;
 
+function describeSmtpFailure(error) {
+  const smtpError = error instanceof Error && error.cause ? error.cause : error;
+  const code = typeof smtpError?.code === "string" ? smtpError.code : "UNKNOWN";
+  const responseCode = Number.isInteger(smtpError?.responseCode) ? smtpError.responseCode : null;
+
+  console.error("SMTP delivery failed", {
+    code,
+    responseCode,
+    command: typeof smtpError?.command === "string" ? smtpError.command : null,
+  });
+
+  if (code === "EAUTH" || responseCode === 535) {
+    return "Email authentication failed. Please contact help@righthomeproptech.com directly while the mail service is restored.";
+  }
+  if (["ECONNECTION", "ECONNREFUSED", "ENOTFOUND", "ESOCKET"].includes(code)) {
+    return "The email service could not be reached. Please contact help@righthomeproptech.com directly while connectivity is restored.";
+  }
+  if (code === "ETIMEDOUT") {
+    return "The email service timed out. Please contact help@righthomeproptech.com directly and try again shortly.";
+  }
+  if (code === "EENVELOPE" || responseCode === 550 || responseCode === 553) {
+    return "The email sender or recipient was rejected by the mail service. Please contact help@righthomeproptech.com directly.";
+  }
+
+  return "We could not deliver your message by email. Please email help@righthomeproptech.com directly for urgent assistance.";
+}
+
 function clampText(value, maxLength) {
   if (typeof value !== "string") return "";
   return value.trim().slice(0, maxLength);
@@ -413,16 +440,18 @@ async function storeAndDeliverContact(payload, request) {
 
   if (!mailTransporter) {
     const port = Number(process.env.SMTP_PORT || "587");
+    const smtpHost = process.env.SMTP_HOST;
+    const secure = port === 465 || process.env.SMTP_SECURE?.toLowerCase() === "true";
     mailTransporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
+      host: smtpHost,
       port,
-      secure: process.env.SMTP_SECURE
-        ? process.env.SMTP_SECURE === "true"
-        : port === 465,
+      secure,
+      requireTLS: port === 587,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD || process.env.SMTP_PASS,
       },
+      tls: { minVersion: "TLSv1.2" },
       connectionTimeout: 10000,
       greetingTimeout: 10000,
       socketTimeout: 15000,
@@ -720,7 +749,7 @@ async function handleContactRequest(request, response) {
     console.error("Contact submission failed", error);
     if (error instanceof Error && error.message.includes("Team email delivery failed")) {
       return sendJsonWithCors(request, response, 502, {
-        error: `We could not deliver your message by email. Please email ${supportEmail} directly for urgent assistance.`,
+        error: describeSmtpFailure(error),
       });
     }
     return sendJsonWithCors(request, response, 503, {
