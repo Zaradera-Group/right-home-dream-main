@@ -209,37 +209,6 @@ function describeRightAIError(error) {
   return "RightAI is unavailable right now. Please contact hello@zaraderagroup.com for urgent help.";
 }
 
-async function verifyTurnstileToken(token, request) {
-  const secret = process.env.TURNSTILE_SECRET_KEY;
-  if (!secret) {
-    return true;
-  }
-
-  if (!token) {
-    return false;
-  }
-
-  const verificationResponse = await fetch(
-    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        secret,
-        response: token,
-        remoteip: getClientIp(request),
-      }),
-    },
-  );
-
-  if (!verificationResponse.ok) {
-    return false;
-  }
-
-  const payload = await verificationResponse.json();
-  return payload.success === true;
-}
-
 function sanitizeMessages(body) {
   const rawMessages = Array.isArray(body?.messages) ? body.messages : [];
   const prompt = typeof body?.prompt === "string" ? body.prompt.trim() : "";
@@ -717,7 +686,6 @@ async function handleContactRequest(request, response) {
       interest: clampText(body?.interest, 80),
       message: clampText(body?.message, 2000),
       company: clampText(body?.company, 120),
-      turnstileToken: clampText(body?.turnstileToken, 2048),
       honeypot: clampText(body?.website, 120) || clampText(body?.companyWebsite, 120),
     };
 
@@ -734,13 +702,6 @@ async function handleContactRequest(request, response) {
     if (!isValidEmail(payload.email)) {
       return sendJsonWithCors(request, response, 400, {
         error: "Please enter a valid email address.",
-      });
-    }
-
-    const turnstileSuccess = await verifyTurnstileToken(payload.turnstileToken, request);
-    if (!turnstileSuccess) {
-      return sendJsonWithCors(request, response, 400, {
-        error: "Cloudflare verification failed. Please complete the widget and try again.",
       });
     }
 

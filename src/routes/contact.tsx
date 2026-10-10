@@ -2,7 +2,7 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useForm, type FieldErrors, type UseFormRegisterReturn } from "react-hook-form";
 import { CheckCircle2, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck } from "lucide-react";
 
@@ -14,28 +14,6 @@ import {
   contactInterestValues,
   type ContactFormValues,
 } from "@/lib/form-validation";
-
-type TurnstileRenderOptions = {
-  sitekey: string;
-  theme?: "light" | "dark" | "auto";
-  size?: "normal" | "flexible" | "compact";
-  action?: string;
-  callback?: (token: string) => void;
-  "error-callback"?: () => void;
-  "expired-callback"?: () => void;
-};
-
-type TurnstileInstance = {
-  render: (container: HTMLElement, options: TurnstileRenderOptions) => number;
-  reset: (widgetId?: number) => void;
-  remove: (widgetId: number) => void;
-};
-
-declare global {
-  interface Window {
-    turnstile?: TurnstileInstance;
-  }
-}
 
 function createMathChallenge() {
   const a = Math.floor(Math.random() * 12) + 3;
@@ -71,12 +49,6 @@ function Contact() {
   const [mathInput, setMathInput] = useState("");
   const [mathVerified, setMathVerified] = useState(false);
   const [mathChallenge, setMathChallenge] = useState(() => createMathChallenge());
-  const [turnstileToken, setTurnstileToken] = useState("");
-  const [turnstileVerified, setTurnstileVerified] = useState(false);
-  const [turnstileError, setTurnstileError] = useState("");
-  const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
-  const widgetIdRef = useRef<number | null>(null);
-  const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
   const {
     register,
     handleSubmit,
@@ -96,8 +68,7 @@ function Contact() {
     },
   });
 
-  const requiresTurnstile = Boolean(turnstileSiteKey);
-  const verificationComplete = mathVerified && (!requiresTurnstile || turnstileVerified);
+  const verificationComplete = mathVerified;
   const isSubmitDisabled = status === "sending" || !verificationComplete;
   const submitLabel =
     status === "sending"
@@ -129,79 +100,6 @@ function Contact() {
     input.value = newVal;
   };
 
-  useEffect(() => {
-    if (!turnstileSiteKey) {
-      return;
-    }
-
-    let cancelled = false;
-    let script: HTMLScriptElement | null = null;
-
-    const renderTurnstile = () => {
-      const turnstile = window.turnstile;
-      if (!turnstile || cancelled) {
-        return;
-      }
-
-      const container = turnstileContainerRef.current;
-      if (!container || widgetIdRef.current !== null) {
-        return;
-      }
-
-      widgetIdRef.current = turnstile.render(container, {
-        sitekey: turnstileSiteKey,
-        theme: "dark",
-        size: "flexible",
-        action: "contact_form",
-        callback: (token: string) => {
-          setTurnstileToken(token);
-          setTurnstileVerified(true);
-          setTurnstileError("");
-        },
-        "error-callback": () => {
-          setTurnstileError("Cloudflare verification failed. Please retry.");
-          setTurnstileVerified(false);
-          setTurnstileToken("");
-        },
-        "expired-callback": () => {
-          setTurnstileVerified(false);
-          setTurnstileToken("");
-        },
-      });
-    };
-
-    const handleScriptError = () => {
-      if (!cancelled) {
-        setTurnstileError("Unable to load Cloudflare verification. Please refresh the page.");
-      }
-    };
-
-    if (window.turnstile) {
-      renderTurnstile();
-    } else {
-      script = document.querySelector<HTMLScriptElement>("script[data-righthome-turnstile]");
-      if (!script) {
-        script = document.createElement("script");
-        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-        script.async = false;
-        script.dataset.righthomeTurnstile = "true";
-        document.head.appendChild(script);
-      }
-      script.addEventListener("load", renderTurnstile);
-      script.addEventListener("error", handleScriptError);
-    }
-
-    return () => {
-      cancelled = true;
-      script?.removeEventListener("load", renderTurnstile);
-      script?.removeEventListener("error", handleScriptError);
-      if (widgetIdRef.current !== null && window.turnstile) {
-        window.turnstile.remove(widgetIdRef.current);
-        widgetIdRef.current = null;
-      }
-    };
-  }, [turnstileSiteKey]);
-
   const handleVerifyMath = () => {
     const answer = mathChallenge.answer;
     if (Number(mathInput.trim()) === answer) {
@@ -222,14 +120,7 @@ function Contact() {
       interest: values.interest,
       message: values.message.trim(),
       website: values.website?.trim() || "",
-      turnstileToken,
     };
-
-    if (requiresTurnstile && !turnstileVerified) {
-      setStatus("error");
-      setNotice("Please complete the Cloudflare verification widget before sending.");
-      return;
-    }
 
     if (!mathVerified) {
       setStatus("error");
@@ -255,14 +146,6 @@ function Contact() {
           data.error ||
             `We could not send your message right now. Please email ${SUPPORT_EMAIL} directly.`,
         );
-        if (data.error?.includes("Cloudflare verification")) {
-          setTurnstileVerified(false);
-          setTurnstileToken("");
-          const turnstile = window.turnstile;
-          if (turnstile && widgetIdRef.current !== null) {
-            turnstile.reset(widgetIdRef.current);
-          }
-        }
         return;
       }
 
@@ -275,13 +158,6 @@ function Contact() {
       setMathInput("");
       setMathVerified(false);
       setMathChallenge(createMathChallenge());
-      setTurnstileVerified(false);
-      setTurnstileToken("");
-
-      const turnstile = window.turnstile;
-      if (turnstile && widgetIdRef.current !== null) {
-        turnstile.reset(widgetIdRef.current);
-      }
     } catch (error) {
       console.error(error);
       setStatus("error");
@@ -483,52 +359,6 @@ function Contact() {
                   </div>
                 </div>
 
-                {turnstileSiteKey ? (
-                  <div className="glass min-w-0 rounded-3xl border border-white/15 bg-white/10 p-4 sm:p-5 ring-2 ring-primary/20 shadow-[0_28px_80px_rgba(242,76,33,0.18)] transition duration-300 hover:-translate-y-1">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <div className="text-xs text-muted-foreground">Cloudflare verification</div>
-                        <div className="mt-1 text-sm font-semibold text-foreground">
-                          Complete the widget below
-                        </div>
-                      </div>
-                      <span
-                        className={`rounded-full px-2 py-1 text-[10px] uppercase tracking-[0.24em] ${
-                          turnstileVerified
-                            ? "bg-emerald-400/15 text-emerald-200"
-                            : "bg-white/5 text-muted-foreground"
-                        }`}
-                      >
-                        {turnstileVerified ? "Verified" : "Pending"}
-                      </span>
-                    </div>
-                    {turnstileVerified ? (
-                      <div className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-emerald-200">
-                        <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-400/15 animate-verified-pop">
-                          <CheckCircle2 className="h-4 w-4" />
-                        </span>
-                        <span>Cloudflare confirmed</span>
-                      </div>
-                    ) : null}
-                    <div className="mt-4 min-h-[140px] min-w-0 overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-2 sm:p-4">
-                      {turnstileSiteKey ? (
-                        <div
-                          ref={turnstileContainerRef}
-                          className="turnstile-container min-h-[140px] w-full"
-                        />
-                      ) : (
-                        <div className="rounded-3xl border border-white/10 bg-[#0d0c30] p-4 text-sm text-muted-foreground">
-                          Turnstile is not configured. Please set VITE_TURNSTILE_SITE_KEY.
-                        </div>
-                      )}
-                    </div>
-                    {turnstileError ? (
-                      <div className="mt-3 rounded-2xl border border-red-400/20 bg-red-400/10 px-3 py-2 text-xs text-red-100">
-                        {turnstileError}
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
               </div>
 
               <div className="mt-4">
