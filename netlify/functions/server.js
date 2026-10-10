@@ -232,11 +232,24 @@ function getContactToEmail(env) {
 }
 
 function getContactFromEmail(env) {
-  return env?.CONTACT_FROM_EMAIL || process.env.CONTACT_FROM_EMAIL;
+  return cleanServerSetting(env?.CONTACT_FROM_EMAIL || process.env.CONTACT_FROM_EMAIL) || SUPPORT_EMAIL;
 }
 
 function getServerSetting(env, key) {
-  return env?.[key] || process.env[key];
+  return cleanServerSetting(env?.[key] || process.env[key]);
+}
+
+function cleanServerSetting(value) {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  if (
+    trimmed.length >= 2 &&
+    ((trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+      (trimmed.startsWith("'") && trimmed.endsWith("'")))
+  ) {
+    return trimmed.slice(1, -1).trim();
+  }
+  return trimmed || undefined;
 }
 
 function getTurnstileSecret(env) {

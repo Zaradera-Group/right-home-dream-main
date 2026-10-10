@@ -1,7 +1,7 @@
 export const SUPPORT_EMAIL = "help@righthomeproptech.com";
 export const SUPPORT_PHONE = "+234 7017683590";
 export const DEFAULT_CONTACT_TO_EMAIL = SUPPORT_EMAIL;
-export const DEFAULT_CONTACT_FROM_EMAIL = "no-reply@righthomeproptech.com";
+export const DEFAULT_CONTACT_FROM_EMAIL = SUPPORT_EMAIL;
 
 export const ENV_KEYS = {
   openaiApiKey: "OPENAI_API_KEY",

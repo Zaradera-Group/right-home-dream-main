@@ -12,7 +12,7 @@ const projectRoot = resolve(backendDirectory, "..");
 const dotenvPath = resolve(projectRoot, ".env");
 const supportEmail = "help@righthomeproptech.com";
 const supportPhone = "+234 7017683590";
-const defaultFromEmail = "RightHome Proptech <no-reply@righthomeproptech.com>";
+const defaultFromEmail = `RightHome Proptech <${supportEmail}>`;
 
 function loadDotEnv(filePath) {
   if (!existsSync(filePath)) {
@@ -48,6 +48,19 @@ function loadDotEnv(filePath) {
 }
 
 loadDotEnv(dotenvPath);
+
+function cleanServerSetting(value) {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  if (
+    trimmed.length >= 2 &&
+    ((trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+      (trimmed.startsWith("'") && trimmed.endsWith("'")))
+  ) {
+    return trimmed.slice(1, -1).trim();
+  }
+  return trimmed || undefined;
+}
 
 function validateRequiredServerEnv(context) {
   const requiredKeys = [
@@ -439,17 +452,17 @@ async function storeAndDeliverContact(payload, request) {
   };
 
   if (!mailTransporter) {
-    const port = Number(process.env.SMTP_PORT || "587");
-    const smtpHost = process.env.SMTP_HOST;
-    const secure = port === 465 || process.env.SMTP_SECURE?.toLowerCase() === "true";
+    const port = Number(cleanServerSetting(process.env.SMTP_PORT) || "587");
+    const smtpHost = cleanServerSetting(process.env.SMTP_HOST);
+    const secure = port === 465 || cleanServerSetting(process.env.SMTP_SECURE)?.toLowerCase() === "true";
     mailTransporter = nodemailer.createTransport({
       host: smtpHost,
       port,
       secure,
       requireTLS: port === 587,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD || process.env.SMTP_PASS,
+        user: cleanServerSetting(process.env.SMTP_USER),
+        pass: cleanServerSetting(process.env.SMTP_PASSWORD || process.env.SMTP_PASS),
       },
       tls: { minVersion: "TLSv1.2" },
       connectionTimeout: 10000,
@@ -459,7 +472,10 @@ async function storeAndDeliverContact(payload, request) {
   }
 
   const toEmail = supportEmail;
-  const fromEmail = process.env.CONTACT_FROM_EMAIL || defaultFromEmail;
+  const configuredFromEmail = cleanServerSetting(process.env.CONTACT_FROM_EMAIL);
+  const fromEmail = configuredFromEmail
+    ? `RightHome Proptech <${configuredFromEmail}>`
+    : defaultFromEmail;
   try {
     await mailTransporter.sendMail({
       from: fromEmail,

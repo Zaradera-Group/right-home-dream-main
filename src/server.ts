@@ -201,13 +201,28 @@ function getContactToEmail(env: unknown): string {
 }
 
 function getContactFromEmail(env: unknown): string | undefined {
-  return (
-    (env as { CONTACT_FROM_EMAIL?: string })?.CONTACT_FROM_EMAIL ?? process.env.CONTACT_FROM_EMAIL
-  );
+  return cleanServerSetting(
+    (env as { CONTACT_FROM_EMAIL?: string })?.CONTACT_FROM_EMAIL ?? process.env.CONTACT_FROM_EMAIL,
+  ) ?? DEFAULT_CONTACT_FROM_EMAIL;
 }
 
 function getServerSetting(env: unknown, key: string): string | undefined {
-  return (env as Record<string, string | undefined>)?.[key] ?? process.env[key];
+  return cleanServerSetting(
+    (env as Record<string, string | undefined>)?.[key] ?? process.env[key],
+  );
+}
+
+function cleanServerSetting(value: string | undefined): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  if (
+    trimmed.length >= 2 &&
+    ((trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+      (trimmed.startsWith("'") && trimmed.endsWith("'")))
+  ) {
+    return trimmed.slice(1, -1).trim();
+  }
+  return trimmed || undefined;
 }
 
 function getTurnstileSecret(env: unknown): string | undefined {
@@ -356,7 +371,7 @@ async function storeAndDeliverContact(
   });
 
   const toEmail = getContactToEmail(env);
-  const fromEmail = getContactFromEmail(env) ?? `Zara Dera Group <${DEFAULT_CONTACT_FROM_EMAIL}>`;
+  const fromEmail = `RightHome Proptech <${getContactFromEmail(env) ?? DEFAULT_CONTACT_FROM_EMAIL}>`;
   const host = getServerSetting(env, "SMTP_HOST");
   const user = getServerSetting(env, "SMTP_USER");
   const pass =
