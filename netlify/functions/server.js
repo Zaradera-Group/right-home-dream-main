@@ -498,7 +498,7 @@ function getMailTransporter(env) {
   }
 
   const secureSetting = getServerSetting(env, "SMTP_SECURE");
-  const secure = secureSetting ? secureSetting === "true" : port === 465;
+  const secure = port === 465 || secureSetting?.toLowerCase() === "true";
   const transporterKey = `${host}:${port}:${secure}:${user}`;
   if (!mailTransporter || mailTransporterKey !== transporterKey) {
     mailTransporter = nodemailer.createTransport({
@@ -508,9 +508,9 @@ function getMailTransporter(env) {
       requireTLS: port === 587,
       auth: { user, pass },
       tls: { minVersion: "TLSv1.2" },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
+      connectionTimeout: 7000,
+      greetingTimeout: 7000,
+      socketTimeout: 9000,
     });
     mailTransporterKey = transporterKey;
   }
@@ -662,7 +662,32 @@ function describeContactError(error) {
     return "The contact service is not fully configured. Please email help@righthomeproptech.com directly.";
   }
   if (message.includes("Team email delivery failed")) {
-    return "Your enquiry was saved, but the notification email could not be delivered. Please email help@righthomeproptech.com directly for urgent assistance.";
+    const smtpError = error instanceof Error && error.cause ? error.cause : error;
+    const code = typeof smtpError?.code === "string" ? smtpError.code : "UNKNOWN";
+    const responseCode = Number.isInteger(smtpError?.responseCode)
+      ? smtpError.responseCode
+      : null;
+
+    console.error("SMTP delivery failed", {
+      code,
+      responseCode,
+      command: typeof smtpError?.command === "string" ? smtpError.command : null,
+    });
+
+    if (code === "EAUTH" || responseCode === 535) {
+      return "Zoho SMTP authentication failed. Please verify the complete mailbox address and its app-specific password.";
+    }
+    if (["ECONNECTION", "ECONNREFUSED", "ENOTFOUND", "ESOCKET"].includes(code)) {
+      return "Netlify could not connect to the configured Zoho SMTP server. Please verify the Zoho server hostname and port.";
+    }
+    if (code === "ETIMEDOUT") {
+      return "The connection to Zoho SMTP timed out. Please use port 587 with TLS and try again.";
+    }
+    if (code === "EENVELOPE" || responseCode === 550 || responseCode === 553) {
+      return "Zoho rejected the sender address. CONTACT_FROM_EMAIL must match the authenticated Zoho mailbox or one of its aliases.";
+    }
+
+    return "Zoho could not deliver the notification email. Please review the SMTP error code in the Netlify Function log.";
   }
 
   return null;
