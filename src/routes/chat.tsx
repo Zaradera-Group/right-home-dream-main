@@ -159,7 +159,7 @@ function Chat() {
     } catch (error) {
       console.error(error);
       const fallbackMessage =
-        "RightAI is unavailable right now. Please contact hello@zaraderagroup.com for urgent help.";
+        "RightAI is unavailable right now. Please contact help@righthomeproptech.com for urgent help.";
       const errorMessage = error instanceof Error ? error.message : "";
       const displayMessage =
         errorMessage && !/stream did not start|fetch failed|failed to fetch/i.test(errorMessage)

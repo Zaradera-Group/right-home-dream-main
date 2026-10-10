@@ -3,7 +3,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 import nodemailer from "nodemailer";
 import { z } from "zod";
 
-const SUPPORT_EMAIL = "hello@zaraderagroup.com";
+const SUPPORT_EMAIL = "help@righthomeproptech.com";
 const RIGHTAI_MODEL = "gpt-5.4-mini";
 
 const RIGHTAI_SYSTEM_PROMPT =
@@ -190,7 +190,7 @@ function describeRightAIError(error) {
     return "RightAI is temporarily unavailable from OpenAI. Please try again shortly.";
   }
 
-  return "RightAI is unavailable right now. Please contact hello@zaraderagroup.com for urgent help.";
+  return "RightAI is unavailable right now. Please contact help@righthomeproptech.com for urgent help.";
 }
 
 async function fetchWithTimeout(url, options, timeoutMs = 20000, maxRetries = 2) {
@@ -228,7 +228,7 @@ function getApiKey(env) {
 }
 
 function getContactToEmail(env) {
-  return env?.CONTACT_TO_EMAIL || process.env.CONTACT_TO_EMAIL || SUPPORT_EMAIL;
+  return SUPPORT_EMAIL;
 }
 
 function getContactFromEmail(env) {
@@ -611,13 +611,13 @@ async function deliverContactEmails(env, payload, request, collection, submissio
         "• The appropriate property specialist will follow up with you.",
         "• You can expect a response within 24 hours.",
         "",
-        "For urgent enquiries, please contact our team at hello@zaraderagroup.com.",
+        "For urgent enquiries, please contact our team at help@righthomeproptech.com.",
         "",
         "We greatly appreciate your interest in RightHome Proptech and look forward to assisting you with your property needs.",
         "",
         "Warm regards,",
         "The RightHome Proptech Team",
-        "hello@zaraderagroup.com",
+        "help@righthomeproptech.com",
       ].join("\n"),
       html: `
         <div style="margin:0;background:#f5f5f7;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;color:#17172f">
@@ -634,7 +634,7 @@ async function deliverContactEmails(env, payload, request, collection, submissio
                 <div style="margin-bottom:10px;font-size:14px;font-weight:700;color:#060243">What happens next</div>
                 <div style="font-size:14px;line-height:1.8;color:#44445a">Our team will review your information, connect your enquiry with the appropriate property specialist, and respond within 24 hours.</div>
               </div>
-              <p style="margin:0 0 18px;font-size:15px;line-height:1.7">For urgent enquiries, please contact our team at hello@zaraderagroup.com.</p>
+              <p style="margin:0 0 18px;font-size:15px;line-height:1.7">For urgent enquiries, please contact our team at help@righthomeproptech.com.</p>
               <p style="margin:0 0 26px;font-size:15px;line-height:1.7">We greatly appreciate your interest in RightHome Proptech and look forward to assisting you with your property needs.</p>
               <p style="margin:0;font-size:15px;line-height:1.7"><strong>Warm regards,</strong><br />The RightHome Proptech Team</p>
             </div>
@@ -654,10 +654,10 @@ function describeContactError(error) {
   const message = error instanceof Error ? error.message : "";
 
   if (message.includes("MONGODB_URI is missing") || message.includes("SMTP configuration")) {
-    return "The contact service is not fully configured. Please email hello@zaraderagroup.com directly.";
+    return "The contact service is not fully configured. Please email help@righthomeproptech.com directly.";
   }
   if (message.includes("Team email delivery failed")) {
-    return "Your enquiry was saved, but the notification email could not be delivered. Please email hello@zaraderagroup.com directly for urgent assistance.";
+    return "Your enquiry was saved, but the notification email could not be delivered. Please email help@righthomeproptech.com directly for urgent assistance.";
   }
 
   return null;
@@ -783,7 +783,7 @@ async function handleContactRequest(request, env) {
       jsonResponse(
         {
           error:
-            "We could not send your message right now. Please email hello@zaraderagroup.com directly.",
+            "We could not send your message right now. Please email help@righthomeproptech.com directly.",
         },
         503,
       ),

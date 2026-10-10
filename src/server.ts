@@ -156,7 +156,7 @@ function describeRightAIError(error: unknown): string {
     return "RightAI is temporarily unavailable from OpenAI. Please try again shortly.";
   }
 
-  return "RightAI is unavailable right now. Please contact hello@zaraderagroup.com for urgent help.";
+  return "RightAI is unavailable right now. Please contact help@righthomeproptech.com for urgent help.";
 }
 
 async function fetchWithTimeout(
@@ -197,11 +197,7 @@ function getApiKey(env: unknown): string | undefined {
 }
 
 function getContactToEmail(env: unknown): string {
-  return (
-    (env as { CONTACT_TO_EMAIL?: string })?.CONTACT_TO_EMAIL ??
-    process.env.CONTACT_TO_EMAIL ??
-    DEFAULT_CONTACT_TO_EMAIL
-  );
+  return DEFAULT_CONTACT_TO_EMAIL;
 }
 
 function getContactFromEmail(env: unknown): string | undefined {
@@ -524,7 +520,7 @@ async function handleContactRequest(request: Request, env: unknown): Promise<Res
       jsonSecureResponse(
         {
           error:
-            "We could not send your message right now. Please email hello@zaraderagroup.com directly.",
+            "We could not send your message right now. Please email help@righthomeproptech.com directly.",
         },
         503,
       ),

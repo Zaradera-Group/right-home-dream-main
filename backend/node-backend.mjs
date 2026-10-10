@@ -10,7 +10,7 @@ const REQUIRED_SERVER_KEYS = ["OPENAI_API_KEY"];
 const backendDirectory = resolve(fileURLToPath(new URL(".", import.meta.url)));
 const projectRoot = resolve(backendDirectory, "..");
 const dotenvPath = resolve(projectRoot, ".env");
-const supportEmail = "hello@zaraderagroup.com";
+const supportEmail = "help@righthomeproptech.com";
 const supportPhone = "+234 7017683590";
 const defaultFromEmail = "RightHome Proptech <no-reply@righthomeproptech.com>";
 
@@ -206,7 +206,7 @@ function describeRightAIError(error) {
     return "RightAI is temporarily unavailable from OpenAI. Please try again shortly.";
   }
 
-  return "RightAI is unavailable right now. Please contact hello@zaraderagroup.com for urgent help.";
+  return "RightAI is unavailable right now. Please contact help@righthomeproptech.com for urgent help.";
 }
 
 function sanitizeMessages(body) {
@@ -429,7 +429,7 @@ async function storeAndDeliverContact(payload, request) {
     });
   }
 
-  const toEmail = process.env.CONTACT_TO_EMAIL || supportEmail;
+  const toEmail = supportEmail;
   const fromEmail = process.env.CONTACT_FROM_EMAIL || defaultFromEmail;
   try {
     await mailTransporter.sendMail({
