@@ -27,7 +27,6 @@ type TurnstileRenderOptions = {
 
 type TurnstileInstance = {
   render: (container: HTMLElement, options: TurnstileRenderOptions) => number;
-  ready: (callback: () => void) => void;
   reset: (widgetId?: number) => void;
   remove: (widgetId: number) => void;
 };
@@ -144,32 +143,30 @@ function Contact() {
         return;
       }
 
-      turnstile.ready(() => {
-        const container = turnstileContainerRef.current;
-        if (cancelled || !container || widgetIdRef.current !== null) {
-          return;
-        }
+      const container = turnstileContainerRef.current;
+      if (!container || widgetIdRef.current !== null) {
+        return;
+      }
 
-        widgetIdRef.current = turnstile.render(container, {
-          sitekey: turnstileSiteKey,
-          theme: "dark",
-          size: "flexible",
-          action: "contact_form",
-          callback: (token: string) => {
-            setTurnstileToken(token);
-            setTurnstileVerified(true);
-            setTurnstileError("");
-          },
-          "error-callback": () => {
-            setTurnstileError("Cloudflare verification failed. Please retry.");
-            setTurnstileVerified(false);
-            setTurnstileToken("");
-          },
-          "expired-callback": () => {
-            setTurnstileVerified(false);
-            setTurnstileToken("");
-          },
-        });
+      widgetIdRef.current = turnstile.render(container, {
+        sitekey: turnstileSiteKey,
+        theme: "dark",
+        size: "flexible",
+        action: "contact_form",
+        callback: (token: string) => {
+          setTurnstileToken(token);
+          setTurnstileVerified(true);
+          setTurnstileError("");
+        },
+        "error-callback": () => {
+          setTurnstileError("Cloudflare verification failed. Please retry.");
+          setTurnstileVerified(false);
+          setTurnstileToken("");
+        },
+        "expired-callback": () => {
+          setTurnstileVerified(false);
+          setTurnstileToken("");
+        },
       });
     };
 
@@ -186,8 +183,7 @@ function Contact() {
       if (!script) {
         script = document.createElement("script");
         script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-        script.async = true;
-        script.defer = true;
+        script.async = false;
         script.dataset.righthomeTurnstile = "true";
         document.head.appendChild(script);
       }
