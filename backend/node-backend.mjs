@@ -351,48 +351,65 @@ async function createRightAIChart(apiKey, messages) {
 }
 
 async function storeAndDeliverContact(payload, request) {
-  if (!mongoClientPromise) {
-    const client = new MongoClient(process.env.MONGODB_URI, {
-      maxPoolSize: 5,
-      serverSelectionTimeoutMS: 8000,
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
+  let collection = null;
+  let submissionId = null;
+
+  try {
+    if (!mongoClientPromise) {
+      const client = new MongoClient(process.env.MONGODB_URI, {
+        maxPoolSize: 5,
+        serverSelectionTimeoutMS: 8000,
+        serverApi: {
+          version: ServerApiVersion.v1,
+          strict: true,
+          deprecationErrors: true,
+        },
+      });
+      mongoClientPromise = client.connect().catch((error) => {
+        mongoClientPromise = undefined;
+        throw error;
+      });
+    }
+
+    const client = await mongoClientPromise;
+    collection = client
+      .db(process.env.MONGODB_DB_NAME || "righthome_proptech")
+      .collection("contact_submissions");
+    const now = new Date();
+    const result = await collection.insertOne({
+      name: payload.name,
+      email: payload.email.toLowerCase(),
+      phone: payload.phone || null,
+      interest: payload.interest || null,
+      message: payload.message,
+      company: payload.company || null,
+      status: "received",
+      delivery: {
+        team: { status: "pending" },
+        acknowledgement: { status: "pending" },
       },
+      source: {
+        channel: "website-contact-form",
+        ip: getClientIp(request),
+        origin: request.headers.origin || null,
+        userAgent: request.headers["user-agent"] || null,
+      },
+      createdAt: now,
+      updatedAt: now,
     });
-    mongoClientPromise = client.connect().catch((error) => {
-      mongoClientPromise = undefined;
-      throw error;
-    });
+    submissionId = result.insertedId;
+  } catch (error) {
+    console.error("MongoDB contact persistence failed; continuing with email delivery", error);
   }
 
-  const client = await mongoClientPromise;
-  const collection = client
-    .db(process.env.MONGODB_DB_NAME || "righthome_proptech")
-    .collection("contact_submissions");
-  const now = new Date();
-  const result = await collection.insertOne({
-    name: payload.name,
-    email: payload.email.toLowerCase(),
-    phone: payload.phone || null,
-    interest: payload.interest || null,
-    message: payload.message,
-    company: payload.company || null,
-    status: "received",
-    delivery: {
-      team: { status: "pending" },
-      acknowledgement: { status: "pending" },
-    },
-    source: {
-      channel: "website-contact-form",
-      ip: getClientIp(request),
-      origin: request.headers.origin || null,
-      userAgent: request.headers["user-agent"] || null,
-    },
-    createdAt: now,
-    updatedAt: now,
-  });
+  const updateDeliveryStatus = async (fields) => {
+    if (!collection || !submissionId) return;
+    try {
+      await collection.updateOne({ _id: submissionId }, { $set: fields });
+    } catch (error) {
+      console.error("MongoDB delivery status update failed", error);
+    }
+  };
 
   if (!mailTransporter) {
     const port = Number(process.env.SMTP_PORT || "587");
@@ -435,21 +452,18 @@ async function storeAndDeliverContact(payload, request) {
         `User-Agent: ${request.headers["user-agent"] || "unknown"}`,
       ].join("\n"),
     });
-    await collection.updateOne(
-      { _id: result.insertedId },
-      { $set: { "delivery.team.status": "sent", "delivery.team.updatedAt": new Date() } },
-    );
+    await updateDeliveryStatus({
+      "delivery.team.status": "sent",
+      "delivery.team.updatedAt": new Date(),
+      updatedAt: new Date(),
+    });
   } catch (error) {
-    await collection.updateOne(
-      { _id: result.insertedId },
-      {
-        $set: {
-          "delivery.team.status": "failed",
-          "delivery.team.updatedAt": new Date(),
-          "delivery.team.error": String(error).slice(0, 500),
-        },
-      },
-    );
+    await updateDeliveryStatus({
+      "delivery.team.status": "failed",
+      "delivery.team.updatedAt": new Date(),
+      "delivery.team.error": String(error).slice(0, 500),
+      updatedAt: new Date(),
+    });
     throw new Error("Team email delivery failed.", { cause: error });
   }
 
@@ -469,27 +483,19 @@ async function storeAndDeliverContact(payload, request) {
         "The RightHome Proptech Team",
       ].join("\n"),
     });
-    await collection.updateOne(
-      { _id: result.insertedId },
-      {
-        $set: {
-          "delivery.acknowledgement.status": "sent",
-          "delivery.acknowledgement.updatedAt": new Date(),
-        },
-      },
-    );
+    await updateDeliveryStatus({
+      "delivery.acknowledgement.status": "sent",
+      "delivery.acknowledgement.updatedAt": new Date(),
+      updatedAt: new Date(),
+    });
   } catch (error) {
     console.error("Customer acknowledgement delivery failed", error);
-    await collection.updateOne(
-      { _id: result.insertedId },
-      {
-        $set: {
-          "delivery.acknowledgement.status": "failed",
-          "delivery.acknowledgement.updatedAt": new Date(),
-          "delivery.acknowledgement.error": String(error).slice(0, 500),
-        },
-      },
-    );
+    await updateDeliveryStatus({
+      "delivery.acknowledgement.status": "failed",
+      "delivery.acknowledgement.updatedAt": new Date(),
+      "delivery.acknowledgement.error": String(error).slice(0, 500),
+      updatedAt: new Date(),
+    });
   }
 }
 
@@ -714,7 +720,7 @@ async function handleContactRequest(request, response) {
     console.error("Contact submission failed", error);
     if (error instanceof Error && error.message.includes("Team email delivery failed")) {
       return sendJsonWithCors(request, response, 502, {
-        error: `Your enquiry was saved, but the notification email could not be delivered. Please email ${supportEmail} directly for urgent assistance.`,
+        error: `We could not deliver your message by email. Please email ${supportEmail} directly for urgent assistance.`,
       });
     }
     return sendJsonWithCors(request, response, 503, {
